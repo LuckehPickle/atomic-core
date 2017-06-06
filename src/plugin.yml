@@ -1,4 +1,21 @@
 name: atomic-core
 description: A core plugin designed for the Atomic Hive Minecraft server.
 main: net.atomichive.core.Main
+version: 0.0.1
+authors: [Sean Bailey, Quinster]
 website: http://atomichive.net
+commands:
+  ping:
+    description: Determines the delay between the user and the server.
+    usage: /ping [player]
+permissions:
+  atomic-core.*:
+    description: Gives access to all atomic-core commands.
+    children:
+      atomic-core.ping: true
+  atomic-core.ping:
+    description: Gives access to the ping command.
+    default: true
+  atomic-vore.ping.others:
+    description: Allows a user to get another players ping.
+    default: false

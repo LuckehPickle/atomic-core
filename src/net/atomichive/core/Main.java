@@ -1,5 +1,6 @@
 package net.atomichive.core;
 
+import net.atomichive.core.command.CommandPing;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -15,7 +16,7 @@ public class Main extends JavaPlugin {
      */
     @Override
     public void onEnable() {
-
+        registerCommands();
     }
 
 
@@ -26,6 +27,17 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable() {
 
+    }
+
+
+
+    /**
+     * Register commands
+     * This function registers all commands, as the name
+     * suggests.
+     */
+    private void registerCommands() {
+        this.getCommand("ping").setExecutor(new CommandPing(this.getServer()));
     }
 
 }
