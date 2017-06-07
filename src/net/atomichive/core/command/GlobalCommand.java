@@ -9,45 +9,123 @@ import org.bukkit.entity.Player;
 import net.atomichive.core.Main;
 
 
+/**
+ * Global command.
+ * A generic class that all commands extend.
+ */
 public abstract class GlobalCommand implements CommandExecutor {
-	
-	public abstract void run(CommandSender sender, String[] args);
-	
-	public abstract String getName();
-	
-	public abstract int getSteps();
-	
-	public abstract String getDescription();
-	
-	public abstract boolean requiresPlayer();
-	
-	public abstract String getPermission();
-	
-	
+
+
+	// Attributes
+	private final String name;
+	private final String description;
+	private final String permission;
+	private final boolean requiresPlayer;
+	private final int steps;
+
+
+	/**
+	 * Global command constructor
+	 *
+	 * @param name           Name of the command.
+	 * @param description    Command description.
+	 * @param permission     Permission node required to use the command.
+	 * @param requiresPlayer Whether the command can only be run by a player.
+	 * @param steps          The minimum number of steps arguments required from the user.
+	 */
+	GlobalCommand(String name, String description, String permission, boolean requiresPlayer, int steps) {
+
+		this.name = name;
+		this.description = description;
+		this.permission = permission;
+		this.requiresPlayer = requiresPlayer;
+		this.steps = steps;
+
+		register();
+
+	}
+
+
+	/**
+	 * Register
+	 * Registers this command with Bukkit.
+	 */
+	private void register() {
+		Main.getInstance()
+				.getServer()
+				.getPluginCommand(name)
+				.setExecutor(this);
+	}
+
+
+	/**
+	 * On command
+	 *
+	 * @param sender Object that sent the command.
+	 * @param cmd    Command that was run.
+	 * @param label  The exact command label typed by the user.
+	 * @param args   Any arguments.
+	 * @return Whether the command was successfully run.
+	 */
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)  {
-		if(!cmd.getName().equalsIgnoreCase(getName())) return false;
-		
-		if(!sender.hasPermission(getPermission())) return false;
-		
-		if(requiresPlayer()) {
-			if(!(sender instanceof Player)) {
-				sender.sendMessage(ChatColor.RED + "Only players can execute this command.");
-				return false;
-			}
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
+		if (!cmd.getName().equalsIgnoreCase(name)) return false;
+
+		// Ensure sender has appropriate permissions
+		if (!sender.hasPermission(permission)) return false;
+
+		// Ensure sender is a player (if necessary)
+		if (requiresPlayer && !(sender instanceof Player)) {
+			sender.sendMessage(ChatColor.RED + "Only players can execute this command.");
+			return true;
 		}
-		
-		if(args.length < getSteps()) {
-			sender.sendMessage(ChatColor.RED + "You need to enter atleast " + ChatColor.YELLOW + getSteps() + ChatColor.RED + " arguments for this command.");
+
+		// Ensure enough args where entered
+		if (args.length < steps) {
+			sender.sendMessage(ChatColor.RED + "You need to enter at least " + ChatColor.YELLOW + steps + ChatColor.RED + " arguments for this command.");
 			sender.sendMessage(ChatColor.AQUA + getDescription());
 			return false;
 		}
-		
-		run(sender, args);		
+
+		run(sender, args);
 		return true;
+
 	}
-	
-	public void registerCommand() {
-		Main.getInstance().getServer().getPluginCommand(getName()).setExecutor(this);
+
+
+	/**
+	 * Run
+	 * The main logic for the command is handled here.
+	 *
+	 * @param sender The object that sent the command.
+	 * @param args   Any command arguments.
+	 */
+	public abstract void run(CommandSender sender, String[] args);
+
+
+	/*
+		Getters from here down.
+	 */
+
+	public String getName() {
+		return name;
 	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getPermission() {
+		return permission;
+	}
+
+	public boolean isRequiresPlayer() {
+		return requiresPlayer;
+	}
+
+	public int getSteps() {
+		return steps;
+	}
+
 }
