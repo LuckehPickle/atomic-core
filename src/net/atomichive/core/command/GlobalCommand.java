@@ -26,7 +26,6 @@ public abstract class GlobalCommand implements CommandExecutor {
 
 	/**
 	 * Global command constructor
-	 *
 	 * @param name           Name of the command.
 	 * @param description    Command description.
 	 * @param permission     Permission node required to use the command.
@@ -60,7 +59,6 @@ public abstract class GlobalCommand implements CommandExecutor {
 
 	/**
 	 * On command
-	 *
 	 * @param sender Object that sent the command.
 	 * @param cmd    Command that was run.
 	 * @param label  The exact command label typed by the user.
@@ -82,14 +80,9 @@ public abstract class GlobalCommand implements CommandExecutor {
 		}
 
 		// Ensure enough args where entered
-		if (args.length < steps) {
-			sender.sendMessage(ChatColor.RED + "You need to enter at least " + ChatColor.YELLOW + steps + ChatColor.RED + " arguments for this command.");
-			sender.sendMessage(ChatColor.AQUA + getDescription());
-			return false;
-		}
+		if (args.length < steps) return false;
 
-		run(sender, args);
-		return true;
+		return run(sender, label, args);
 
 	}
 
@@ -97,11 +90,11 @@ public abstract class GlobalCommand implements CommandExecutor {
 	/**
 	 * Run
 	 * The main logic for the command is handled here.
-	 *
 	 * @param sender The object that sent the command.
+	 * @param label  The exact command label typed by the user.
 	 * @param args   Any command arguments.
 	 */
-	public abstract void run(CommandSender sender, String[] args);
+	public abstract boolean run(CommandSender sender, String label, String[] args);
 
 
 	/*

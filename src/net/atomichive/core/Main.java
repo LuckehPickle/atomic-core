@@ -1,5 +1,7 @@
 package net.atomichive.core;
 
+import net.atomichive.core.command.CommandFly;
+import net.atomichive.core.command.CommandGameMode;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import net.atomichive.core.command.CommandPing;
@@ -44,6 +46,8 @@ public class Main extends JavaPlugin {
 	 * suggests.
 	 */
 	private void registerCommands() {
+		new CommandFly();
+		new CommandGameMode();
 		new CommandPing();
 	}
 

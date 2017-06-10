@@ -1,21 +1,66 @@
 name: atomic-core
 description: A core plugin designed for the Atomic Hive Minecraft server.
 main: net.atomichive.core.Main
-version: 0.0.1
+version: 0.0.3
 authors: [Sean Bailey, Quinster]
 website: http://atomichive.net
 commands:
+  fly:
+    description: Toggles whether a player can fly.
+    usage: /fly [player]
+  gamemode:
+    description: Set a users game mode.
+    usage: /gamemode <adventure|survival|creative|spectator> [player]
+    aliases: [gm, adventure, survival, creative, spectator]
   ping:
-    description: Determines the delay between the user and the server.
+    description: Returns a players delay in ms.
     usage: /ping [player]
 permissions:
   atomic-core.*:
     description: Gives access to all atomic-core commands.
     children:
+      atomic-core.fly: true
+      atomic-core.fly.other: true
       atomic-core.ping: true
+      atomic-core.ping.others: true
+      atomic-core.gamemode: true
+      atomic-core.gamemode.*: true
+      atomic-core.gamemode.others: true
+  atomic-core.fly:
+    description: Gives access to the fly command.
+    default: op
+  atomic-core.fly.others:
+    description: Allows a user to toggle whether a different player can fly.
+    default: op
+  atomic-core.gamemode:
+    description: Sets a users game mode.
+    default: op
+  atomic-core.gamemode.*:
+    description: Allows users to set their game mode to anything.
+    default: op
+    children:
+      atomic-core.gamemode.adventure: true
+      atomic-core.gamemode.survival: true
+      atomic-core.gamemode.creative: true
+      atomic-core.gamemode.spectator: true
+  atomic-core.gamemode.adventure:
+    description: Allows users to set thier game mode to adventure.
+    default: op
+  atomic-core.gamemode.survival:
+    description: Allows users to set their game mode to survival.
+    default: op
+  atomic-core.gamemode.creative:
+    description: Allows users to set their game mode to creative.
+    default: op
+  atomic-core.gamemode.spectator:
+    description: Allows users to set their game mode to spectator.
+    default: op
+  atomic-core.gamemode.others:
+    description: Allows users to set other user's game modes.
+    default: op
   atomic-core.ping:
     description: Gives access to the ping command.
     default: true
   atomic-vore.ping.others:
     description: Allows a user to get another players ping.
-    default: false
+    default: op

@@ -33,40 +33,33 @@ public class CommandPing extends GlobalCommand {
 	/**
 	 * Run
 	 * @param sender The object that sent the command.
+	 * @param label  The exact command label typed by the user.
 	 * @param args   Any command arguments.
 	 */
 	@Override
-	public void run(CommandSender sender, String[] args) {
+	public boolean run(CommandSender sender, String label, String[] args) {
+
+		// If the sender is not a player, ensure more than one arg is entered.
+		if (args.length == 0 && !(sender instanceof Player)) {
+			sender.sendMessage(ChatColor.RED + "Only players can view their own ping.");
+			return false;
+		}
+
 
 		if (args.length == 0) {
 
-			/*
-				We have to ensure the sender is a player here, as
-				we can't get the ping of a console/command block.
-				But the console can request a ping from a player,
-				so when there are two args this check is not
-				necessary.
-			 */
-
-			// Ensure sender is a player
-			if (!(sender instanceof Player)) {
-				sender.sendMessage(ChatColor.RED + "This command can only be run by players.");
-				return;
-			}
-
-			// Cast to player
+			// Output the players own ping
 			Player player = (Player) sender;
 
-			// Output the players own ping
 			int ping = getPing(player);
 			player.sendMessage(colourise(ping));
 
 		} else if (args.length == 1) {
 
 			// Ensure the user has permission
-			if (!sender.hasPermission("atomic.ping.others")) {
+			if (!sender.hasPermission("atomic-core.ping.others")) {
 				sender.sendMessage(ChatColor.RED + "You do not have permission to perform this command.");
-				return;
+				return true;
 			}
 
 			// Retrieve the target player
@@ -75,13 +68,15 @@ public class CommandPing extends GlobalCommand {
 			// Ensure target exists
 			if (target == null) {
 				sender.sendMessage(ChatColor.RED + "The player " + args[0] + " could not be found.");
-				return;
+				return true;
 			}
 
 			int ping = getPing(target);
 			sender.sendMessage(target.getDisplayName() + "'s ping: " + colourise(ping));
 
 		}
+
+		return true;
 
 	}
 
