@@ -57,18 +57,17 @@ public class CommandGameMode extends GlobalCommand {
 	}
 
 
+
 	/**
 	 * Handle game mode command
 	 * This function handles simple game mode commands
-	 * @return
+	 * @return Whether the command was successfully run.
 	 */
 	private boolean handleGameModeCommand(CommandSender sender, String[] args) {
 
 		GameMode gameMode;
 
-		if (args.length == 0) {
-			return false;
-		}
+		if (args.length == 0) return false;
 
 		try {
 			gameMode = getGameModeFromString(sender, args[0]);
@@ -118,6 +117,7 @@ public class CommandGameMode extends GlobalCommand {
 
 		return true;
 	}
+
 
 
 	/**

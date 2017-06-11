@@ -1,0 +1,17 @@
+# Atomic Core config.
+# Lines starting with # will be ignored.
+
+# +-------------------+
+# | PostgreSQL config |
+# +-------------------+
+
+# Name of the database, must already exist
+database: atomic_core
+
+# Host information
+host: localhost
+port: 5432
+
+# Uncomment these if necessary
+# username: postgres
+# password:
