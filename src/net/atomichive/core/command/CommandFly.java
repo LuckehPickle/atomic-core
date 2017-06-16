@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
  * Command Fly
  * Toggles whether a player can fly.
  */
-public class CommandFly extends GlobalCommand {
+public class CommandFly extends CommandBase {
 
 	// Successful output format
 	private final static String FORMAT = "Flight %s.";

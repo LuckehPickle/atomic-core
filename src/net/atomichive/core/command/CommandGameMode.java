@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
  * Allows users to change their game mode.
  * TODO Deal with /creative, /survival etc.
  */
-public class CommandGameMode extends GlobalCommand {
+public class CommandGameMode extends CommandBase {
 
 
 	public CommandGameMode() {

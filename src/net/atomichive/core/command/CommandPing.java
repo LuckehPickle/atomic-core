@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
  * Command Ping
  * Returns a players delay in ms.
  */
-public class CommandPing extends GlobalCommand {
+public class CommandPing extends CommandBase {
 
 	// Output format
 	private final static String FORMAT = "%s%dms";

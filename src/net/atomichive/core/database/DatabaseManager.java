@@ -1,8 +1,13 @@
 package net.atomichive.core.database;
 
+import net.atomichive.core.Main;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Database Manager
@@ -21,6 +26,7 @@ public class DatabaseManager {
 	private final String password;
 
 	private Connection connection = null;
+	private Logger logger;
 
 	public final static String DEFAULT_HOST = "localhost";
 	public final static int DEFAULT_PORT = 5432;
@@ -64,15 +70,17 @@ public class DatabaseManager {
 		this.username = username;
 		this.password = password;
 
+		this.logger = Main.getInstance().getLogger();
+
+		// Open connection
 		openConnection();
 
 	}
 
 
-
 	/**
 	 * Open connection
-	 * Opens a new connection with the PostgreSQL database.
+	 * Opens a new connection with the SQL server.
 	 */
 	private void openConnection() {
 
@@ -81,14 +89,13 @@ public class DatabaseManager {
 			Class.forName("org.postgresql.Driver");
 			connection = DriverManager.getConnection(getUrl(), username, password);
 		} catch (ClassNotFoundException e) {
-			System.err.println("PostgreSQL JDBC driver not found.");
+			logger.log(Level.SEVERE, "PostgreSQL JDBC driver not found.");
 		} catch (SQLException e) {
-			System.err.println("Database connection failed. Please check output.");
+			logger.log(Level.SEVERE, "Database connection failed. Please check output.");
 			e.printStackTrace();
 		}
 
 	}
-
 
 
 	/**
@@ -97,18 +104,16 @@ public class DatabaseManager {
 	 */
 	public void closeConnection() {
 
-		if (connection == null) return;
+		if (isClosed()) return;
 
 		try {
 			connection.close();
 		} catch (SQLException e) {
-			System.err.println("Failed to close database. Please check output.");
+			logger.log(Level.SEVERE, "Failed to close JDBC connection.");
 			e.printStackTrace();
-		} finally {
-			connection = null;
 		}
-	}
 
+	}
 
 
 	/**
@@ -117,18 +122,40 @@ public class DatabaseManager {
 	 * username and password.
 	 * @return Formatted URL.
 	 */
-	private String getUrl() {
+	private String getUrl () {
 		return String.format("jdbc:postgresql://%s:%d/%s", host, port, database);
 	}
 
 
-
-	/*
-		Getters and setters from here down.
+	/**
+	 * Get connection
+	 * Returns the current database connection. Opens a new one
+	 * if necessary.
+	 * @return Connection to SQL server.
 	 */
-
 	public Connection getConnection() {
+
+		// Open a new connection if one has not already been established
+		if (isClosed()) openConnection();
+
 		return connection;
+
+	}
+
+
+	/**
+	 * Is closed
+	 * Determines whether the connection is currently closed.
+	 * @return Whether the jdbc connection is closed.
+	 */
+	public boolean isClosed () {
+		try {
+			return connection.isClosed();
+		} catch (SQLException e) {
+			System.err.println("Failed to determine whether JDBC connection was closed.");
+			e.printStackTrace();
+			return true;
+		}
 	}
 
 }

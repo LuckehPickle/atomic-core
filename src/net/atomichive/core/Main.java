@@ -2,8 +2,9 @@ package net.atomichive.core;
 
 import net.atomichive.core.command.CommandFly;
 import net.atomichive.core.command.CommandGameMode;
-import net.atomichive.core.database.*;
-import net.atomichive.core.database.exception.NoConnectionException;
+import net.atomichive.core.database.DatabaseManager;
+import net.atomichive.core.listeners.PlayerListener;
+import net.atomichive.core.player.AtomicPlayerDAO;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,8 +26,7 @@ public class Main extends JavaPlugin {
 	private Configuration config;
 	private Logger logger;
 	private DatabaseManager database;
-	private PlayerTable playerTable;
-	private PlayerAliasTable playerAliasTable;
+
 
 	/**
 	 * On enable
@@ -43,10 +43,9 @@ public class Main extends JavaPlugin {
 		saveDefaultConfig();
 		config = this.getConfig();
 
-		// Open connection with database
 		createDatabase();
-
 		registerCommands();
+		registerEvents();
 
 	}
 
@@ -81,15 +80,7 @@ public class Main extends JavaPlugin {
 				(String)  config.get("password", "")
 		);
 
-		try {
-
-			// Create tables
-			playerTable      = new PlayerTable(database.getConnection());
-			playerAliasTable = new PlayerAliasTable(database.getConnection());
-
-		} catch (NoConnectionException e) {
-			e.printStackTrace();
-		}
+		AtomicPlayerDAO.setManager(database);
 
 	}
 
@@ -100,13 +91,30 @@ public class Main extends JavaPlugin {
 	 * suggests.
 	 */
 	private void registerCommands() {
+
+		logger.log(Level.INFO, "Registering commands.");
+
 		new CommandFly();
 		new CommandGameMode();
 		new CommandPing();
+
+	}
+
+
+	private void registerEvents() {
+
+		logger.log(Level.INFO, "Registering events.");
+
+		new PlayerListener();
+
 	}
 
 
 	public static Main getInstance() {
 		return instance;
+	}
+
+	public DatabaseManager getDatabaseManager() {
+		return database;
 	}
 }
