@@ -1,6 +1,10 @@
 package net.atomichive.core.database;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -32,8 +36,8 @@ public class UpdateBuilder extends Builder {
 
 		// Init
 		this.table = table;
-		this.columns = new ArrayList<String>();
-		this.wheres  = new ArrayList<String>();
+		this.columns = new ArrayList<>();
+		this.wheres  = new ArrayList<>();
 
 	}
 
@@ -46,6 +50,18 @@ public class UpdateBuilder extends Builder {
 	 */
 	public UpdateBuilder addColumn (String column) {
 		columns.add(column);
+		return this;
+	}
+
+
+	/**
+	 * Add columns
+	 * Adds multiple columns with values for a prepared statement.
+	 * @param columns Varargs of all columns to add.
+	 * @return UpdateBuilder for chaining.
+	 */
+	public UpdateBuilder addColumns (String... columns) {
+		this.columns.addAll(Arrays.asList(columns));
 		return this;
 	}
 
@@ -64,22 +80,31 @@ public class UpdateBuilder extends Builder {
 
 
 	/**
-	 * To prepared string
+	 * To string
 	 * Converts the input to a prepared SQL statement.
 	 * Setting values is not handled here.
 	 * @return Prepared SQL statement.
 	 */
-	public String toPreparedString () {
+	@Override
+	public String toString () {
 
-		StringBuilder builder = new StringBuilder("UPDATE ");
+		StringJoiner joiner = new StringJoiner(" ","UPDATE ", "");
 
 		// Add table
-		builder.append(table);
+		joiner.add(table);
 
-		builder.append(appendList(columns, " SET ", " = ?, ") + " = ? ");
-		builder.append(appendList(wheres, " WHERE ", " AND "));
+		StringJoiner columnsJoiner = new StringJoiner(", ", "SET ", "");
 
-		return builder.toString();
+		for (String column : columns) {
+			columnsJoiner.add(column + " = ?");
+		}
+
+		joiner.add(columnsJoiner.toString());
+		joiner.add(joinList(wheres, " AND ", " WHERE ", ""));
+
+		System.out.println(joiner.toString());
+
+		return joiner.toString();
 
 	}
 

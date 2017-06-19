@@ -8,13 +8,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.sql.Timestamp;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Level;
 
 /**
@@ -33,26 +32,47 @@ public final class PlayerListener extends BaseListener implements Listener {
 	 * An event which occurs whenever a player logs in.
 	 * @param event Player login event object.
 	 */
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onLogin (PlayerLoginEvent event) {
 
-		AtomicPlayer player = getOrCreatePlayer(event.getPlayer());
+		// Get the atomic player
+		Player player = event.getPlayer();
+		AtomicPlayer atomicPlayer = getOrCreatePlayer(player);
+
+		// Update most recent alias
+		atomicPlayer.setUsername(player.getName());
 
 		// Increment count and update username
-		player.incrementLoginCount();
-		player.setUsername(event.getPlayer().getName());
+		atomicPlayer.incrementLoginCount();
 
 		// Log player join
 		Main.getInstance().getLogger().log(Level.INFO, String.format(
 				"%s has logged in %d times. Last seen %s",
-				player.getUsername(),
-				player.getLogins(),
-				player.getLastSeen()
+				atomicPlayer.getUsername(),
+				atomicPlayer.getLoginCount(),
+				atomicPlayer.getLastSeen()
 		));
 
 		// Update last seen time
-		player.setLastSeen(Utils.getCurrentTimestamp());
-		AtomicPlayerDAO.updateAtomicPlayer(player);
+		atomicPlayer.setLastSeen(Utils.getCurrentTimestamp());
+		AtomicPlayerDAO.updateAtomicPlayer(atomicPlayer);
+
+
+		// Test if the player is new
+		if (atomicPlayer.getLoginCount() <= 1) {
+
+			String message = String.format(
+					"Welcome to the server %s%s%s!",
+					ChatColor.YELLOW,
+					player.getDisplayName(),
+					ChatColor.RESET
+			);
+
+			// Broadcast first join message
+			Bukkit.broadcastMessage(message);
+			player.sendMessage(message);
+
+		}
 
 	}
 
@@ -91,14 +111,6 @@ public final class PlayerListener extends BaseListener implements Listener {
 		players = AtomicPlayerDAO.findByIdentifier(player.getUniqueId());
 
 		if (players.isEmpty()) {
-
-			// Broadcast first join message
-			Bukkit.broadcastMessage(String.format(
-					"Welcome to server %s%s%s!",
-					ChatColor.YELLOW,
-					player.getDisplayName(),
-					ChatColor.RESET
-			));
 
 			// Create a new atomic player
 			AtomicPlayer atomicPlayer = new AtomicPlayer(

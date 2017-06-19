@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import net.atomichive.core.command.CommandPing;
 
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -68,7 +69,7 @@ public class Main extends JavaPlugin {
 	 */
 	private void createDatabase() {
 
-		logger.log(Level.INFO, "Opening connection to database.");
+		logger.log(Level.INFO, "Setting up database.");
 
 		// TODO Parse config values and ensure they are the right type
 
@@ -80,15 +81,24 @@ public class Main extends JavaPlugin {
 				(String)  config.get("password", "")
 		);
 
-		AtomicPlayerDAO.setManager(database);
+		try {
+
+			// Initialise data access objects here
+			AtomicPlayerDAO.init(database);
+
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "An SQL exception occurred whilst " +
+					"initialising data access objects. Please check output.");
+			e.printStackTrace();
+		}
 
 	}
 
 
+
 	/**
 	 * Register commands
-	 * This function registers all commands, as the name
-	 * suggests.
+	 * This function registers all commands with Bukkit.
 	 */
 	private void registerCommands() {
 
@@ -101,14 +111,19 @@ public class Main extends JavaPlugin {
 	}
 
 
+
+	/**
+	 * Register events
+	 * This functions registers all events with Bukkit.
+	 */
 	private void registerEvents() {
 
 		logger.log(Level.INFO, "Registering events.");
 
+		// Put all event handlers here
 		new PlayerListener();
 
 	}
-
 
 	public static Main getInstance() {
 		return instance;

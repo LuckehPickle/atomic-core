@@ -3,8 +3,6 @@ package net.atomichive.core.player;
 import net.atomichive.core.Utils;
 
 import java.sql.Timestamp;
-import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -15,27 +13,25 @@ public class AtomicPlayer {
 	// Attributes
 	private UUID identifier;
 	private String username;
-	private int logins;
 	private Timestamp lastSeen;
-	private int messages;
-	private int warnings;
-	private List<String> aliases;
+	private int loginCount;
+	private int messageCount;
+	private int warningCount;
 
 
 	/**
 	 * Atomic Player constructor
 	 * @param identifier UUID of player.
-	 * @param username Player's username.
+	 * @param username Player's current username;
 	 */
-	public AtomicPlayer(UUID identifier, String username) {
+	public AtomicPlayer (UUID identifier, String username) {
 
-		this.identifier = identifier;
-		this.username = username;
-		this.logins = 0;
-		this.lastSeen = Utils.getCurrentTimestamp();
-		this.messages = 0;
-		this.warnings = 0;
-		this.aliases = Collections.singletonList(username);
+		this.identifier   = identifier;
+		this.username     = username;
+		this.lastSeen     = Utils.getCurrentTimestamp();
+		this.loginCount   = 0;
+		this.messageCount = 0;
+		this.warningCount = 0;
 
 	}
 
@@ -53,24 +49,12 @@ public class AtomicPlayer {
 		this.identifier = identifier;
 	}
 
-	public String getUsername () {
+	public String getUsername() {
 		return username;
 	}
 
-	public void setUsername (String username) {
+	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public int getLogins() {
-		return logins;
-	}
-
-	public void setLogins(int logins) {
-		this.logins = logins;
-	}
-
-	public void incrementLoginCount() {
-		logins++;
 	}
 
 	public Timestamp getLastSeen () {
@@ -81,28 +65,31 @@ public class AtomicPlayer {
 		this.lastSeen = lastSeen;
 	}
 
-	public int getMessages() {
-		return messages;
+	public int getLoginCount() {
+		return loginCount;
 	}
 
-	public void setMessages(int messages) {
-		this.messages = messages;
+	public void setLoginCount(int loginCount) {
+		this.loginCount = loginCount;
 	}
 
-	public int getWarnings() {
-		return warnings;
+	public void incrementLoginCount() {
+		loginCount++;
 	}
 
-	public void setWarnings(int warnings) {
-		this.warnings = warnings;
+	public int getMessageCount() {
+		return messageCount;
 	}
 
-	public List<String> getAliases () {
-		return aliases;
+	public void setMessageCount(int messageCount) {
+		this.messageCount = messageCount;
 	}
 
-	public void setAliases (List<String> aliases) {
-		this.aliases = aliases;
+	public int getWarningCount() {
+		return warningCount;
 	}
 
+	public void setWarningCount(int warningCount) {
+		this.warningCount = warningCount;
+	}
 }

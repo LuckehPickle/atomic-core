@@ -2,10 +2,7 @@ package net.atomichive.core.database;
 
 import net.atomichive.core.Main;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -156,6 +153,24 @@ public class DatabaseManager {
 			e.printStackTrace();
 			return true;
 		}
+	}
+
+
+	/**
+	 * Execute
+	 * Executes an SQL statement. Does not return any results.
+	 * @param sql SQL statement to execute.
+	 */
+	public void execute (String sql) {
+
+		// Attempt to execute SQL statement
+		try (Statement statement = connection.createStatement()) {
+			statement.execute(sql);
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "An SQL exception occured. Please review output.");
+			e.printStackTrace();
+		}
+
 	}
 
 }

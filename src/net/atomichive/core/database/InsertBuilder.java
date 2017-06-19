@@ -1,6 +1,10 @@
 package net.atomichive.core.database;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -11,9 +15,8 @@ import java.util.StringJoiner;
 public class InsertBuilder extends Builder {
 
 
-	// Parallel lists
+	// Attributes
 	private List<String> columns;
-
 	private String table;
 
 
@@ -25,24 +28,40 @@ public class InsertBuilder extends Builder {
 		this("");
 	}
 
+
 	/**
 	 * Insert builder constructor
 	 * @param table Table for output purposes.
 	 */
 	public InsertBuilder (String table) {
-		this.table = table;
-		this.columns = new ArrayList<String>();
+
+		// Init
+		this.table   = table;
+		this.columns = new ArrayList<>();
+
 	}
 
 
 	/**
 	 * Add column
-	 * Adds a column.
+	 * Adds a column with a generic value.
 	 * @param column Name of the column
-	 * @return InsertBuilder for chainging.
+	 * @return InsertBuilder for chaining.
 	 */
 	public InsertBuilder addColumn (String column) {
 		columns.add(column);
+		return this;
+	}
+
+
+	/**
+	 * Add columns
+	 * Adds multiple columns with values for a prepared statement.
+	 * @param columns Varargs of all columns to add.
+	 * @return InsertBuilder for chaining.
+	 */
+	public InsertBuilder addColumns (String... columns) {
+		this.columns.addAll(Arrays.asList(columns));
 		return this;
 	}
 
@@ -60,31 +79,30 @@ public class InsertBuilder extends Builder {
 
 
 	/**
-	 * To prepared string
-	 * Converts the input to a prepared SQL statement.
-	 * Setting values is not handled here.
-	 * @return Prepared SQL statement.
+	 * To string
+	 * Converts the input to an SQL statement.
+	 * @return Insert SQL statement.
 	 */
-	public String toPreparedString () {
+	@Override
+	public String toString () {
 
-		StringBuilder builder = new StringBuilder("INSERT INTO ");
+		StringJoiner joiner = new StringJoiner(" ","INSERT INTO ", "");
 
 		// Add table
-		builder.append(table);
+		joiner.add(table);
 
-		StringJoiner columnsJoiner = new StringJoiner(",");
-		StringJoiner valuesJoiner  = new StringJoiner(",");
+		StringJoiner columnsJoiner = new StringJoiner(", ", "(", ")");
+		StringJoiner valuesJoiner  = new StringJoiner(", ", "VALUES (", ")");
 
 		for (String column : columns) {
 			columnsJoiner.add(column);
 			valuesJoiner.add("?");
 		}
 
-		builder.append(" (" + columnsJoiner.toString() + ")");
-		builder.append(" VALUES (" + valuesJoiner.toString() + ")");
+		joiner.add(columnsJoiner.toString());
+		joiner.add(valuesJoiner.toString());
 
-		return builder.toString();
+		return joiner.toString();
 
 	}
-
 }

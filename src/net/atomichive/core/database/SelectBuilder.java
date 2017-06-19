@@ -1,6 +1,7 @@
 package net.atomichive.core.database;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,11 +24,21 @@ public class SelectBuilder extends Builder {
 	public SelectBuilder () {
 
 		// Init
-		columns = new ArrayList<String>();
-		tables  = new ArrayList<String>();
-		wheres  = new ArrayList<String>();
-		joins   = new ArrayList<String>();
+		columns = new ArrayList<>();
+		tables  = new ArrayList<>();
+		wheres  = new ArrayList<>();
+		joins   = new ArrayList<>();
 
+	}
+
+
+	/**
+	 * Select builder constructor.
+	 * @param tables The names of all tables to be added by default.
+	 */
+	public SelectBuilder (String... tables) {
+		this();
+		this.tables.addAll(Arrays.asList(tables));
 	}
 
 
@@ -59,12 +70,14 @@ public class SelectBuilder extends Builder {
 		if (columns.isEmpty()) {
 			sql.append("*");
 		} else {
-			sql.append(appendList(columns, null, ", "));
+			sql.append(joinList(columns, ", "));
 		}
 
-		sql.append(appendList(tables, " FROM ", ", "));
-		sql.append(appendList(joins, " INNER JOIN ", " INNER JOIN "));
-		sql.append(appendList(wheres, " WHERE ", " AND "));
+		sql.append(joinList(tables, ", ", " FROM ", ""));
+		sql.append(joinList(joins, " INNER JOIN ", " INNER JOIN ", ""));
+		sql.append(joinList(wheres, " AND ", " WHERE ", ""));
+
+		System.out.println(sql.toString());
 
 		return sql.toString();
 

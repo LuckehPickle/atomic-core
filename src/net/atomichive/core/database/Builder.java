@@ -1,5 +1,8 @@
 package net.atomichive.core.database;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -10,32 +13,58 @@ public abstract class Builder {
 
 
 	/**
-	 * Append list
-	 * Concatenates all values in a list, so that they can
-	 * be inserted into SQL.
-	 * Note: In some contexts, it may be better to simply use
-	 * String.join(", ", list);
-	 * @param list List to concat
-	 * @param init A string to insert at the beginning
-	 * @param delimiter Symbol used to separate list values.
-	 * @return A list formatted for SQL output.
+	 * Join list
+	 * Joins list components together so that they can be used
+	 * within an SQL statement.
+	 * @param list List of items to join.
+	 * @param delimiter Characters to delimit each item.
+	 * @return List components joined together.
 	 */
-	public String appendList (List<?> list, String init, String delimiter) {
+	String joinList(List<?> list, String delimiter) {
+		return joinList(list, delimiter, null, null);
+	}
 
-		if (list.size() == 0)
-			return "";
+	/**
+	 * Join list
+	 * Joins list components together so that they can be used
+	 * within an SQL statement.
+	 * @param list List of items to join.
+	 * @param delimiter Characters to delimit each item.
+	 * @param prefix Characters to prefix the final output.
+	 * @param suffix Characters to suffix the final output.
+	 * @return List components joined together.
+	 */
+	String joinList(List<?> list, String delimiter, String prefix, String suffix) {
 
-		// Create a new string joiner
-		StringJoiner joiner = new StringJoiner(delimiter);
+		// Ensure item list is not empty
+		if (list.isEmpty()) return "";
 
-		// Iterate over values, adding them to the final string.
-		for (Object string : list) {
-			joiner.add(string.toString());
-		}
+		StringJoiner joiner;
 
-		return (init != null ? init : "") + joiner.toString();
+		// Create string joiner as necessary.
+		if ((prefix != null) && (suffix != null))
+			joiner = new StringJoiner(delimiter, prefix, suffix);
+		else
+			joiner = new StringJoiner(delimiter);
+
+		// Iterate over all objects in the list
+		for (Object obj : list)
+			joiner.add(obj.toString());
+
+		return joiner.toString();
 
 	}
 
+
+
+	/**
+	 * To prepared
+	 * @param connection SQL connection.
+	 * @return A prepared statement with the previous columns.
+	 * @throws SQLException if SQL is incorrectly formatted.
+	 */
+	public PreparedStatement toPrepared (Connection connection) throws SQLException {
+		return connection.prepareStatement(toString());
+	}
 
 }
