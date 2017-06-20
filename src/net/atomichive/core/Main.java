@@ -1,8 +1,8 @@
 package net.atomichive.core;
 
+import io.seanbailey.database.DatabaseManager;
 import net.atomichive.core.command.CommandFly;
 import net.atomichive.core.command.CommandGameMode;
-import net.atomichive.core.database.DatabaseManager;
 import net.atomichive.core.listeners.PlayerListener;
 import net.atomichive.core.player.AtomicPlayerDAO;
 import org.bukkit.configuration.Configuration;
@@ -80,6 +80,8 @@ public class Main extends JavaPlugin {
 				(String)  config.get("username", "postgres"),
 				(String)  config.get("password", "")
 		);
+
+		database.setLogger(logger);
 
 		try {
 

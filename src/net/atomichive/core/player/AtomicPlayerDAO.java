@@ -1,6 +1,12 @@
 package net.atomichive.core.player;
 
-import net.atomichive.core.database.*;
+import io.seanbailey.database.Column;
+import io.seanbailey.database.DatabaseManager;
+import io.seanbailey.database.Table;
+import io.seanbailey.database.builders.CreateTableBuilder;
+import io.seanbailey.database.builders.InsertBuilder;
+import io.seanbailey.database.builders.SelectBuilder;
+import io.seanbailey.database.builders.UpdateBuilder;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -39,7 +45,7 @@ public class AtomicPlayerDAO {
 		player.addColumn("warning_count",  Column.type.INT);
 
 		// Create tables
-		manager.execute(new CreateTableBuilder(player).toString());
+		manager.execute(new CreateTableBuilder(player));
 
 
 		// Create prepared statements
