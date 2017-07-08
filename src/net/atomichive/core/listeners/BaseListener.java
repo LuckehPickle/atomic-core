@@ -5,15 +5,23 @@ import org.bukkit.event.Listener;
 
 /**
  * Base Listener
- * Essentially just handles event registration.
+ * A super class to all listeners. Essentially just simplifies
+ * the registration process.
  */
 class BaseListener implements Listener {
 
-	public BaseListener() {
-		Main.getInstance()
-				.getServer()
-				.getPluginManager()
-				.registerEvents(this, Main.getInstance());
-	}
+
+    /**
+     * Base listener constructor
+     */
+    BaseListener () {
+
+        // Register event
+        Main.getInstance()
+                .getServer()
+                .getPluginManager()
+                .registerEvents(this, Main.getInstance());
+
+    }
 
 }

@@ -7,8 +7,8 @@ package net.atomichive.core.exception;
  */
 public class MissingPermissionException extends Throwable {
 
-	public MissingPermissionException (String message) {
-		super(message);
-	}
+    public MissingPermissionException (String message) {
+        super(message);
+    }
 
 }

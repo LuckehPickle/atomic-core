@@ -9,14 +9,14 @@ import java.sql.Timestamp;
 public class Utils {
 
 
-	/**
-	 * Get current timestamp
-	 * Returns a timestamp object representing the current
-	 * time.
-	 * @return The current timestamp.
-	 */
-	public static Timestamp getCurrentTimestamp () {
-		return new Timestamp(System.currentTimeMillis());
-	}
+    /**
+     * Get current timestamp
+     * Returns a timestamp object representing the current
+     * time.
+     * @return The current timestamp.
+     */
+    public static Timestamp getCurrentTimestamp () {
+        return new Timestamp(System.currentTimeMillis());
+    }
 
 }

@@ -4,6 +4,8 @@
 # +-------------------+
 # | PostgreSQL config |
 # +-------------------+
+#
+# Please do not edit this if you are unsure.
 
 # Name of the database, must already exist
 database: atomic_core

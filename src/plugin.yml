@@ -1,37 +1,51 @@
 name: atomic-core
 description: A core plugin designed for the Atomic Hive Minecraft server.
 main: net.atomichive.core.Main
-version: 0.0.3
+version: 0.0.6
 authors: [Sean Bailey, Quinster]
 website: http://atomichive.net
+
 commands:
   fly:
     description: Toggles whether a player can fly.
     usage: /fly [player]
   gamemode:
-    description: Set a users game mode.
-    usage: /gamemode <adventure|survival|creative|spectator> [player]
-    aliases: [gm, adventure, survival, creative, spectator]
+    description: Updates a player's game mode.
+    usage: /gamemode <mode> [player]
+    aliases: [gm, mode, adventure, survival, creative, spectator]
+  kill:
+    description: Kills a player.
+    usage: /kill <player>
   ping:
-    description: Returns a players delay in ms.
+    description: Returns the delay between a players and the server in milliseconds.
     usage: /ping [player]
+    aliases: [delay]
+  suicide:
+    description: Causes the player to spontaneously combust.
+    usage: /suicide
+    aliases: [sepaku]
+
 permissions:
   atomic-core.*:
     description: Gives access to all atomic-core commands.
     children:
       atomic-core.fly: true
       atomic-core.fly.other: true
-      atomic-core.ping: true
-      atomic-core.ping.others: true
       atomic-core.gamemode: true
       atomic-core.gamemode.*: true
       atomic-core.gamemode.others: true
+      atomic-core.kill: true
+      atomic-core.ping: true
+      atomic-core.ping.others: true
+      atomic-core.suicide: true
+
   atomic-core.fly:
     description: Gives access to the fly command.
     default: op
   atomic-core.fly.others:
     description: Allows a user to toggle whether a different player can fly.
     default: op
+
   atomic-core.gamemode:
     description: Sets a users game mode.
     default: op
@@ -58,9 +72,18 @@ permissions:
   atomic-core.gamemode.others:
     description: Allows users to set other user's game modes.
     default: op
+
+  atomic-core.kill:
+    description: Gives access to the kill command.
+    default: op
+
   atomic-core.ping:
     description: Gives access to the ping command.
     default: true
-  atomic-vore.ping.others:
+  atomic-core.ping.others:
     description: Allows a user to get another players ping.
+    default: op
+
+  atomic-core.suicide:
+    description: Gives access to the suicide command.
     default: op
