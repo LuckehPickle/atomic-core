@@ -1,0 +1,33 @@
+# DATABASE
+# Use this section to configure how the database
+# is handled.
+
+# Name of the database, must already exist
+database: atomic_core
+
+# Host information
+host: localhost
+port: 5432
+
+# Uncomment these if necessary
+# username: postgres
+# password: ''
+
+# Whether the plugin should automatically
+# migrate the database. It is recommended to disabled
+# this if you have to use a different database for
+# some reason.
+auto_migrate: true
+
+
+
+
+
+# PLUGIN
+# Use this section to configure how the plugin
+# operates in general.
+
+# Development mode. Disabling this will prevent development
+# objects from being loaded. Make sure this is disabled on
+# production servers.
+development_mode: false
