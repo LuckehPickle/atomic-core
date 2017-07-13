@@ -94,7 +94,7 @@ public abstract class BaseCommand implements CommandExecutor {
         try {
             return run(sender, label, args);
         } catch (CommandException | PermissionException e) {
-            sender.sendMessage(ChatColor.RED + "Error: " + e.getMessage());
+            sender.sendMessage(e.getMessage());
             return true;
         }
 
@@ -124,6 +124,10 @@ public abstract class BaseCommand implements CommandExecutor {
 
     public String getDescription () {
         return description;
+    }
+
+    public String getUsage () {
+        return usage;
     }
 
     public String getPermission () {

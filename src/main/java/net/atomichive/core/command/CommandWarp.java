@@ -1,6 +1,7 @@
 package net.atomichive.core.command;
 
 import net.atomichive.core.exception.CommandException;
+import net.atomichive.core.util.PaginatedResult;
 import net.atomichive.core.warp.Warp;
 import net.atomichive.core.warp.WarpManager;
 import org.bukkit.ChatColor;

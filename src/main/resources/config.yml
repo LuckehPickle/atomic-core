@@ -31,3 +31,13 @@ auto_migrate: true
 # objects from being loaded. Make sure this is disabled on
 # production servers.
 development_mode: false
+
+
+
+
+# ENTITIES
+# Used to configure atomic entities.
+
+# The maximum number of entities that can be spawned with
+# one command.
+max_spawn_count: 100

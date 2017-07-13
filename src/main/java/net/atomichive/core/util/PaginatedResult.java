@@ -1,4 +1,4 @@
-package net.atomichive.core.command;
+package net.atomichive.core.util;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -46,15 +46,14 @@ public abstract class PaginatedResult<T> {
         page = Math.max(0, Math.min(page, maxPages));
 
         if (results.size() == 0) {
-            sender.sendMessage(ChatColor.GOLD + header + " [Page " + (page + 1) + "/" + (maxPages + 1) + "]");
+            sender.sendMessage(ChatColor.GOLD + header + " (Page " + (page + 1) + "/" + (maxPages + 1) + ")");
             sender.sendMessage("There's nothing here...");
             return;
         }
 
         // Output header
         sender.sendMessage(ChatColor.GOLD + header + " [Page " + (page + 1) + "/" + (maxPages + 1) + "]");
-        for (int i = ITEMS_PER_PAGE * page; i < ITEMS_PER_PAGE * page + ITEMS_PER_PAGE; i++) {
-            if (i < results.size()) break;
+        for (int i = ITEMS_PER_PAGE * page; i < ITEMS_PER_PAGE * page + ITEMS_PER_PAGE  && i < results.size(); i++) {
             sender.sendMessage(format(results.get(i)));
         }
 

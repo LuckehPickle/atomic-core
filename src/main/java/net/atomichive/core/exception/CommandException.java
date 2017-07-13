@@ -8,7 +8,13 @@ package net.atomichive.core.exception;
 public class CommandException extends Throwable {
 
     public CommandException (String message) {
-        super(message);
+        this(Reason.ERROR, message);
     }
 
+    public CommandException (Reason reason, String message) {
+        super(String.format(
+                reason.getFormat(),
+                message
+        ));
+    }
 }

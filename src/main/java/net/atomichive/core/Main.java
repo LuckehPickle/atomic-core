@@ -2,6 +2,8 @@ package net.atomichive.core;
 
 import io.seanbailey.database.DatabaseManager;
 import net.atomichive.core.command.*;
+import net.atomichive.core.entity.CustomEntityType;
+import net.atomichive.core.entity.EntityManager;
 import net.atomichive.core.listeners.LoginListener;
 import net.atomichive.core.listeners.QuitListener;
 import net.atomichive.core.player.AtomicPlayerDAO;
@@ -48,6 +50,12 @@ public class Main extends JavaPlugin {
         initDatabase();
         registerCommands();
         registerEvents();
+        CustomEntityType.registerEntities();
+
+        if (config.getBoolean("development_mode", false)) {
+            logger.log(Level.INFO, "Loading custom entities...");
+            EntityManager.load();
+        }
 
         // Add currently logged in players to player manager
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -79,16 +87,16 @@ public class Main extends JavaPlugin {
      */
     private void initDatabase () {
 
-        logger.log(Level.INFO, "Setting up database.");
+        logger.log(Level.INFO, "Initialising database...");
 
 
         // Init database manager
         manager = new DatabaseManager(
-                (String) config.get("database", "atomic_core"),
-                (String) config.get("host", DatabaseManager.DEFAULT_HOST),
-                (int)    config.get("port", DatabaseManager.DEFAULT_PORT),
-                (String) config.get("username", DatabaseManager.DEFAULT_USERNAME),
-                (String) config.get("password", DatabaseManager.DEFAULT_PASSWORD)
+                config.getString("database", "atomic_core"),
+                config.getString("host", DatabaseManager.DEFAULT_HOST),
+                config.getInt("port", DatabaseManager.DEFAULT_PORT),
+                config.getString("username", DatabaseManager.DEFAULT_USERNAME),
+                config.getString("password", DatabaseManager.DEFAULT_PASSWORD)
         );
 
 
@@ -103,8 +111,10 @@ public class Main extends JavaPlugin {
         manager.setLogger(logger);
         manager.setMigrationsPath("migrations");
 
-        if ((boolean) config.get("auto_migrate", true))
+        if (config.getBoolean("auto_migrate", true))
             manager.migrate();
+
+        logger.log(Level.INFO, "Initialised database.");
 
     }
 
@@ -115,8 +125,9 @@ public class Main extends JavaPlugin {
      */
     private void registerCommands () {
 
-        logger.log(Level.INFO, "Registering commands.");
+        logger.log(Level.INFO, "Registering commands...");
 
+        new CommandEntity();
         new CommandFly();
         new CommandGameMode();
         new CommandKill();
@@ -125,6 +136,8 @@ public class Main extends JavaPlugin {
         new CommandSpeed();
         new CommandSuicide();
         new CommandWarp();
+
+        logger.log(Level.INFO, "Commands registered.");
 
     }
 
@@ -135,12 +148,19 @@ public class Main extends JavaPlugin {
      */
     private void registerEvents () {
 
-        logger.log(Level.INFO, "Registering events.");
+        logger.log(Level.INFO, "Registering events...");
 
         // Put all event handlers here
         new LoginListener();
         new QuitListener();
 
+        logger.log(Level.INFO, "Events registered.");
+
+    }
+
+
+    public void log (Level level, String out) {
+        logger.log(level, out);
     }
 
 
