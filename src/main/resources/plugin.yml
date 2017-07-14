@@ -9,6 +9,7 @@ commands:
   entity:
     description: Used to manage Atomic Entities.
     usage: /entity [reload|list|spawn]
+    aliases: [ae]
   fly:
     description: Toggles whether a player can fly.
     usage: /fly [player]
@@ -19,6 +20,9 @@ commands:
   kill:
     description: Kills a player.
     usage: /kill <player>
+  killall:
+    description: Kills all entities, except players.
+    usage: /killall [radius]
   level:
     description: A debug command for setting a players level.
     usage: /level <value>
@@ -33,6 +37,14 @@ commands:
     description: Causes the player to spontaneously combust.
     usage: /suicide
     aliases: [sepaku]
+  teleport:
+    description: Teleports one player to another.
+    usage: /tp [source] <destination>
+    aliases: [tp, tpsilent]
+  tphere:
+    description: Teleports another player to you.
+    usage: /tphere <player>
+    aliases: [tph]
   warp:
     description: Designate a warp destination, or warp somewhere.
     usage: /warp [list|add|remove] [warp]
@@ -49,11 +61,17 @@ permissions:
       atomic-core.gamemode.*: true
       atomic-core.gamemode.others: true
       atomic-core.kill: true
+      atomic-core.killall: true
+      atomic-core.killall.world: true
       atomic-core.level: true
       atomic-core.ping: true
       atomic-core.ping.others: true
       atomic-core.speed: true
       atomic-core.suicide: true
+      atomic-core.tp: true
+      atomic-core.tp.others: true
+      atomic-core.tp.silent: true
+      atomic-core.tphere: true
       atomic-core.warp: true
 
   atomic-core.atomic-entity:
@@ -98,6 +116,13 @@ permissions:
     description: Gives access to the kill command.
     default: op
 
+  atomic-core.killall:
+    description: Gives access to the killall command.
+    default: op
+  atomic-core.killall.world:
+    description: Allows player to kill all entities in the current world.
+    default: op
+
   atomic-core.level:
     description: Gives access to the level command.
     default: op
@@ -106,7 +131,7 @@ permissions:
     description: Gives access to the ping command.
     default: true
   atomic-core.ping.others:
-    description: Allows a user to get another players ping.
+    description: Allows a player to get another player's ping.
     default: op
 
   atomic-core.speed:
@@ -115,6 +140,20 @@ permissions:
 
   atomic-core.suicide:
     description: Gives access to the suicide command.
+    default: op
+
+  atomic-core.tp:
+    description: Gives access to the tp command.
+    default: true
+  atomic-core.tp.others:
+    description: Allows a user to teleport other players.
+    default: op
+  atomic-core.tp.silent:
+    description: Allows a user to teleport silently.
+    default: op
+
+  atomic-core.tphere:
+    description: Gives access to the tphere command.
     default: op
 
   atomic-core.warp:

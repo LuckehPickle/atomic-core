@@ -60,8 +60,6 @@ public class CommandFly extends BaseCommand {
 
         } else if (args.length == 1) {
 
-            // Update the target players flight status
-
             // Ensure the user has permission
             if (!sender.hasPermission("atomic-core.fly.others")) {
                 throw new PermissionException();
@@ -71,9 +69,8 @@ public class CommandFly extends BaseCommand {
             Player target = Bukkit.getPlayer(args[0]);
 
             // Ensure target exists
-            if (target == null) {
+            if (target == null)
                 throw new CommandException("The player " + args[0] + " could not be found.");
-            }
 
             toggleFlight(target);
 

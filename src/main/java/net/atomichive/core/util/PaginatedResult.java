@@ -36,23 +36,31 @@ public abstract class PaginatedResult<T> {
 
     public void display (CommandSender sender, List<? extends T> results, int page) {
 
-
         int maxPages = results.size() / ITEMS_PER_PAGE;
 
         if (results.size() % ITEMS_PER_PAGE == 0) {
             maxPages--;
         }
 
+
         page = Math.max(0, Math.min(page, maxPages));
 
+        String localHeader = String.format(
+                "%s %s(Page %d/%d)",
+                ChatColor.GREEN + header,
+                ChatColor.GRAY,
+                page + 1,
+                maxPages + 1
+        );
+
         if (results.size() == 0) {
-            sender.sendMessage(ChatColor.GOLD + header + " (Page " + (page + 1) + "/" + (maxPages + 1) + ")");
+            sender.sendMessage(localHeader);
             sender.sendMessage("There's nothing here...");
             return;
         }
 
         // Output header
-        sender.sendMessage(ChatColor.GOLD + header + " [Page " + (page + 1) + "/" + (maxPages + 1) + "]");
+        sender.sendMessage(localHeader);
         for (int i = ITEMS_PER_PAGE * page; i < ITEMS_PER_PAGE * page + ITEMS_PER_PAGE  && i < results.size(); i++) {
             sender.sendMessage(format(results.get(i)));
         }

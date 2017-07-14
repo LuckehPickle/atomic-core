@@ -1,20 +1,22 @@
-CREATE TABLE player (
+CREATE TABLE players (
     player_id     UUID        PRIMARY KEY NOT NULL UNIQUE,
     username      VARCHAR(16) NOT NULL,
+    level         INTEGER     NOT NULL,
+    experience    INTEGER     NOT NULL,
     last_seen     TIMESTAMP   NOT NULL,
-    login_count   INT         NOT NULL,
-    message_count INT         NOT NULL,
-    warning_count INT         NOT NULL
+    login_count   INTEGER     NOT NULL,
+    message_count INTEGER     NOT NULL,
+    warning_count INTEGER     NOT NULL
 );
 
-CREATE TABLE warp (
-    warp_id UUID           PRIMARY KEY NOT NULL UNIQUE,
-    name    VARCHAR(16)    NOT NULL,
-    message VARCHAR(32),
-    world   UUID           NOT NULL,
-    x       NUMERIC(16, 3) NOT NULL,
-    y       NUMERIC(16, 3) NOT NULL,
-    z       NUMERIC(16, 3) NOT NULL,
-    pitch   NUMERIC(16, 3) NOT NULL,
-    yaw     NUMERIC(16, 3) NOT NULL
+CREATE TABLE warps (
+    warp_id  UUID         PRIMARY KEY NOT NULL UNIQUE,
+    name     VARCHAR(16)  NOT NULL UNIQUE,
+    message  VARCHAR(32),
+    world_id UUID         NOT NULL,
+    x        INTEGER      NOT NULL,
+    y        INTEGER      NOT NULL,
+    z        INTEGER      NOT NULL,
+    pitch    NUMERIC      NOT NULL,
+    yaw      NUMERIC      NOT NULL
 )

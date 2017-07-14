@@ -74,8 +74,6 @@ public abstract class BaseCommand implements CommandExecutor {
     @Override
     public boolean onCommand (CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
 
-        if (!cmd.getName().equalsIgnoreCase(name)) return false;
-
         // Ensure sender has appropriate permissions
         if (!sender.hasPermission(permission)) {
             sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
@@ -89,7 +87,10 @@ public abstract class BaseCommand implements CommandExecutor {
         }
 
         // Ensure enough args where entered
-        if (args.length < steps) return false;
+        if (args.length < steps) {
+            sender.sendMessage(ChatColor.RED + "Error: Not enough args. " + this.getUsage());
+            return true;
+        }
 
         try {
             return run(sender, label, args);

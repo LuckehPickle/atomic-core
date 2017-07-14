@@ -1,13 +1,20 @@
 package net.atomichive.core.command;
 
 import net.atomichive.core.exception.CommandException;
+import net.atomichive.core.exception.Reason;
+import net.atomichive.core.exception.UnknownWarpException;
+import net.atomichive.core.exception.UnknownWorldException;
 import net.atomichive.core.util.PaginatedResult;
 import net.atomichive.core.warp.Warp;
+import net.atomichive.core.warp.WarpDAO;
 import net.atomichive.core.warp.WarpManager;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * Command Warp
@@ -19,7 +26,7 @@ public class CommandWarp extends BaseCommand {
         super(
                 "warp",
                 "Designate a warp destination, or warp somewhere.",
-                "/warp [list|create|remove] [warp]",
+                "/warp [list|create|remove|warp-name]",
                 "atomic-core.warp",
                 false,
                 0
@@ -38,44 +45,34 @@ public class CommandWarp extends BaseCommand {
     public boolean run (CommandSender sender, String label, String[] args) throws CommandException {
 
         // If no arguments are entered
-        if (args.length == 0 || label.equalsIgnoreCase("warps")) {
-            listWarps(sender, 1);
-            return true;
-        }
-
-        if (args.length == 1 || args.length == 2) {
+        if (args.length == 0) {
+            throw new CommandException(Reason.INVALID_USAGE, getUsage());
+        } else {
 
             String arg = args[0].toLowerCase();
 
             switch (arg) {
+                case "help":
+                case "?":
+                    sender.sendMessage(getUsage());
+                    break;
                 case "list":
                 case "l":
-                    int page = 1;
-
-                    if (args.length == 2) {
-                        try {
-                            page = Integer.parseInt(args[1]);
-                        } catch (NumberFormatException e) {
-                            throw new CommandException("Please enter a valid number.");
-                        }
-                    }
-
-                    listWarps(sender, page);
+                    listWarps(sender, args);
                     break;
                 case "add":
                 case "a":
                 case "create":
-                case "+":
-                    createWarp();
+                case "set":
+                    createWarp(sender, args);
                     break;
                 case "remove":
                 case "rm":
-                case "-":
                 case "delete":
-                    removeWarp();
+                    removeWarp(sender, args);
                     break;
                 default:
-                    warp();
+                    warp(sender, args);
             }
         }
 
@@ -83,12 +80,26 @@ public class CommandWarp extends BaseCommand {
     }
 
 
+
     /**
      * List warps
      * Sends a list of all warps to the sender.
      * @param sender Command sender.
+     * @param args   Command arguments.
      */
-    private void listWarps (CommandSender sender, int page) {
+    private void listWarps (CommandSender sender, String[] args)
+            throws CommandException {
+
+        int page = 1;
+
+        if (args.length >= 2) {
+            try {
+                page = Integer.parseInt(args[1]);
+            } catch (NumberFormatException e) {
+                throw new CommandException("Please enter a valid number.");
+            }
+        }
+
 
         // Get all warps
         List<Warp> warps = WarpManager.getAll();
@@ -98,18 +109,7 @@ public class CommandWarp extends BaseCommand {
 
             @Override
             public String format (Warp warp) {
-
-                String name = ChatColor.YELLOW + warp.getName() + ChatColor.RESET;
-
-                if (warp.getMessage() != null) {
-                    return String.format(
-                            "%s: %s",
-                            name,
-                            warp.getMessage().substring(0, 25)
-                    );
-                }
-
-                return name;
+                return warp.toString();
             }
 
         }.display(sender, warps, page);
@@ -120,24 +120,132 @@ public class CommandWarp extends BaseCommand {
 
     /**
      * Create warp
+     * @param sender Command sender.
+     * @param args   Command arguments.
      */
-    private void createWarp () {
+    private void createWarp (CommandSender sender, String[] args)
+            throws CommandException {
+
+        // Ensure sender is a player
+        if (!(sender instanceof Player)) {
+            throw new CommandException(
+                    Reason.INVALID_SENDER,
+                    "Only players can create warps."
+            );
+        }
+
+        // Ensure enough args where entered
+        if (args.length == 1) {
+            throw new CommandException(
+                    Reason.INVALID_USAGE,
+                    "/warp create <name> [message...]"
+            );
+        }
+
+        Player player = (Player) sender;
+        Location location = player.getLocation();
+        String name = args[1];
+        String message = null;
+
+        // Get message
+        if (args.length >= 3) {
+
+            StringJoiner joiner = new StringJoiner(" ");
+
+            // Iterate over remaining args
+            for (int i = 2; i < args.length; i++)
+                joiner.add(args[i]);
+
+
+            message = joiner.toString();
+
+            // Truncate if necessary
+            if (message.length() > 48)
+                message = message.substring(0, 45) + "...";
+
+        }
+
+        // Ensure warp does not already exist
+        if (WarpManager.contains(name))
+            throw new CommandException("A warp named '" + name + "' already exists.");
+
+        // Create new warp
+        Warp warp = new Warp(name, location);
+        warp.setMessage(message);
+
+        // Add to managers and DB
+        WarpDAO.insert(warp);
+        WarpManager.add(warp);
+
+        player.sendMessage("Created warp " + ChatColor.GREEN + warp.toString() + ChatColor.RESET + ".");
 
     }
+
 
 
     /**
      * Remove warp
+     * @param sender Command sender.
+     * @param args   Command arguments.
      */
-    private void removeWarp () {
+    private void removeWarp (CommandSender sender, String[] args)
+            throws CommandException {
+
+        // Ensure enough args where entered
+        if (args.length == 1) {
+            throw new CommandException(
+                    Reason.INVALID_USAGE,
+                    "/warp remove <name>"
+            );
+        }
+
+        Warp warp;
+
+        // Attempt to delete warp
+        try {
+            warp = WarpManager.delete(args[1]);
+        } catch (UnknownWarpException e) {
+            throw new CommandException(e.getMessage());
+        }
+
+        sender.sendMessage("Deleted warp " + ChatColor.RED + warp.toString() + ChatColor.RESET + ".");
 
     }
 
 
+
     /**
      * Warp
+     * @param sender Command sender.
+     * @param args   Command arguments.
      */
-    private void warp () {
+    private void warp (CommandSender sender, String[] args) throws CommandException {
+
+        // Ensure sender is a player
+        if (!(sender instanceof Player)) {
+            throw new CommandException(
+                    Reason.INVALID_SENDER,
+                    "Only players can warp."
+            );
+        }
+
+        // Retrieve target warp
+        Warp warp = WarpManager.get(args[0]);
+        Player player = (Player) sender;
+
+        // Ensure warp exists
+        if (warp == null)
+            throw new CommandException("Unknown warp '" + args[0] + "'.");
+
+        // Attempt to warp player.
+        try {
+            warp.warpPlayer(player);
+        } catch (UnknownWorldException e) {
+            throw new CommandException(
+                    Reason.WARP_FAILED,
+                    "Unknown destination world. Has it been deleted?"
+            );
+        }
 
     }
 

@@ -1,6 +1,6 @@
 package net.atomichive.core.warp;
 
-import net.atomichive.core.exception.WorldDoesNotExistException;
+import net.atomichive.core.exception.UnknownWorldException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -21,9 +21,9 @@ public class Warp {
     private String name;
     private String message;
     private UUID world;
-    private double x;
-    private double y;
-    private double z;
+    private int x;
+    private int y;
+    private int z;
     private float pitch;
     private float yaw;
 
@@ -31,12 +31,34 @@ public class Warp {
     /**
      * Warp constructor.
      * Create a new warp.
-     * @param name  Warp name, must be unique.
-     * @param world The world containing this warp location.
      */
-    public Warp (String name, UUID world) {
-        this(name, world, 0, 0, 0);
+    public Warp () {
+        this(null, null, 0, 0, 0);
     }
+
+
+    /**
+     * Warp constructor.
+     * Create a new warp.
+     * @param name     Warp name, must be unique.
+     * @param location Location of warp.
+     */
+    public Warp (String name, Location location) {
+
+        this (
+                name,
+                location.getWorld().getUID(),
+                location.getBlockX(),
+                location.getBlockY(),
+                location.getBlockZ()
+        );
+
+        // Set pitch and yaw
+        this.setPitch(location.getPitch());
+        this.setYaw(location.getYaw());
+
+    }
+
 
     /**
      * Warp constructor.
@@ -47,7 +69,7 @@ public class Warp {
      * @param y     Y coordinate.
      * @param z     Z coordinate.
      */
-    public Warp (String name, UUID world, double x, double y, double z) {
+    public Warp (String name, UUID world, int x, int y, int z) {
 
         // Init
         this.identifier = UUID.randomUUID();
@@ -63,37 +85,55 @@ public class Warp {
     }
 
 
+
     /**
      * Warp player
      * Warp the specified player to this warp.
-     * TODO particles and sounds
      * @param player Player to teleport/warp.
-     * @throws WorldDoesNotExistException if the world could not be found.
-     *                                    This is typically caused by a
-     *                                    world being deleted.
+     * @throws UnknownWorldException if the world could not be found.
      */
-    public void warpPlayer (Player player) throws WorldDoesNotExistException {
+    public void warpPlayer (Player player) throws UnknownWorldException {
 
-        // Get world from UUID
         World world = Bukkit.getServer().getWorld(this.world);
 
         // Ensure the world exists
         if (world == null)
-            throw new WorldDoesNotExistException();
+            throw new UnknownWorldException();
 
         // Teleport player
-        player.teleport(new Location(world, x, y, z, yaw, pitch));
+        player.teleport(new Location(
+                world,
+                x + 0.5, y, z + 0.5,
+                yaw, pitch
+        ));
 
         // Print contextual information
-        player.sendMessage("Warping to: " + ChatColor.YELLOW + name);
+        player.sendMessage("Warping to " + ChatColor.GREEN + toString() + ChatColor.RESET + ".");
 
-        if (message != null)
-            player.sendMessage(message);
+        if (message != null) {
+            player.sendMessage(ChatColor.GRAY + message);
+        }
 
     }
 
 
-	/*
+
+    @Override
+    public String toString () {
+        return String.format(
+                "%s %s[%s]",
+                name,
+                ChatColor.GRAY,
+                identifier.toString().substring(0, 6)
+        );
+    }
+
+    public boolean equals (Warp warp) {
+        return this.name.equalsIgnoreCase(warp.getName());
+    }
+
+
+    /*
         Getters and setters.
 	 */
 
@@ -129,27 +169,27 @@ public class Warp {
         this.world = world;
     }
 
-    public double getX () {
+    public int getX () {
         return x;
     }
 
-    public void setX (double x) {
+    public void setX (int x) {
         this.x = x;
     }
 
-    public double getY () {
+    public int getY () {
         return y;
     }
 
-    public void setY (double y) {
+    public void setY (int y) {
         this.y = y;
     }
 
-    public double getZ () {
+    public int getZ () {
         return z;
     }
 
-    public void setZ (double z) {
+    public void setZ (int z) {
         this.z = z;
     }
 

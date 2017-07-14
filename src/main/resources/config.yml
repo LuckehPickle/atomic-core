@@ -41,3 +41,7 @@ development_mode: false
 # The maximum number of entities that can be spawned with
 # one command.
 max_spawn_count: 100
+
+# The maximum radius of a /killall command. Is ignored
+# if the user has the permission atomic-core.killall.world
+max_kill_radius: 100

@@ -36,9 +36,10 @@ public class AtomicPlayerDAO {
         AtomicPlayerDAO.manager = manager;
 
         // Create prepared statements
-        insertStatement = new InsertBuilder("player").addColumns(
+        insertStatement = new InsertBuilder("players").addColumns(
                 "player_id",
                 "username",
+                "level",
                 "experience",
                 "last_seen",
                 "login_count",
@@ -46,8 +47,9 @@ public class AtomicPlayerDAO {
                 "warning_count"
         ).toPrepared(manager.getConnection());
 
-        updateStatement = new UpdateBuilder("player").addColumns(
+        updateStatement = new UpdateBuilder("players").addColumns(
                 "username",
+                "level",
                 "experience",
                 "last_seen",
                 "login_count",
@@ -55,7 +57,7 @@ public class AtomicPlayerDAO {
                 "warning_count"
         ).where("player_id = ?").toPrepared(manager.getConnection());
 
-        findByIdStatement = new SelectBuilder("player")
+        findByIdStatement = new SelectBuilder("players")
                 .addColumn("*")
                 .where("player_id = ?")
                 .toPrepared(manager.getConnection());
@@ -76,7 +78,7 @@ public class AtomicPlayerDAO {
 
             // Execute query
             ResultSet set = statement.executeQuery(
-                    new SelectBuilder("player")
+                    new SelectBuilder("players")
                         .addColumn("*")
                         .toString()
             );
@@ -135,11 +137,12 @@ public class AtomicPlayerDAO {
             insertStatement.clearParameters();
             insertStatement.setObject(n++, player.getIdentifier());
             insertStatement.setString(n++, player.getUsername());
+            insertStatement.setInt(n++, player.getLevel());
             insertStatement.setInt(n++, player.getExperience());
             insertStatement.setTimestamp(n++, player.getLastSeen());
             insertStatement.setInt(n++, player.getLoginCount());
             insertStatement.setInt(n++, player.getMessageCount());
-            insertStatement.setInt(n++, player.getWarningCount());
+            insertStatement.setInt(n, player.getWarningCount());
 
             // Execute
             insertStatement.executeUpdate();
@@ -165,12 +168,13 @@ public class AtomicPlayerDAO {
             // Set values in prepared statement
             updateStatement.clearParameters();
             updateStatement.setString(n++, player.getUsername());
+            updateStatement.setInt(n++, player.getLevel());
             updateStatement.setInt(n++, player.getExperience());
             updateStatement.setTimestamp(n++, player.getLastSeen());
             updateStatement.setInt(n++, player.getLoginCount());
             updateStatement.setInt(n++, player.getMessageCount());
             updateStatement.setInt(n++, player.getWarningCount());
-            updateStatement.setObject(n++, player.getIdentifier());
+            updateStatement.setObject(n, player.getIdentifier());
 
             // Execute
             updateStatement.executeUpdate();
@@ -195,12 +199,13 @@ public class AtomicPlayerDAO {
                 // Set values in prepared statement
                 updateStatement.clearParameters();
                 updateStatement.setString(n++, player.getUsername());
+                updateStatement.setInt(n++, player.getLevel());
                 updateStatement.setInt(n++, player.getExperience());
                 updateStatement.setTimestamp(n++, player.getLastSeen());
                 updateStatement.setInt(n++, player.getLoginCount());
                 updateStatement.setInt(n++, player.getMessageCount());
                 updateStatement.setInt(n++, player.getWarningCount());
-                updateStatement.setObject(n++, player.getIdentifier());
+                updateStatement.setObject(n, player.getIdentifier());
 
                 // Add batch
                 updateStatement.addBatch();
@@ -237,6 +242,7 @@ public class AtomicPlayerDAO {
             // Update attributes
             player.setIdentifier((UUID) rs.getObject("player_id"));
             player.setUsername(rs.getString("username"));
+            player.setLevel(rs.getInt("level"));
             player.setExperience(rs.getInt("experience"));
             player.setLastSeen(rs.getTimestamp("last_seen"));
             player.setLoginCount(rs.getInt("login_count"));

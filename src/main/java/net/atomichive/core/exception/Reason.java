@@ -11,8 +11,10 @@ public enum Reason {
     ERROR          ("Error: %s"),
     INVALID_USAGE  ("Usage: %s"),
     INVALID_SENDER ("Invalid sender: %s"),
+    INVALID_INPUT  ("Invalid input: %s"),
     UNKNOWN_ENTITY ("Entity error: %s"),
-    UNKNOWN_CLASS  ("Entity error: %s");
+    UNKNOWN_CLASS  ("Entity error: %s"),
+    WARP_FAILED    ("Warp failed: %s");
 
     private final String format;
 

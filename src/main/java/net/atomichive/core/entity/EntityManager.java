@@ -94,18 +94,18 @@ public class EntityManager extends JsonManager {
      */
     public static void spawnEntity (Location location, String entityName, int count) throws EntityException {
 
-        CustomEntity entity = null;
+        CustomEntity customEntity = null;
 
         // Determine which entity needs to be spawned
         for (CustomEntity e : customEntities) {
             if (e.getName().equalsIgnoreCase(entityName)) {
-                entity = e;
+                customEntity = e;
                 break;
             }
         }
 
         // Ensure entity was found
-        if (entity == null) {
+        if (customEntity == null) {
             throw new EntityException(
                     Reason.UNKNOWN_ENTITY,
                     "Entity '" + entityName + "' could not be found."
@@ -117,17 +117,17 @@ public class EntityManager extends JsonManager {
 
         for (int i = 0; i < count; i++) {
             // Create new custom entity
-            Entity e = entity.createInstance(world.getHandle());
+            Entity entity = customEntity.createInstance(location);
 
-            // Teleport to correct location
-            e.setPosition(
+            // Teleport to location
+            entity.setPosition(
                     location.getBlockX() + 0.5,
-                    location.getBlockY() + (e.getBukkitEntity().getHeight() / 2) + 0.1,
+                    location.getBlockY() + (entity.getBukkitEntity().getHeight() / 2) + 0.1,
                     location.getBlockZ() + 0.5
             );
 
             // Spawn entity
-            world.getHandle().addEntity(e);
+            world.getHandle().addEntity(entity, CreatureSpawnEvent.SpawnReason.CUSTOM);
         }
 
     }

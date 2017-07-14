@@ -3,6 +3,6 @@ package net.atomichive.core.exception;
 /**
  * World does not exist exception
  */
-public class WorldDoesNotExistException extends Throwable {
+public class UnknownWorldException extends Throwable {
 
 }

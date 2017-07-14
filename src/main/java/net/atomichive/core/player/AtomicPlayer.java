@@ -16,6 +16,7 @@ public class AtomicPlayer {
     // Attributes
     private UUID identifier;
     private String username;
+    private int level;
     private int experience;
     private Timestamp lastSeen;
     private int loginCount;
@@ -39,6 +40,7 @@ public class AtomicPlayer {
 
         this.identifier = identifier;
         this.username = username;
+        this.level = 0;
         this.experience = 0;
         this.lastSeen = Utils.getCurrentTimestamp();
         this.loginCount = 0;
@@ -77,6 +79,14 @@ public class AtomicPlayer {
 
     public void setUsername (String username) {
         this.username = username;
+    }
+
+    public int getLevel () {
+        return level;
+    }
+
+    public void setLevel (int level) {
+        this.level = level;
     }
 
     public int getExperience () {

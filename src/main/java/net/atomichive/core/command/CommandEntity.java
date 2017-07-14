@@ -47,7 +47,8 @@ public class CommandEntity extends BaseCommand {
      *                             appropriate permissions.
      */
     @Override
-    public boolean run (CommandSender sender, String label, String[] args) throws CommandException, PermissionException {
+    public boolean run (CommandSender sender, String label, String[] args)
+            throws CommandException, PermissionException {
 
         if (args.length == 0) {
             listEntities(sender, args);
@@ -98,13 +99,13 @@ public class CommandEntity extends BaseCommand {
         List<CustomEntity> entities = EntityManager.getAll();
 
         // Create a new paginated result
-        new PaginatedResult<CustomEntity>("Custom Entities") {
+        new PaginatedResult<CustomEntity>("Custom entities") {
 
             @Override
             public String format (CustomEntity entity) {
                 return String.format(
                         "%s [%s]",
-                        ChatColor.YELLOW + entity.getName() + ChatColor.RESET,
+                        entity.getName() + ChatColor.GRAY,
                         entity.getAtomicClass()
                 );
             }
@@ -122,19 +123,19 @@ public class CommandEntity extends BaseCommand {
      */
     private void spawnEntity (CommandSender sender, String[] args) throws CommandException {
 
-        // Ensure enough args where entered
-        if (args.length == 1) {
-            throw new CommandException(
-                    Reason.INVALID_USAGE,
-                    "/ae spawn <entity> [count]"
-            );
-        }
-
         // Ensure sender is a player
         if (!(sender instanceof Player)) {
             throw new CommandException(
                     Reason.INVALID_SENDER,
                     "Only players can use this command."
+            );
+        }
+
+        // Ensure enough args where entered
+        if (args.length == 1) {
+            throw new CommandException(
+                    Reason.INVALID_USAGE,
+                    "/entity spawn <entity> [count]"
             );
         }
 
@@ -155,7 +156,7 @@ public class CommandEntity extends BaseCommand {
 
                 // Ensure count is not too high
                 if (count > max)
-                    throw new CommandException("Maximum spawn count is " + max + ".");
+                    throw new CommandException("Maximum spawn count exceeded. Please enter a value lower than " + max + ".");
 
             } catch (NumberFormatException e) {
                 throw new CommandException("Please enter a valid number.");

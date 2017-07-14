@@ -9,6 +9,7 @@ import net.atomichive.core.listeners.QuitListener;
 import net.atomichive.core.player.AtomicPlayerDAO;
 import net.atomichive.core.player.PlayerManager;
 import net.atomichive.core.warp.WarpDAO;
+import net.atomichive.core.warp.WarpManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
@@ -62,6 +63,9 @@ public class Main extends JavaPlugin {
             PlayerManager.addPlayer(player);
         }
 
+        log(Level.INFO, "Loading warps.");
+        WarpManager.load();
+
     }
 
 
@@ -74,6 +78,7 @@ public class Main extends JavaPlugin {
 
         // Empty player manager
         PlayerManager.removeAll();
+        WarpManager.removeAll();
 
         manager.closeConnection();
 
@@ -131,10 +136,13 @@ public class Main extends JavaPlugin {
         new CommandFly();
         new CommandGameMode();
         new CommandKill();
+        new CommandKillAll();
         new CommandLevel();
         new CommandPing();
         new CommandSpeed();
         new CommandSuicide();
+        new CommandTeleport();
+        new CommandTeleportHere();
         new CommandWarp();
 
         logger.log(Level.INFO, "Commands registered.");
