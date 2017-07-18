@@ -2,7 +2,6 @@ package net.atomichive.core;
 
 import io.seanbailey.database.DatabaseManager;
 import net.atomichive.core.command.*;
-import net.atomichive.core.entity.CustomEntityType;
 import net.atomichive.core.entity.EntityManager;
 import net.atomichive.core.listeners.LoginListener;
 import net.atomichive.core.listeners.QuitListener;
@@ -51,7 +50,6 @@ public class Main extends JavaPlugin {
         initDatabase();
         registerCommands();
         registerEvents();
-        CustomEntityType.registerEntities();
 
         if (config.getBoolean("development_mode", false)) {
             logger.log(Level.INFO, "Loading custom entities...");
@@ -135,9 +133,11 @@ public class Main extends JavaPlugin {
         new CommandEntity();
         new CommandFly();
         new CommandGameMode();
+        // new CommandHelp();
         new CommandKill();
         new CommandKillAll();
         new CommandLevel();
+        new CommandNickname();
         new CommandPing();
         new CommandSpeed();
         new CommandSuicide();

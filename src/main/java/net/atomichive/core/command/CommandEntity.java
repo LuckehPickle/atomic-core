@@ -14,6 +14,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
+import org.bukkit.util.Vector;
 
 import java.util.List;
 
@@ -38,7 +39,6 @@ public class CommandEntity extends BaseCommand {
 
     /**
      * Run
-     * Toggles a players flight state.
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.
@@ -173,6 +173,7 @@ public class CommandEntity extends BaseCommand {
             // Test if block is empty
             if (!block.isEmpty()) {
                 location = block.getLocation();
+                location.add(new Vector(0.5, 1, 0.5));
                 break;
             }
         }

@@ -35,7 +35,6 @@ public class CommandKillAll extends BaseCommand {
 
     /**
      * Run
-     * Toggles a players flight state.
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.

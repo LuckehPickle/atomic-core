@@ -1,113 +1,126 @@
 package net.atomichive.core.entity;
 
 import com.google.gson.annotations.SerializedName;
+import net.atomichive.core.Main;
 import net.atomichive.core.exception.EntityException;
 import net.atomichive.core.exception.Reason;
-import net.minecraft.server.v1_12_R1.Entity;
-import net.minecraft.server.v1_12_R1.World;
+import net.atomichive.core.util.Utils;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
+import org.bukkit.entity.Entity;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.StringJoiner;
+import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Custom Entity
  * A user defined custom entity.
  */
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "FieldCanBeLocal"})
 public class CustomEntity {
 
     private String name;
-    @SerializedName("class") private String atomicClass;
-    private boolean persistant = false;
+
+    @SerializedName("class")
+    private String atomicClass;
+
+    private Map<String, Object> options;
+
+    private transient boolean isNameVisible;
+    private transient boolean despawn;
+    private transient boolean isInvulnerable;
+    private transient boolean isGlowing;
+    private transient boolean respectsGravity;
+    private transient boolean isSilent;
+
+    private Map<String, Object> attributes;
 
 
     /**
-     * Custom Entity
+     * Init
      */
-    public CustomEntity () {
-        this(null, null);
+    public void init () {
+
+        // Create new attributes object from options
+        EntityAttributes attributes = new EntityAttributes(options);
+
+        // Apply options
+        isNameVisible   = attributes.getBoolean("is_name_visible", true);
+        despawn         = attributes.getBoolean("despawn", true);
+        isInvulnerable  = attributes.getBoolean("is_invlunerable", false);
+        isGlowing       = attributes.getBoolean("is_glowing", false);
+        respectsGravity = attributes.getBoolean("respects_gravity", true);
+        isSilent        = attributes.getBoolean("is_silent", false);
+
     }
 
-    /**
-     * Custom Entity
-     * @param name Unique entity name. Should be lower case and underscored.
-     * @param atomicClass Corresponding Atomic class.
-     */
-    public CustomEntity (String name, String atomicClass) {
-        this.name = name;
-        this.atomicClass = atomicClass;
-    }
-
-
 
     /**
-     * Create instance
-     * Attempts to create a new instance of this entity.
-     * @param location Entity position.
-     * @return Object, if it could be created
-     * @throws EntityException if an exception is encountered.
+     * Spawn
+     * Creates a new active entity.
+     * @param location Location to spawn entity.
+     * @return Active Entity.
      */
-    @SuppressWarnings("unchecked")
-    public Entity createInstance (Location location) throws EntityException {
+    public ActiveEntity spawn (Location location) throws EntityException {
 
-        // Attempt to create instance
+        Class entityClass;
+        AtomicEntity entity = null;
+
+        // Attempt to get class
         try {
-            // Get atomic class
-            Class entityClass = Class.forName("net.atomichive.core.entity.Atomic" + atomicClass);
-
-            // Construct instance
-            Constructor constructor = entityClass.getConstructor(World.class);
-            Entity entity = (Entity) constructor.newInstance(((CraftWorld) location.getWorld()).getHandle());
-
-            // Do custom stuff with the entity here
-            entity.getBukkitEntity().setCustomName(getDisplayName());
-            entity.getBukkitEntity().setCustomNameVisible(true);
-            //entity.setPersistant(persistant);
-
-            return entity;
-
+            // Get class by name
+            entityClass = Class.forName("net.atomichive.core.entity.Atomic" +
+                    Utils.toCamelCase(true, atomicClass));
         } catch (ClassNotFoundException e) {
             throw new EntityException(
                     Reason.UNKNOWN_CLASS,
-                    "Unknown class '" + atomicClass + "' in custom entity '" + name + "'."
+                    "Unknown entity class '" + atomicClass + "' in custom entity '" + name + "'."
             );
-        } catch (NoSuchMethodException |
-                InvocationTargetException |
-                InstantiationException |
-                IllegalAccessException e) {
-            e.printStackTrace();
         }
 
-        return null;
+        // Construct instance
+        try {
+            entity = (AtomicEntity) entityClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        // Init AtomicEntity
+        entity.init(new EntityAttributes(attributes));
+
+        ActiveEntity activeEntity = new ActiveEntity(entity.spawn(location));
+
+        return this.applyAttributes(activeEntity);
 
     }
 
 
     /**
-     * Get display name
-     * Turns an underscored name into a display name.
-     * @return display name.
+     * Apply attributes
+     * Apply global attributes to the active entity
+     * @param activeEntity Active entity to modify.
+     * @return Modified active entity.
      */
-    public String getDisplayName () {
+    public ActiveEntity applyAttributes (ActiveEntity activeEntity) {
 
-        // Get parts of name, splitting at underscores
-        String[] parts = name.split("_");
+        Entity entity = activeEntity.getEntity();
 
-        StringJoiner joiner = new StringJoiner(" ");
+        entity.setCustomName(Utils.toTitleCase(name));
+        entity.setCustomNameVisible(isNameVisible);
 
-        // Add all parts with length >= 1
-        for (String part : parts) {
-            if (part.length() > 1) {
-                joiner.add(part.substring(0, 1).toUpperCase() + part.substring(1).toLowerCase());
-            } else if (part.length() == 1) {
-                joiner.add(part);
-            }
-        }
+        if (this.isInvulnerable)
+            entity.setInvulnerable(true);
 
-        return joiner.toString();
+        if (this.isGlowing)
+            entity.setGlowing(true);
+
+        if(!this.respectsGravity)
+            entity.setGravity(false);
+
+        if (this.isSilent)
+            entity.setSilent(true);
+
+        return activeEntity;
 
     }
 
@@ -124,4 +137,5 @@ public class CustomEntity {
     public String getAtomicClass () {
         return atomicClass;
     }
+
 }

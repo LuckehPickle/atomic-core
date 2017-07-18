@@ -17,6 +17,10 @@ commands:
     description: Updates a player's game mode.
     usage: /gamemode <mode> [player]
     aliases: [gm, mode]
+  # help:
+  #   description: Lists all available Atomic Hive commands.
+  #   usage: /help [--legacy] [page]
+  #   aliases: [?]
   kill:
     description: Kills a player.
     usage: /kill <player>
@@ -26,6 +30,9 @@ commands:
   level:
     description: A debug command for setting a players level.
     usage: /level <value>
+  nick:
+    description: Set your a custom display name.
+    usage: /nick [player] <name...>
   ping:
     description: Returns the delay between a players and the server in milliseconds.
     usage: /ping [player]
@@ -60,10 +67,13 @@ permissions:
       atomic-core.gamemode: true
       atomic-core.gamemode.*: true
       atomic-core.gamemode.others: true
+      # atomic-core.help: true
       atomic-core.kill: true
       atomic-core.killall: true
       atomic-core.killall.world: true
       atomic-core.level: true
+      atomic-core.nick: true
+      atomic-core.nick.others: true
       atomic-core.ping: true
       atomic-core.ping.others: true
       atomic-core.speed: true
@@ -112,6 +122,10 @@ permissions:
     description: Allows users to set other user's game modes.
     default: op
 
+  # atomic-core.help:
+  #   description: Gives access to the help command.
+  #   default: true
+
   atomic-core.kill:
     description: Gives access to the kill command.
     default: op
@@ -125,6 +139,13 @@ permissions:
 
   atomic-core.level:
     description: Gives access to the level command.
+    default: op
+
+  atomic-core.nick:
+    description: Gives access to the nick command.
+    default: op
+  atomic-core.nick.others:
+    description: Allows players to set the nickname of other players.
     default: op
 
   atomic-core.ping:

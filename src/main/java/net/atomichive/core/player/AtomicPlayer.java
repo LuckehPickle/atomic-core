@@ -16,12 +16,13 @@ public class AtomicPlayer {
     // Attributes
     private UUID identifier;
     private String username;
-    private int level;
-    private int experience;
+    private String displayName = null;
+    private int level = 0;
+    private int experience = 0;
     private Timestamp lastSeen;
-    private int loginCount;
-    private int messageCount;
-    private int warningCount;
+    private int loginCount = 0;
+    private int messageCount = 0;
+    private int warningCount = 0;
 
 
     /**
@@ -40,12 +41,7 @@ public class AtomicPlayer {
 
         this.identifier = identifier;
         this.username = username;
-        this.level = 0;
-        this.experience = 0;
         this.lastSeen = Utils.getCurrentTimestamp();
-        this.loginCount = 0;
-        this.messageCount = 0;
-        this.warningCount = 0;
 
     }
 
@@ -79,6 +75,14 @@ public class AtomicPlayer {
 
     public void setUsername (String username) {
         this.username = username;
+    }
+
+    public String getDisplayName () {
+        return displayName;
+    }
+
+    public void setDisplayName (String displayName) {
+        this.displayName = displayName;
     }
 
     public int getLevel () {
@@ -132,4 +136,5 @@ public class AtomicPlayer {
     public void setWarningCount (int warningCount) {
         this.warningCount = warningCount;
     }
+
 }

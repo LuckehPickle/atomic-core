@@ -1,16 +1,59 @@
 package net.atomichive.core.entity;
 
-import net.minecraft.server.v1_12_R1.EntityZombie;
-import net.minecraft.server.v1_12_R1.World;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Zombie;
 
 /**
  * Atomic Zombie
  */
-public class AtomicZombie extends EntityZombie {
+public class AtomicZombie extends AtomicEntity {
 
-    private float speed;
 
-    public AtomicZombie (World world) {
-        super(world);
+    private boolean isBaby;
+
+
+    /**
+     * Init
+     * Set config values.
+     * @param attributes Entity Config from entities.json.
+     */
+    @Override
+    public void init (EntityAttributes attributes) {
+        isBaby = attributes.getBoolean("is_baby", false);
     }
+
+
+    /**
+     * Spawn
+     * Generates a new entity, and places it in the world.
+     * @param location to spawn entity.
+     * @return Spawned entity.
+     */
+    public Entity spawn (Location location) {
+        return spawn(location, EntityType.ZOMBIE);
+    }
+
+
+    /**
+     * Apply attributes
+     * Applies everything defined in config to the entity.
+     * @param entity Entity to edit.
+     * @return Modified entity.
+     */
+    @Override
+    public Entity applyAttributes (Entity entity) {
+
+        // Cast
+        Zombie zombie = (Zombie) entity;
+
+        // Set values
+        if (this.isBaby)
+            zombie.setBaby(true);
+
+        return zombie;
+
+    }
+
 }

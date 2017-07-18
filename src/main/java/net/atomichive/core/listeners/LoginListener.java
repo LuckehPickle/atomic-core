@@ -39,6 +39,10 @@ public final class LoginListener extends BaseListener implements Listener {
         // Increment login count and update username
         atomicPlayer.incrementLoginCount();
 
+        // Set display name
+        bukkitPlayer.setPlayerListName(atomicPlayer.getDisplayName());
+        bukkitPlayer.setDisplayName(atomicPlayer.getDisplayName());
+
         // Log player join
         Main.getInstance().getLogger().log(Level.INFO, String.format(
                 "%s has logged in %d times. Last seen %s",

@@ -39,6 +39,7 @@ public class AtomicPlayerDAO {
         insertStatement = new InsertBuilder("players").addColumns(
                 "player_id",
                 "username",
+                "display_name",
                 "level",
                 "experience",
                 "last_seen",
@@ -49,6 +50,7 @@ public class AtomicPlayerDAO {
 
         updateStatement = new UpdateBuilder("players").addColumns(
                 "username",
+                "display_name",
                 "level",
                 "experience",
                 "last_seen",
@@ -137,6 +139,7 @@ public class AtomicPlayerDAO {
             insertStatement.clearParameters();
             insertStatement.setObject(n++, player.getIdentifier());
             insertStatement.setString(n++, player.getUsername());
+            insertStatement.setString(n++, player.getDisplayName());
             insertStatement.setInt(n++, player.getLevel());
             insertStatement.setInt(n++, player.getExperience());
             insertStatement.setTimestamp(n++, player.getLastSeen());
@@ -168,6 +171,7 @@ public class AtomicPlayerDAO {
             // Set values in prepared statement
             updateStatement.clearParameters();
             updateStatement.setString(n++, player.getUsername());
+            updateStatement.setString(n++, player.getDisplayName());
             updateStatement.setInt(n++, player.getLevel());
             updateStatement.setInt(n++, player.getExperience());
             updateStatement.setTimestamp(n++, player.getLastSeen());
@@ -199,6 +203,7 @@ public class AtomicPlayerDAO {
                 // Set values in prepared statement
                 updateStatement.clearParameters();
                 updateStatement.setString(n++, player.getUsername());
+                updateStatement.setString(n++, player.getDisplayName());
                 updateStatement.setInt(n++, player.getLevel());
                 updateStatement.setInt(n++, player.getExperience());
                 updateStatement.setTimestamp(n++, player.getLastSeen());
@@ -242,6 +247,7 @@ public class AtomicPlayerDAO {
             // Update attributes
             player.setIdentifier((UUID) rs.getObject("player_id"));
             player.setUsername(rs.getString("username"));
+            player.setDisplayName(rs.getString("display_name"));
             player.setLevel(rs.getInt("level"));
             player.setExperience(rs.getInt("experience"));
             player.setLastSeen(rs.getTimestamp("last_seen"));

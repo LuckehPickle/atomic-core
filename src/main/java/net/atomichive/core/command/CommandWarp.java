@@ -5,6 +5,7 @@ import net.atomichive.core.exception.Reason;
 import net.atomichive.core.exception.UnknownWarpException;
 import net.atomichive.core.exception.UnknownWorldException;
 import net.atomichive.core.util.PaginatedResult;
+import net.atomichive.core.util.Utils;
 import net.atomichive.core.warp.Warp;
 import net.atomichive.core.warp.WarpDAO;
 import net.atomichive.core.warp.WarpManager;
@@ -150,18 +151,11 @@ public class CommandWarp extends BaseCommand {
         // Get message
         if (args.length >= 3) {
 
-            StringJoiner joiner = new StringJoiner(" ");
-
-            // Iterate over remaining args
-            for (int i = 2; i < args.length; i++)
-                joiner.add(args[i]);
-
-
-            message = joiner.toString();
+            message = Utils.argsJoiner(args, 2);
 
             // Truncate if necessary
-            if (message.length() > 48)
-                message = message.substring(0, 45) + "...";
+            if (message.length() > 64)
+                message = message.substring(0, 61) + "...";
 
         }
 

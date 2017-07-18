@@ -3,6 +3,7 @@ package net.atomichive.core.entity;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.MalformedJsonException;
 import net.atomichive.core.JsonManager;
 import net.atomichive.core.Main;
 import net.atomichive.core.exception.EntityException;
@@ -61,6 +62,7 @@ public class EntityManager extends JsonManager {
 
             // Get entity from JSON
             CustomEntity entity = gson.fromJson(array.get(i), CustomEntity.class);
+            entity.init();
 
             // Ensure entity is unique
             if (customEntities.contains(entity)) {
@@ -107,28 +109,13 @@ public class EntityManager extends JsonManager {
         // Ensure entity was found
         if (customEntity == null) {
             throw new EntityException(
-                    Reason.UNKNOWN_ENTITY,
+                    Reason.ENTITY_ERROR,
                     "Entity '" + entityName + "' could not be found."
             );
         }
 
-        // Create custom entity
-        CraftWorld world = (CraftWorld) location.getWorld();
-
-        for (int i = 0; i < count; i++) {
-            // Create new custom entity
-            Entity entity = customEntity.createInstance(location);
-
-            // Teleport to location
-            entity.setPosition(
-                    location.getBlockX() + 0.5,
-                    location.getBlockY() + (entity.getBukkitEntity().getHeight() / 2) + 0.1,
-                    location.getBlockZ() + 0.5
-            );
-
-            // Spawn entity
-            world.getHandle().addEntity(entity, CreatureSpawnEvent.SpawnReason.CUSTOM);
-        }
+        for (int i = 0; i < count; i++)
+            customEntity.spawn(location);
 
     }
 

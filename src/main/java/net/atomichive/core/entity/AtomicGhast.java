@@ -1,14 +1,23 @@
 package net.atomichive.core.entity;
 
-import net.minecraft.server.v1_12_R1.EntityGhast;
-import net.minecraft.server.v1_12_R1.World;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 
 /**
  * Atomic Ghast
  */
-public class AtomicGhast extends EntityGhast {
+public class AtomicGhast extends AtomicEntity {
 
-    public AtomicGhast (World world) {
-        super(world);
+
+    /**
+     * Spawn
+     * Generates a new entity, and places it in the world.
+     * @param location to spawn entity.
+     * @return Spawned entity.
+     */
+    public Entity spawn (Location location) {
+        return spawn(location, EntityType.GHAST);
     }
+
 }
