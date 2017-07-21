@@ -38,7 +38,7 @@ public class CommandTeleport extends BaseCommand {
      *                             appropriate permissions.
      */
     @Override
-    public boolean run (CommandSender sender, String label, String[] args)
+    public void run (CommandSender sender, String label, String[] args)
             throws CommandException, PermissionException {
 
         if (args.length == 0) {
@@ -101,7 +101,6 @@ public class CommandTeleport extends BaseCommand {
 
         }
 
-        return true;
     }
 
 

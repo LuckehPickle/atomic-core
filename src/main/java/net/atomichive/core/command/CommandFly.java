@@ -44,12 +44,12 @@ public class CommandFly extends BaseCommand {
      *                                    appropriate permissions.
      */
     @Override
-    public boolean run (CommandSender sender, String label, String[] args) throws CommandException, PermissionException {
+    public void run (CommandSender sender, String label, String[] args)
+            throws CommandException, PermissionException {
 
         // If the sender is not a player, ensure more than one arg is entered.
-        if (args.length == 0 && !(sender instanceof Player)) {
+        if (args.length == 0 && !(sender instanceof Player))
             throw new CommandException("Only players can change their own flight status.");
-        }
 
 
         if (args.length == 0) {
@@ -61,9 +61,8 @@ public class CommandFly extends BaseCommand {
         } else if (args.length == 1) {
 
             // Ensure the user has permission
-            if (!sender.hasPermission("atomic-core.fly.others")) {
+            if (!sender.hasPermission("atomic-core.fly.others"))
                 throw new PermissionException();
-            }
 
             // Retrieve the target player
             Player target = Bukkit.getPlayer(args[0]);
@@ -78,8 +77,6 @@ public class CommandFly extends BaseCommand {
             sender.sendMessage(target.getDisplayName() + "'s " + getOutputString(target).toLowerCase());
 
         }
-
-        return true;
 
     }
 

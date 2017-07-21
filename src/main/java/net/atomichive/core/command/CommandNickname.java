@@ -5,7 +5,7 @@ import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.exception.Reason;
 import net.atomichive.core.player.AtomicPlayer;
 import net.atomichive.core.player.PlayerManager;
-import net.atomichive.core.util.Utils;
+import net.atomichive.core.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -40,7 +40,7 @@ public class CommandNickname extends BaseCommand {
      *                             appropriate permissions.
      */
     @Override
-    public boolean run (CommandSender sender, String label, String[] args)
+    public void run (CommandSender sender, String label, String[] args)
             throws CommandException, PermissionException {
 
         // Get player
@@ -59,12 +59,12 @@ public class CommandNickname extends BaseCommand {
             // Update value in db
             atomicPlayer.setDisplayName(null);
 
-            return true;
+            return;
 
         }
 
         // Join args
-        String joined = Utils.argsJoiner(args);
+        String joined = Util.argsJoiner(args);
 
         // Enforce maximum length
         if (joined.length() > 24) {
@@ -84,8 +84,6 @@ public class CommandNickname extends BaseCommand {
 
         // Update value in db
         atomicPlayer.setDisplayName(joined);
-
-        return true;
 
     }
 

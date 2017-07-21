@@ -30,12 +30,9 @@ public class CommandSuicide extends BaseCommand {
      * @param args   Any command arguments.
      */
     @Override
-    public boolean run (CommandSender sender, String label, String[] args) {
-
+    public void run (CommandSender sender, String label, String[] args) {
         Player player = (Player) sender;
         player.setFireTicks(100);
         player.setHealth(0);
-        return true;
-
     }
 }

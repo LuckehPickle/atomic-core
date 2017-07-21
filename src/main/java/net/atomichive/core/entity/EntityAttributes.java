@@ -1,6 +1,9 @@
 package net.atomichive.core.entity;
 
+import net.atomichive.core.Main;
+
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Entity Config
@@ -64,16 +67,7 @@ public class EntityAttributes {
      * @return Int from map
      */
     public int getInt (String key, int defaultValue) {
-
-        if (attributes == null) return defaultValue;
-
-        Object obj = attributes.getOrDefault(key, defaultValue);
-
-        if (Integer.class.isInstance(obj))
-            return (int) obj;
-
-        return defaultValue;
-
+        return (int) getDouble(key, defaultValue);
     }
 
 
@@ -94,6 +88,15 @@ public class EntityAttributes {
 
         return defaultValue;
 
+    }
+
+
+    /**
+     * Log
+     * Logs all attributes. For debug purposes.
+     */
+    public void log () {
+        Main.getInstance().log(Level.INFO, attributes.toString());
     }
 
 }

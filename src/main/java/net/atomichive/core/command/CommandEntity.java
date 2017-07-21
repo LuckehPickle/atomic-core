@@ -1,5 +1,6 @@
 package net.atomichive.core.command;
 
+import com.google.gson.stream.MalformedJsonException;
 import net.atomichive.core.Main;
 import net.atomichive.core.entity.CustomEntity;
 import net.atomichive.core.entity.EntityManager;
@@ -8,13 +9,11 @@ import net.atomichive.core.exception.EntityException;
 import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.exception.Reason;
 import net.atomichive.core.util.PaginatedResult;
+import net.atomichive.core.util.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.util.BlockIterator;
-import org.bukkit.util.Vector;
 
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class CommandEntity extends BaseCommand {
      *                             appropriate permissions.
      */
     @Override
-    public boolean run (CommandSender sender, String label, String[] args)
+    public void run (CommandSender sender, String label, String[] args)
             throws CommandException, PermissionException {
 
         if (args.length == 0) {
@@ -59,9 +58,7 @@ public class CommandEntity extends BaseCommand {
             switch (arg) {
                 case "reload":
                 case "r":
-                    int found = EntityManager.load();
-                    if (found == -1) found = 0;
-                    sender.sendMessage("Found " + ChatColor.GREEN + found + ChatColor.RESET + " custom entities.");
+                    reloadEntities(sender);
                     break;
                 case "list":
                 case "l":
@@ -74,14 +71,53 @@ public class CommandEntity extends BaseCommand {
                 default:
                     throw new CommandException("Unknown option " + args[0] + ".");
             }
+
         }
 
-        return true;
+    }
+
+
+    /**
+     * Reload entities
+     * Reloads all custom entities from entities.json.
+     * @param sender The person or thing that sent the command.
+     */
+    private void reloadEntities (CommandSender sender) throws CommandException {
+
+        // Reload entities and get count
+        int found = 0;
+
+        try {
+            found = EntityManager.load();
+        } catch (MalformedJsonException e) {
+            throw new CommandException("Malformed JSON in entities.json. View console for more information.");
+        }
+
+        // Update found for output purposes.
+        if (found == -1)
+            found = 0;
+
+
+        String out;
+
+        if (found == 1) {
+            out = "Found " + ChatColor.GREEN + "1" + ChatColor.RESET + " custom entity.";
+        } else {
+            out = String.format(
+                    "Found %s custom entities.",
+                    ChatColor.GREEN + "" + found + ChatColor.RESET
+            );
+        }
+
+        sender.sendMessage(out);
+
     }
 
 
     /**
      * List entities
+     * @param sender Command sender.
+     * @param args Any command arguments.
      */
     private void listEntities (CommandSender sender, String[] args) throws CommandException {
 
@@ -145,6 +181,8 @@ public class CommandEntity extends BaseCommand {
         int count = 1;
         Location location = null;
 
+
+        // Handle entity count.
         if (args.length >= 3) {
             try {
                 int max = Main.getInstance().getBukkitConfig().getInt("max_spawn_count", 100);
@@ -163,27 +201,17 @@ public class CommandEntity extends BaseCommand {
             }
         }
 
-        // Ray trace
-        BlockIterator iterator = new BlockIterator(player, 200);
 
-        while (iterator.hasNext()) {
-            // Get next block in iterator
-            Block block = iterator.next();
+        location = Util.trace(player);
 
-            // Test if block is empty
-            if (!block.isEmpty()) {
-                location = block.getLocation();
-                location.add(new Vector(0.5, 1, 0.5));
-                break;
-            }
-        }
-
+        // Ensure a location was found
         if (location == null)
             throw new CommandException("No block in sight.");
 
+
         // Attempt to spawn entity
         try {
-            EntityManager.spawnEntity(location, entity, count);
+            EntityManager.spawnEntity(location, entity, count, player);
         } catch (EntityException e) {
             player.sendMessage(e.getMessage());
             return;

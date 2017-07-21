@@ -1,6 +1,6 @@
 package net.atomichive.core;
 
-import net.atomichive.core.util.Utils;
+import net.atomichive.core.util.Util;
 
 import java.io.File;
 
@@ -38,7 +38,7 @@ public abstract class JsonManager {
 
         // Copy resource to data folder
         try {
-            Utils.exportResource(resource);
+            Util.exportResource(resource);
         } catch (Exception e) {
             e.printStackTrace();
         }

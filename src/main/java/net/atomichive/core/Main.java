@@ -1,10 +1,13 @@
 package net.atomichive.core;
 
+import com.google.gson.stream.MalformedJsonException;
 import io.seanbailey.database.DatabaseManager;
 import net.atomichive.core.command.*;
 import net.atomichive.core.entity.EntityManager;
+import net.atomichive.core.listeners.EntityDamageListener;
 import net.atomichive.core.listeners.LoginListener;
 import net.atomichive.core.listeners.QuitListener;
+import net.atomichive.core.listeners.SlimeSplitListener;
 import net.atomichive.core.player.AtomicPlayerDAO;
 import net.atomichive.core.player.PlayerManager;
 import net.atomichive.core.warp.WarpDAO;
@@ -53,13 +56,16 @@ public class Main extends JavaPlugin {
 
         if (config.getBoolean("development_mode", false)) {
             logger.log(Level.INFO, "Loading custom entities...");
-            EntityManager.load();
+            try {
+                EntityManager.load();
+            } catch (MalformedJsonException e) {
+                e.printStackTrace();
+            }
         }
 
         // Add currently logged in players to player manager
-        for (Player player : Bukkit.getOnlinePlayers()) {
+        for (Player player : Bukkit.getOnlinePlayers())
             PlayerManager.addPlayer(player);
-        }
 
         log(Level.INFO, "Loading warps.");
         WarpManager.load();
@@ -134,12 +140,14 @@ public class Main extends JavaPlugin {
         new CommandFly();
         new CommandGameMode();
         // new CommandHelp();
+        new CommandJump();
         new CommandKill();
         new CommandKillAll();
         new CommandLevel();
         new CommandNickname();
         new CommandPing();
         new CommandSpeed();
+        new CommandSudo();
         new CommandSuicide();
         new CommandTeleport();
         new CommandTeleportHere();
@@ -160,7 +168,9 @@ public class Main extends JavaPlugin {
 
         // Put all event handlers here
         new LoginListener();
+        new EntityDamageListener();
         new QuitListener();
+        new SlimeSplitListener();
 
         logger.log(Level.INFO, "Events registered.");
 

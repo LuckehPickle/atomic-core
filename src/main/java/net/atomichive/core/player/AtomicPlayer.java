@@ -1,6 +1,6 @@
 package net.atomichive.core.player;
 
-import net.atomichive.core.util.Utils;
+import net.atomichive.core.util.Util;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
@@ -41,7 +41,7 @@ public class AtomicPlayer {
 
         this.identifier = identifier;
         this.username = username;
-        this.lastSeen = Utils.getCurrentTimestamp();
+        this.lastSeen = Util.getCurrentTimestamp();
 
     }
 

@@ -21,6 +21,9 @@ commands:
   #   description: Lists all available Atomic Hive commands.
   #   usage: /help [--legacy] [page]
   #   aliases: [?]
+  jump:
+    description: Jump to the block you're looking at.
+    usage: /jump
   kill:
     description: Kills a player.
     usage: /kill <player>
@@ -40,6 +43,9 @@ commands:
   speed:
     description: Change your flying or walking speeds.
     usage: /speed <value>
+  sudo:
+    description: Run a command as another player.
+    usage: /sudo <player> <command>
   suicide:
     description: Causes the player to spontaneously combust.
     usage: /suicide
@@ -68,6 +74,7 @@ permissions:
       atomic-core.gamemode.*: true
       atomic-core.gamemode.others: true
       # atomic-core.help: true
+      atomic-core.jump: true
       atomic-core.kill: true
       atomic-core.killall: true
       atomic-core.killall.world: true
@@ -77,6 +84,7 @@ permissions:
       atomic-core.ping: true
       atomic-core.ping.others: true
       atomic-core.speed: true
+      atomic-core.sudo: true
       atomic-core.suicide: true
       atomic-core.tp: true
       atomic-core.tp.others: true
@@ -126,6 +134,10 @@ permissions:
   #   description: Gives access to the help command.
   #   default: true
 
+  atomic-core.jump:
+    description: Gives access to the jump command.
+    default: op
+
   atomic-core.kill:
     description: Gives access to the kill command.
     default: op
@@ -158,6 +170,10 @@ permissions:
   atomic-core.speed:
     description: Gives access to the speed command.
     default: op
+
+  atomic-core.sudo:
+    description: Gives access to the sudo command.
+    default: false
 
   atomic-core.suicide:
     description: Gives access to the suicide command.

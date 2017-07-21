@@ -43,7 +43,7 @@ public class CommandPing extends BaseCommand {
      * @param args   Any command arguments.
      */
     @Override
-    public boolean run (CommandSender sender, String label, String[] args) throws CommandException, PermissionException {
+    public void run (CommandSender sender, String label, String[] args) throws CommandException, PermissionException {
 
         // If the sender is not a player, ensure more than one arg is entered.
         if (args.length == 0 && !(sender instanceof Player))
@@ -83,8 +83,6 @@ public class CommandPing extends BaseCommand {
             sender.sendMessage(target.getDisplayName() + "'s ping: " + colourise(ping));
 
         }
-
-        return true;
 
     }
 

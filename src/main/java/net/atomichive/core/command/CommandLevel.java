@@ -35,7 +35,7 @@ public class CommandLevel extends BaseCommand {
      * @param args   Any command arguments.
      */
     @Override
-    public boolean run (CommandSender sender, String label, String[] args) throws CommandException {
+    public void run (CommandSender sender, String label, String[] args) throws CommandException {
 
         if (args.length == 1) {
 
@@ -79,7 +79,6 @@ public class CommandLevel extends BaseCommand {
 
         }
 
-        return true;
     }
 
 

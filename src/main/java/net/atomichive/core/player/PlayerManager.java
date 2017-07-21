@@ -1,5 +1,6 @@
 package net.atomichive.core.player;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -22,6 +23,10 @@ public class PlayerManager {
      * @return Bukkit player converted to Atomic player.
      */
     public static AtomicPlayer addPlayer (Player player) {
+
+        player.setCollidable(false);
+
+        Bukkit.broadcastMessage(String.valueOf(player.isCollidable()));
 
         // Convert to atomic player
         AtomicPlayer atomicPlayer = getOrCreate(player);

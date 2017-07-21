@@ -2,6 +2,7 @@ package net.atomichive.core.command;
 
 import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.PermissionException;
+import net.atomichive.core.exception.Reason;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -12,6 +13,7 @@ import org.bukkit.entity.Player;
  * Command game mode
  * Allows users to change their game mode.
  * TODO Deal with /creative, /survival etc.
+ * TODO Rewrite this command
  */
 public class CommandGameMode extends BaseCommand {
 
@@ -36,29 +38,28 @@ public class CommandGameMode extends BaseCommand {
      * @param args   Any command arguments.
      */
     @Override
-    public boolean run (CommandSender sender, String label, String[] args) throws CommandException, PermissionException {
+    public void run (CommandSender sender, String label, String[] args) throws CommandException, PermissionException {
 
         // If the sender is not a player, ensure more than one arg is entered.
-        if (args.length < 2 && !(sender instanceof Player)) {
+        if (args.length < 2 && !(sender instanceof Player))
             throw new CommandException("Only players can set their own gamemode.");
-        }
 
 
         GameMode gameMode;
 
-        if (args.length == 0) return false;
+        if (args.length == 0)
+            throw new CommandException(Reason.INVALID_USAGE, this.getUsage());
 
         try {
             gameMode = getGameModeFromString(sender, args[0]);
         } catch (PermissionException exception) {
             sender.sendMessage(ChatColor.RED + exception.getMessage());
-            return true;
+            return;
         }
 
         // Ensure game mode exists
-        if (gameMode == null) {
+        if (gameMode == null)
             throw new CommandException("Unknown game mode: " + args[0]);
-        }
 
         if (args.length == 1) {
 
@@ -73,9 +74,9 @@ public class CommandGameMode extends BaseCommand {
             // User wants to alter another users game mode.
 
             // Ensure the user has permission
-            if (!sender.hasPermission("atomic-core.gamemode.others")) {
+            if (!sender.hasPermission("atomic-core.gamemode.others"))
                 throw new PermissionException("You do not have permission to change another player's game mode.");
-            }
+
 
             Player target = Bukkit.getPlayer(args[1]);
 
@@ -90,7 +91,6 @@ public class CommandGameMode extends BaseCommand {
 
         }
 
-        return true;
     }
 
 

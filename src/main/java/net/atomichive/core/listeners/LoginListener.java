@@ -1,7 +1,7 @@
 package net.atomichive.core.listeners;
 
 import net.atomichive.core.Main;
-import net.atomichive.core.util.Utils;
+import net.atomichive.core.util.Util;
 import net.atomichive.core.player.AtomicPlayer;
 import net.atomichive.core.player.PlayerManager;
 import org.bukkit.ChatColor;
@@ -52,7 +52,7 @@ public final class LoginListener extends BaseListener implements Listener {
         ));
 
         // Update last seen time
-        atomicPlayer.setLastSeen(Utils.getCurrentTimestamp());
+        atomicPlayer.setLastSeen(Util.getCurrentTimestamp());
 
         // Test if the player is new
         if (atomicPlayer.getLoginCount() <= 1) {

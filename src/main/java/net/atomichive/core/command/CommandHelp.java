@@ -34,12 +34,8 @@ public class CommandHelp extends BaseCommand {
      *                             appropriate permissions.
      */
     @Override
-    public boolean run (CommandSender sender, String label, String[] args)
+    public void run (CommandSender sender, String label, String[] args)
             throws CommandException, PermissionException {
-
-
-
-        return false;
 
     }
 

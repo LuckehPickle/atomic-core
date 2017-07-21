@@ -1,6 +1,6 @@
 package net.atomichive.core.listeners;
 
-import net.atomichive.core.util.Utils;
+import net.atomichive.core.util.Util;
 import net.atomichive.core.player.AtomicPlayer;
 import net.atomichive.core.player.AtomicPlayerDAO;
 import net.atomichive.core.player.PlayerManager;
@@ -9,8 +9,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
- * Player Listener
- * Handles events that are specific to players.
+ * Quit Listener
+ * Handles player quit events.
  */
 public final class QuitListener extends BaseListener implements Listener {
 
@@ -28,7 +28,7 @@ public final class QuitListener extends BaseListener implements Listener {
         PlayerManager.removePlayer(player);
 
         // Update last seen value
-        player.setLastSeen(Utils.getCurrentTimestamp());
+        player.setLastSeen(Util.getCurrentTimestamp());
 
         AtomicPlayerDAO.update(player);
 

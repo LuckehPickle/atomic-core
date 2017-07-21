@@ -8,11 +8,8 @@ import net.atomichive.core.JsonManager;
 import net.atomichive.core.Main;
 import net.atomichive.core.exception.EntityException;
 import net.atomichive.core.exception.Reason;
-import net.minecraft.server.v1_12_R1.Entity;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
-import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.entity.Entity;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -26,12 +23,22 @@ import java.util.logging.Level;
  */
 public class EntityManager extends JsonManager {
 
+
     private static List<CustomEntity> customEntities = new ArrayList<>();
 
 
-    public static int load () {
+    /**
+     * Load
+     * Loads entities from entities.json
+     * @return Number of entities loaded.
+     * @throws MalformedJsonException if the JSON if malformed.
+     */
+    public static int load () throws MalformedJsonException {
+
+        // Load file
         load("entities.json");
 
+        // Attempt to load entities
         try {
             return loadCustomEntities(new FileReader(getFile()));
         } catch (FileNotFoundException e) {
@@ -47,7 +54,8 @@ public class EntityManager extends JsonManager {
      * Loads an instance of all custom entities.
      * @param json JSON entities reader.
      */
-    public static int loadCustomEntities (FileReader json) {
+    public static int loadCustomEntities (FileReader json)
+            throws MalformedJsonException {
 
         // Parse JSON
         Gson gson = new Gson();
@@ -84,7 +92,6 @@ public class EntityManager extends JsonManager {
     }
 
 
-
     /**
      * Spawn entity
      * Spawns a new custom entity
@@ -94,7 +101,24 @@ public class EntityManager extends JsonManager {
      * @throws EntityException if an exception is encountered. These
      *                         are safe to relay to players.
      */
-    public static void spawnEntity (Location location, String entityName, int count) throws EntityException {
+    public static void spawnEntity (Location location, String entityName, int count)
+            throws EntityException {
+        spawnEntity(location, entityName, count, null);
+    }
+
+
+    /**
+     * Spawn entity
+     * Spawns a new custom entity
+     * @param location Desired spawn location.
+     * @param entityName Name of custom entity to spawn.
+     * @param count Number of entities to spawn.
+     * @param owner Owner of spawned entities. Can be null.
+     * @throws EntityException if an exception is encountered. These
+     *                         are safe to relay to players.
+     */
+    public static void spawnEntity (Location location, String entityName, int count, Entity owner)
+            throws EntityException {
 
         CustomEntity customEntity = null;
 
@@ -115,7 +139,7 @@ public class EntityManager extends JsonManager {
         }
 
         for (int i = 0; i < count; i++)
-            customEntity.spawn(location);
+            customEntity.spawn(location, owner);
 
     }
 

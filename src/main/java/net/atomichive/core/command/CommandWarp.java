@@ -5,7 +5,7 @@ import net.atomichive.core.exception.Reason;
 import net.atomichive.core.exception.UnknownWarpException;
 import net.atomichive.core.exception.UnknownWorldException;
 import net.atomichive.core.util.PaginatedResult;
-import net.atomichive.core.util.Utils;
+import net.atomichive.core.util.Util;
 import net.atomichive.core.warp.Warp;
 import net.atomichive.core.warp.WarpDAO;
 import net.atomichive.core.warp.WarpManager;
@@ -15,7 +15,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.StringJoiner;
 
 /**
  * Command Warp
@@ -43,7 +42,7 @@ public class CommandWarp extends BaseCommand {
      * @param args   Any command arguments.
      */
     @Override
-    public boolean run (CommandSender sender, String label, String[] args) throws CommandException {
+    public void run (CommandSender sender, String label, String[] args) throws CommandException {
 
         // If no arguments are entered
         if (args.length == 0) {
@@ -77,7 +76,6 @@ public class CommandWarp extends BaseCommand {
             }
         }
 
-        return true;
     }
 
 
@@ -151,7 +149,7 @@ public class CommandWarp extends BaseCommand {
         // Get message
         if (args.length >= 3) {
 
-            message = Utils.argsJoiner(args, 2);
+            message = Util.argsJoiner(args, 2);
 
             // Truncate if necessary
             if (message.length() > 64)

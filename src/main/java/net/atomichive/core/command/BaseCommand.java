@@ -82,22 +82,23 @@ public abstract class BaseCommand implements CommandExecutor {
 
         // Ensure sender is a player (if necessary)
         if (requiresPlayer && !(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can execute this command.");
+            sender.sendMessage(ChatColor.RED + "Invalid sender: Only players can execute this command.");
             return true;
         }
 
         // Ensure enough args where entered
         if (args.length < steps) {
-            sender.sendMessage(ChatColor.RED + "Error: Not enough args. " + this.getUsage());
+            sender.sendMessage(ChatColor.RED + "Invalid usage: " + this.getUsage());
             return true;
         }
 
         try {
-            return run(sender, label, args);
+            run(sender, label, args);
         } catch (CommandException | PermissionException e) {
             sender.sendMessage(e.getMessage());
-            return true;
         }
+
+        return true;
 
     }
 
@@ -112,7 +113,8 @@ public abstract class BaseCommand implements CommandExecutor {
      * @throws PermissionException if the user doesn't have
      *                                    appropriate permissions.
      */
-    public abstract boolean run (CommandSender sender, String label, String[] args) throws CommandException, PermissionException;
+    public abstract void run (CommandSender sender, String label, String[] args)
+            throws CommandException, PermissionException;
 
 
 	/*

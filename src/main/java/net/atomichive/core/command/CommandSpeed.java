@@ -24,7 +24,7 @@ public class CommandSpeed extends BaseCommand {
 
 
     @Override
-    public boolean run (CommandSender sender, String label, String[] args) throws CommandException {
+    public void run (CommandSender sender, String label, String[] args) throws CommandException {
 
         // Get player
         Player player = (Player) sender;
@@ -35,7 +35,7 @@ public class CommandSpeed extends BaseCommand {
             player.setWalkSpeed(0.2f);
             player.setFlySpeed(0.1f);
             player.sendMessage("Walking and flying speeds " + ChatColor.GREEN + "reset" + ChatColor.RESET + ".");
-            return true;
+            return;
         }
 
 
@@ -62,7 +62,6 @@ public class CommandSpeed extends BaseCommand {
             player.sendMessage("Your walking speed has been set to " + ChatColor.GREEN + speed + ChatColor.RESET + ".");
         }
 
-        return true;
     }
 
 }

@@ -36,7 +36,7 @@ public class CommandKill extends BaseCommand {
      * @param args   Any command arguments.
      */
     @Override
-    public boolean run (CommandSender sender, String label, String[] args)
+    public void run (CommandSender sender, String label, String[] args)
             throws CommandException {
 
         Player target = Bukkit.getPlayer(args[0]);
@@ -63,7 +63,6 @@ public class CommandKill extends BaseCommand {
 
         sender.sendMessage("Killed " + ChatColor.YELLOW + target.getDisplayName() + ChatColor.RESET + ".");
 
-        return true;
     }
 
 }

@@ -38,7 +38,7 @@ public class CommandTeleportHere extends BaseCommand {
      *                             appropriate permissions.
      */
     @Override
-    public boolean run (CommandSender sender, String label, String[] args)
+    public void run (CommandSender sender, String label, String[] args)
             throws CommandException, PermissionException {
 
         Player player = (Player) sender;
@@ -54,8 +54,6 @@ public class CommandTeleportHere extends BaseCommand {
             throw new CommandException("Player '" + args[0] + "' could not be found.");
 
         teleport(player, target);
-
-        return true;
 
     }
 

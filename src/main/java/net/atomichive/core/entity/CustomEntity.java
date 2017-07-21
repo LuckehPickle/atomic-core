@@ -1,15 +1,17 @@
 package net.atomichive.core.entity;
 
 import com.google.gson.annotations.SerializedName;
-import net.atomichive.core.Main;
+import net.atomichive.core.entity.ai.Pathfinding;
+import net.atomichive.core.entity.atomic.AtomicEntity;
 import net.atomichive.core.exception.EntityException;
 import net.atomichive.core.exception.Reason;
-import net.atomichive.core.util.Utils;
+import net.atomichive.core.util.Util;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 
 import java.util.Map;
-import java.util.logging.Level;
 
 /**
  * Custom Entity
@@ -20,36 +22,49 @@ public class CustomEntity {
 
     private String name;
 
+    @SerializedName("display_name")
+    private String displayName;
+
     @SerializedName("class")
     private String atomicClass;
 
-    private Map<String, Object> options;
+    @SerializedName("globals")
+    private Map<String, Object> globalAttributes;
 
+    @SerializedName("locals")
+    private Map<String, Object> localAttributes;
+
+    // Transient global attributes
     private transient boolean isNameVisible;
     private transient boolean despawn;
     private transient boolean isInvulnerable;
     private transient boolean isGlowing;
     private transient boolean respectsGravity;
     private transient boolean isSilent;
-
-    private Map<String, Object> attributes;
+    private transient boolean isCollidable;
+    private transient boolean preventItemPickup;
+    private transient String pathfinding;
 
 
     /**
      * Init
+     * Retrieves all global attributes and sets them.
      */
     public void init () {
 
-        // Create new attributes object from options
-        EntityAttributes attributes = new EntityAttributes(options);
+        // Create new attributes object from global attributes
+        EntityAttributes attributes = new EntityAttributes(globalAttributes);
 
-        // Apply options
-        isNameVisible   = attributes.getBoolean("is_name_visible", true);
-        despawn         = attributes.getBoolean("despawn", true);
-        isInvulnerable  = attributes.getBoolean("is_invlunerable", false);
-        isGlowing       = attributes.getBoolean("is_glowing", false);
-        respectsGravity = attributes.getBoolean("respects_gravity", true);
-        isSilent        = attributes.getBoolean("is_silent", false);
+        // Apply global attributes
+        isNameVisible     = attributes.getBoolean("is_name_visible", true);
+        despawn           = attributes.getBoolean("despawn", true);
+        isInvulnerable    = attributes.getBoolean("is_invulnerable", false);
+        isGlowing         = attributes.getBoolean("is_glowing", false);
+        respectsGravity   = attributes.getBoolean("respects_gravity", true);
+        isSilent          = attributes.getBoolean("is_silent", false);
+        isCollidable      = attributes.getBoolean("is_collidable", true);
+        preventItemPickup = attributes.getBoolean("prevent_item_pickup", false);
+        pathfinding       = attributes.getString("pathfinding", null);
 
     }
 
@@ -61,6 +76,17 @@ public class CustomEntity {
      * @return Active Entity.
      */
     public ActiveEntity spawn (Location location) throws EntityException {
+        return spawn(location, null);
+    }
+
+
+    /**
+     * Spawn
+     * Creates a new active entity.
+     * @param location Location to spawn entity.
+     * @return Active Entity.
+     */
+    public ActiveEntity spawn (Location location, Entity owner) throws EntityException {
 
         Class entityClass;
         AtomicEntity entity = null;
@@ -68,8 +94,8 @@ public class CustomEntity {
         // Attempt to get class
         try {
             // Get class by name
-            entityClass = Class.forName("net.atomichive.core.entity.Atomic" +
-                    Utils.toCamelCase(true, atomicClass));
+            entityClass = Class.forName("net.atomichive.core.entity.atomic.Atomic" +
+                    Util.toCamelCase(true, atomicClass));
         } catch (ClassNotFoundException e) {
             throw new EntityException(
                     Reason.UNKNOWN_CLASS,
@@ -86,9 +112,10 @@ public class CustomEntity {
         }
 
         // Init AtomicEntity
-        entity.init(new EntityAttributes(attributes));
+        entity.init(new EntityAttributes(localAttributes));
 
         ActiveEntity activeEntity = new ActiveEntity(entity.spawn(location));
+        activeEntity.setOwner(owner);
 
         return this.applyAttributes(activeEntity);
 
@@ -96,29 +123,51 @@ public class CustomEntity {
 
 
     /**
-     * Apply attributes
-     * Apply global attributes to the active entity
+     * Apply local attributes
+     * Apply local attributes to the active entity
      * @param activeEntity Active entity to modify.
      * @return Modified active entity.
      */
     public ActiveEntity applyAttributes (ActiveEntity activeEntity) {
 
+        // Get entity
         Entity entity = activeEntity.getEntity();
 
-        entity.setCustomName(Utils.toTitleCase(name));
-        entity.setCustomNameVisible(isNameVisible);
+        // Set entity name
+        if (this.displayName == null) {
+            entity.setCustomName(Util.toTitleCase(this.name));
+        } else {
+            entity.setCustomName(this.displayName);
+        }
 
-        if (this.isInvulnerable)
-            entity.setInvulnerable(true);
+        // Apply misc. attributes
+        entity.setCustomNameVisible(this.isNameVisible);
+        entity.setInvulnerable(this.isInvulnerable);
+        entity.setGlowing(this.isGlowing);
+        entity.setGravity(this.respectsGravity);
+        entity.setSilent(this.isSilent);
 
-        if (this.isGlowing)
-            entity.setGlowing(true);
 
-        if(!this.respectsGravity)
-            entity.setGravity(false);
+        // Apply living attributes.
+        if (!entity.isDead()) {
 
-        if (this.isSilent)
-            entity.setSilent(true);
+            // Cast to living entity
+            LivingEntity living = (LivingEntity) entity;
+
+            // Apply
+            living.setRemoveWhenFarAway(this.despawn);
+            living.setCollidable(this.isCollidable);
+            living.setCanPickupItems(!this.preventItemPickup);
+
+        }
+
+
+        // Attempt to apply pathfinding presets
+        if (this.pathfinding != null) {
+            Pathfinding preset = Util.getEnumValue(Pathfinding.class, this.pathfinding);
+            if (preset != null)
+                activeEntity.applyPathfinding(preset);
+        }
 
         return activeEntity;
 
