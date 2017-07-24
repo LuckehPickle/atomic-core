@@ -23,7 +23,11 @@ public class AtomicZombie extends AtomicEntity {
      */
     @Override
     public void init (EntityAttributes attributes) {
-        isBaby = attributes.getBoolean("is_baby", false);
+
+        isBaby = attributes.get(Boolean.class, "is_baby", false);
+
+        super.init(attributes);
+
     }
 
 

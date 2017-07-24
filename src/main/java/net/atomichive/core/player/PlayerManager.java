@@ -106,4 +106,7 @@ public class PlayerManager {
 
     }
 
+    public static List<AtomicPlayer> getAll () {
+        return players;
+    }
 }

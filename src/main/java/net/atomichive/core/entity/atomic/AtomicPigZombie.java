@@ -23,7 +23,7 @@ public class AtomicPigZombie extends AtomicZombie {
     @Override
     public void init (EntityAttributes attributes) {
 
-        isAngry = attributes.getBoolean("is_angry", false);
+        isAngry = attributes.get(Boolean.class, "is_angry", false);
 
         super.init(attributes);
     }

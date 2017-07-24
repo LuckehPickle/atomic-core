@@ -1,5 +1,6 @@
 package net.atomichive.core.entity.atomic;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.atomichive.core.entity.EntityAttributes;
 import org.bukkit.Location;
 import org.bukkit.entity.AbstractHorse;
@@ -23,8 +24,8 @@ public class AtomicAbstractHorse extends AtomicAgeable {
     @Override
     public void init (EntityAttributes attributes) {
 
-        jumpStrength = attributes.getDouble("jump_strength", -1);
-        isDomesticated = attributes.getBoolean("is_domesticated", false);
+        jumpStrength   = attributes.get(Double.class,  "jump_strength",   -1.0d);
+        isDomesticated = attributes.get(Boolean.class, "is_domesticated", false);
 
         super.init(attributes);
     }

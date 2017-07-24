@@ -1,9 +1,13 @@
 package net.atomichive.core.entity.atomic;
 
 import net.atomichive.core.entity.EntityAttributes;
+import net.atomichive.core.util.NMSUtil;
 import net.atomichive.core.util.Util;
+import net.minecraft.server.v1_12_R1.EntityInsentient;
+import net.minecraft.server.v1_12_R1.GenericAttributes;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Sheep;
@@ -27,9 +31,9 @@ public class AtomicSheep extends AtomicAgeable {
     @Override
     public void init (EntityAttributes attributes) {
 
-        isSheared   = attributes.getBoolean("is_sheared", false);
-        randomColor = attributes.getBoolean("random_color", true);
-        color       = attributes.getString("color", null);
+        isSheared   = attributes.get(Boolean.class, "is_sheared",   false);
+        randomColor = attributes.get(Boolean.class, "random_color", true);
+        color       = attributes.get(String.class,  "color", null);
 
         super.init(attributes);
 
@@ -72,6 +76,8 @@ public class AtomicSheep extends AtomicAgeable {
 
         if (color != null)
             sheep.setColor(color);
+
+        // ((EntityInsentient) NMSUtil.getNMSEntity(entity)).getAttributeMap().b(GenericAttributes.ATTACK_DAMAGE).setValue(3.0d);
 
         return super.applyAttributes(sheep);
 

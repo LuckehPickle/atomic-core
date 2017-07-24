@@ -25,7 +25,10 @@ public class AtomicShulker extends AtomicEntity {
      */
     @Override
     public void init (EntityAttributes attributes) {
-        color = attributes.getString("color", null);
+
+        color = attributes.get(String.class, "color", null);
+
+        super.init(attributes);
     }
 
 

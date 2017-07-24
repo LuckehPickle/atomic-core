@@ -1,12 +1,10 @@
 package net.atomichive.core.entity;
 
 import com.google.gson.annotations.SerializedName;
-import net.atomichive.core.entity.ai.Pathfinding;
 import net.atomichive.core.entity.atomic.AtomicEntity;
-import net.atomichive.core.exception.EntityException;
+import net.atomichive.core.exception.AtomicEntityException;
 import net.atomichive.core.exception.Reason;
 import net.atomichive.core.util.Util;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -22,9 +20,6 @@ public class CustomEntity {
 
     private String name;
 
-    @SerializedName("display_name")
-    private String displayName;
-
     @SerializedName("class")
     private String atomicClass;
 
@@ -36,6 +31,8 @@ public class CustomEntity {
 
     // Transient global attributes
     private transient boolean isNameVisible;
+
+
     private transient boolean despawn;
     private transient boolean isInvulnerable;
     private transient boolean isGlowing;
@@ -43,7 +40,8 @@ public class CustomEntity {
     private transient boolean isSilent;
     private transient boolean isCollidable;
     private transient boolean preventItemPickup;
-    private transient String pathfinding;
+    private transient String displayName;
+    private transient Map pathfinding;
 
 
     /**
@@ -56,15 +54,18 @@ public class CustomEntity {
         EntityAttributes attributes = new EntityAttributes(globalAttributes);
 
         // Apply global attributes
-        isNameVisible     = attributes.getBoolean("is_name_visible", true);
-        despawn           = attributes.getBoolean("despawn", true);
-        isInvulnerable    = attributes.getBoolean("is_invulnerable", false);
-        isGlowing         = attributes.getBoolean("is_glowing", false);
-        respectsGravity   = attributes.getBoolean("respects_gravity", true);
-        isSilent          = attributes.getBoolean("is_silent", false);
-        isCollidable      = attributes.getBoolean("is_collidable", true);
-        preventItemPickup = attributes.getBoolean("prevent_item_pickup", false);
-        pathfinding       = attributes.getString("pathfinding", null);
+        isNameVisible     = attributes.get(Boolean.class, "is_name_visible",     true);
+        despawn           = attributes.get(Boolean.class, "despawn",             true);
+        isInvulnerable    = attributes.get(Boolean.class, "is_invulnerable",     false);
+        isGlowing         = attributes.get(Boolean.class, "is_glowing",          false);
+        respectsGravity   = attributes.get(Boolean.class, "respects_gravity",    true);
+        isSilent          = attributes.get(Boolean.class, "is_silent",           false);
+        isCollidable      = attributes.get(Boolean.class, "is_collidable",       true);
+        preventItemPickup = attributes.get(Boolean.class, "prevent_item_pickup", false);
+        displayName       = attributes.get(String.class,  "display_name",        null);
+        pathfinding       = attributes.get(Map.class,     "pathfinding",         null);
+
+        attributes.log();
 
     }
 
@@ -75,7 +76,7 @@ public class CustomEntity {
      * @param location Location to spawn entity.
      * @return Active Entity.
      */
-    public ActiveEntity spawn (Location location) throws EntityException {
+    public ActiveEntity spawn (Location location) throws AtomicEntityException {
         return spawn(location, null);
     }
 
@@ -86,7 +87,7 @@ public class CustomEntity {
      * @param location Location to spawn entity.
      * @return Active Entity.
      */
-    public ActiveEntity spawn (Location location, Entity owner) throws EntityException {
+    public ActiveEntity spawn (Location location, Entity owner) throws AtomicEntityException {
 
         Class entityClass;
         AtomicEntity entity = null;
@@ -97,7 +98,7 @@ public class CustomEntity {
             entityClass = Class.forName("net.atomichive.core.entity.atomic.Atomic" +
                     Util.toCamelCase(true, atomicClass));
         } catch (ClassNotFoundException e) {
-            throw new EntityException(
+            throw new AtomicEntityException(
                     Reason.UNKNOWN_CLASS,
                     "Unknown entity class '" + atomicClass + "' in custom entity '" + name + "'."
             );
@@ -163,11 +164,8 @@ public class CustomEntity {
 
 
         // Attempt to apply pathfinding presets
-        if (this.pathfinding != null) {
-            Pathfinding preset = Util.getEnumValue(Pathfinding.class, this.pathfinding);
-            if (preset != null)
-                activeEntity.applyPathfinding(preset);
-        }
+        if (this.pathfinding != null)
+            activeEntity.applyPathfinding(pathfinding);
 
         return activeEntity;
 

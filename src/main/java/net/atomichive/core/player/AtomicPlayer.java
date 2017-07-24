@@ -21,8 +21,9 @@ public class AtomicPlayer {
     private int experience = 0;
     private Timestamp lastSeen;
     private int loginCount = 0;
-    private int messageCount = 0;
     private int warningCount = 0;
+    private short verbosity = 0;
+
 
 
     /**
@@ -121,20 +122,20 @@ public class AtomicPlayer {
         loginCount++;
     }
 
-    public int getMessageCount () {
-        return messageCount;
-    }
-
-    public void setMessageCount (int messageCount) {
-        this.messageCount = messageCount;
-    }
-
     public int getWarningCount () {
         return warningCount;
     }
 
     public void setWarningCount (int warningCount) {
         this.warningCount = warningCount;
+    }
+
+    public short getVerbosity () {
+        return verbosity;
+    }
+
+    public void setVerbosity (short verbosity) {
+        this.verbosity = verbosity;
     }
 
 }

@@ -29,9 +29,9 @@ public class AtomicSlime extends AtomicEntity {
     @Override
     public void init (EntityAttributes attributes) {
 
-        randomSize   = attributes.getBoolean("random_size", true);
-        size         = attributes.getInt("size", -1);
-        preventSplit = attributes.getBoolean("prevent_split", false);
+        randomSize   = attributes.get(Boolean.class, "random_size",   true);
+        size         = attributes.get(Integer.class, "size",          -1);
+        preventSplit = attributes.get(Boolean.class, "prevent_split", false);
 
         super.init(attributes);
     }

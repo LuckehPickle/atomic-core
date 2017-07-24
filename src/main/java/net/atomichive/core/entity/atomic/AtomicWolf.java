@@ -28,10 +28,10 @@ public class AtomicWolf extends AtomicAgeable {
     @Override
     public void init (EntityAttributes attributes) {
 
-        isTamed     = attributes.getBoolean("is_tamed",   false);
-        isSitting   = attributes.getBoolean("is_sitting", false);
-        isAngry     = attributes.getBoolean("is_angry",   false);
-        collarColor = attributes.getString("collar_color", null);
+        isTamed     = attributes.get(Boolean.class, "is_tamed",     false);
+        isSitting   = attributes.get(Boolean.class, "is_sitting",   false);
+        isAngry     = attributes.get(Boolean.class, "is_angry",     false);
+        collarColor = attributes.get(String.class,  "collar_color", null);
 
         super.init(attributes);
     }

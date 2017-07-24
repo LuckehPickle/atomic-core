@@ -6,7 +6,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.stream.MalformedJsonException;
 import net.atomichive.core.JsonManager;
 import net.atomichive.core.Main;
-import net.atomichive.core.exception.EntityException;
+import net.atomichive.core.exception.AtomicEntityException;
 import net.atomichive.core.exception.Reason;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -98,11 +98,11 @@ public class EntityManager extends JsonManager {
      * @param location Desired spawn location.
      * @param entityName Name of custom entity to spawn.
      * @param count Number of entities to spawn.
-     * @throws EntityException if an exception is encountered. These
+     * @throws AtomicEntityException if an exception is encountered. These
      *                         are safe to relay to players.
      */
     public static void spawnEntity (Location location, String entityName, int count)
-            throws EntityException {
+            throws AtomicEntityException {
         spawnEntity(location, entityName, count, null);
     }
 
@@ -114,11 +114,11 @@ public class EntityManager extends JsonManager {
      * @param entityName Name of custom entity to spawn.
      * @param count Number of entities to spawn.
      * @param owner Owner of spawned entities. Can be null.
-     * @throws EntityException if an exception is encountered. These
+     * @throws AtomicEntityException if an exception is encountered. These
      *                         are safe to relay to players.
      */
     public static void spawnEntity (Location location, String entityName, int count, Entity owner)
-            throws EntityException {
+            throws AtomicEntityException {
 
         CustomEntity customEntity = null;
 
@@ -132,7 +132,7 @@ public class EntityManager extends JsonManager {
 
         // Ensure entity was found
         if (customEntity == null) {
-            throw new EntityException(
+            throw new AtomicEntityException(
                     Reason.ENTITY_ERROR,
                     "Entity '" + entityName + "' could not be found."
             );

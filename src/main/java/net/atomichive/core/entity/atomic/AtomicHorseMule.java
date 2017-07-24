@@ -23,7 +23,7 @@ public class AtomicHorseMule extends AtomicAbstractHorse {
     @Override
     public void init (EntityAttributes attributes) {
 
-        isCarryingChest = attributes.getBoolean("is_carrying_chest", false);
+        isCarryingChest = attributes.get(Boolean.class, "is_carrying_chest", false);
 
         super.init(attributes);
 

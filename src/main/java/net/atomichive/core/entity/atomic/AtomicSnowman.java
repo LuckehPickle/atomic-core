@@ -24,7 +24,7 @@ public class AtomicSnowman extends AtomicEntity {
     @Override
     public void init (EntityAttributes attributes) {
 
-        isDerp = attributes.getBoolean("is_derp", false);
+        isDerp = attributes.get(Boolean.class, "is_derp", false);
 
         super.init(attributes);
 

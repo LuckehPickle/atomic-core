@@ -44,8 +44,8 @@ public class AtomicPlayerDAO {
                 "experience",
                 "last_seen",
                 "login_count",
-                "message_count",
-                "warning_count"
+                "warning_count",
+                "verbosity"
         ).toPrepared(manager.getConnection());
 
         updateStatement = new UpdateBuilder("players").addColumns(
@@ -55,8 +55,8 @@ public class AtomicPlayerDAO {
                 "experience",
                 "last_seen",
                 "login_count",
-                "message_count",
-                "warning_count"
+                "warning_count",
+                "verbosity"
         ).where("player_id = ?").toPrepared(manager.getConnection());
 
         findByIdStatement = new SelectBuilder("players")
@@ -144,8 +144,8 @@ public class AtomicPlayerDAO {
             insertStatement.setInt(n++, player.getExperience());
             insertStatement.setTimestamp(n++, player.getLastSeen());
             insertStatement.setInt(n++, player.getLoginCount());
-            insertStatement.setInt(n++, player.getMessageCount());
-            insertStatement.setInt(n, player.getWarningCount());
+            insertStatement.setInt(n++, player.getWarningCount());
+            insertStatement.setShort(n, player.getVerbosity());
 
             // Execute
             insertStatement.executeUpdate();
@@ -166,19 +166,7 @@ public class AtomicPlayerDAO {
 
         try {
 
-            int n = 1;
-
-            // Set values in prepared statement
-            updateStatement.clearParameters();
-            updateStatement.setString(n++, player.getUsername());
-            updateStatement.setString(n++, player.getDisplayName());
-            updateStatement.setInt(n++, player.getLevel());
-            updateStatement.setInt(n++, player.getExperience());
-            updateStatement.setTimestamp(n++, player.getLastSeen());
-            updateStatement.setInt(n++, player.getLoginCount());
-            updateStatement.setInt(n++, player.getMessageCount());
-            updateStatement.setInt(n++, player.getWarningCount());
-            updateStatement.setObject(n, player.getIdentifier());
+            mapPlayerToStatement(updateStatement, player);
 
             // Execute
             updateStatement.executeUpdate();
@@ -194,34 +182,42 @@ public class AtomicPlayerDAO {
 
         try {
 
-            updateStatement.clearBatch();
-
             for (AtomicPlayer player : players) {
-
-                int n = 1;
-
-                // Set values in prepared statement
-                updateStatement.clearParameters();
-                updateStatement.setString(n++, player.getUsername());
-                updateStatement.setString(n++, player.getDisplayName());
-                updateStatement.setInt(n++, player.getLevel());
-                updateStatement.setInt(n++, player.getExperience());
-                updateStatement.setTimestamp(n++, player.getLastSeen());
-                updateStatement.setInt(n++, player.getLoginCount());
-                updateStatement.setInt(n++, player.getMessageCount());
-                updateStatement.setInt(n++, player.getWarningCount());
-                updateStatement.setObject(n, player.getIdentifier());
-
-                // Add batch
+                mapPlayerToStatement(updateStatement, player);
                 updateStatement.addBatch();
-
             }
 
             updateStatement.executeBatch();
+            updateStatement.clearBatch();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+
+    /**
+     * Map player to results
+     * @param statement Prepared statement to map player to.
+     * @param player    Player to map to statement.
+     * @throws SQLException if an SQL exception is encountered (duh?)
+     */
+    private static void mapPlayerToStatement (PreparedStatement statement, AtomicPlayer player)
+            throws SQLException {
+
+        int n = 1;
+
+        statement.clearParameters();
+        statement.setString(n++, player.getUsername());
+        statement.setString(n++, player.getDisplayName());
+        statement.setInt(n++, player.getLevel());
+        statement.setInt(n++, player.getExperience());
+        statement.setTimestamp(n++, player.getLastSeen());
+        statement.setInt(n++, player.getLoginCount());
+        statement.setInt(n++, player.getWarningCount());
+        statement.setShort(n++, player.getVerbosity());
+        statement.setObject(n, player.getIdentifier());
+
     }
 
 
@@ -252,8 +248,8 @@ public class AtomicPlayerDAO {
             player.setExperience(rs.getInt("experience"));
             player.setLastSeen(rs.getTimestamp("last_seen"));
             player.setLoginCount(rs.getInt("login_count"));
-            player.setMessageCount(rs.getInt("message_count"));
             player.setWarningCount(rs.getInt("warning_count"));
+            player.setVerbosity(rs.getShort("verbosity"));
 
             // Add player to list
             players.add(player);

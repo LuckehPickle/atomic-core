@@ -18,7 +18,7 @@ public abstract class AtomicEntity {
      * @param attributes Entity Config from entities.json.
      */
     public void init (EntityAttributes attributes) {
-
+        attributes.log();
     }
 
 

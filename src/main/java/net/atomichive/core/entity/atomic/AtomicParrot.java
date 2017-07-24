@@ -24,7 +24,7 @@ public class AtomicParrot extends AtomicAgeable {
     @Override
     public void init (EntityAttributes attributes) {
 
-        variant = attributes.getString("variant", null);
+        variant = attributes.get(String.class, "variant", null);
 
         super.init(attributes);
 

@@ -24,7 +24,7 @@ public class AtomicVillager extends AtomicAgeable {
     @Override
     public void init (EntityAttributes attributes) {
 
-        profession = attributes.getString("profession", null);
+        profession = attributes.get(String.class, "profession", null);
 
         super.init(attributes);
 

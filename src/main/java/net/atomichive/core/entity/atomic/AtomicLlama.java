@@ -26,9 +26,9 @@ public class AtomicLlama extends AtomicAbstractHorse {
     @Override
     public void init (EntityAttributes attributes) {
 
-        isCarryingChest = attributes.getBoolean("is_carrying_chest", false);
-        strength = attributes.getInt("strength", -1);
-        color = attributes.getString("color", null);
+        isCarryingChest = attributes.get(Boolean.class, "is_carrying_chest", false);
+        strength        = attributes.get(Integer.class, "strength", -1);
+        color           = attributes.get(String.class,  "color",    null);
 
         super.init(attributes);
 

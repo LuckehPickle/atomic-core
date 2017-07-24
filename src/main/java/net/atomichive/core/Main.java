@@ -4,6 +4,7 @@ import com.google.gson.stream.MalformedJsonException;
 import io.seanbailey.database.DatabaseManager;
 import net.atomichive.core.command.*;
 import net.atomichive.core.entity.EntityManager;
+import net.atomichive.core.listeners.CommandListener;
 import net.atomichive.core.listeners.EntityDamageListener;
 import net.atomichive.core.listeners.LoginListener;
 import net.atomichive.core.listeners.QuitListener;
@@ -144,13 +145,17 @@ public class Main extends JavaPlugin {
         new CommandKill();
         new CommandKillAll();
         new CommandLevel();
+        new CommandListen();
+        new CommandMessage();
         new CommandNickname();
         new CommandPing();
         new CommandSpeed();
         new CommandSudo();
         new CommandSuicide();
         new CommandTeleport();
+        new CommandTeleportAll();
         new CommandTeleportHere();
+        new CommandTeleportPosition();
         new CommandWarp();
 
         logger.log(Level.INFO, "Commands registered.");
@@ -167,8 +172,9 @@ public class Main extends JavaPlugin {
         logger.log(Level.INFO, "Registering events...");
 
         // Put all event handlers here
-        new LoginListener();
+        new CommandListener();
         new EntityDamageListener();
+        new LoginListener();
         new QuitListener();
         new SlimeSplitListener();
 

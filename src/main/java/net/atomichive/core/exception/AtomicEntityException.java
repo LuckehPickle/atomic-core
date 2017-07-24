@@ -3,13 +3,13 @@ package net.atomichive.core.exception;
 /**
  * Entity Exception
  */
-public class EntityException extends Throwable {
+public class AtomicEntityException extends Throwable {
 
-    public EntityException (String message) {
+    public AtomicEntityException (String message) {
         this(Reason.ENTITY_ERROR, message);
     }
 
-    public EntityException (Reason reason, String message) {
+    public AtomicEntityException (Reason reason, String message) {
         super(String.format(
                 reason.getFormat(),
                 message

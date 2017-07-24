@@ -25,8 +25,8 @@ public class AtomicHorse extends AtomicAbstractHorse {
     @Override
     public void init (EntityAttributes attributes) {
 
-        color = attributes.getString("color", null);
-        style = attributes.getString("style", null);
+        color = attributes.get(String.class, "color", null);
+        style = attributes.get(String.class, "style", null);
 
         super.init(attributes);
 

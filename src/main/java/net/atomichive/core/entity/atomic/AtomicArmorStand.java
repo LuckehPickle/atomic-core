@@ -21,7 +21,11 @@ public class AtomicArmorStand extends AtomicEntity {
      */
     @Override
     public void init (EntityAttributes attributes) {
-        this.isSmall = attributes.getBoolean("is_small", false);
+
+        this.isSmall = attributes.get(Boolean.class, "is_small", false);
+
+        super.init(attributes);
+
     }
 
 

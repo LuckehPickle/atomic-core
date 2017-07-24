@@ -24,7 +24,7 @@ public class AtomicRabbit extends AtomicAgeable {
     @Override
     public void init (EntityAttributes attributes) {
 
-        type = attributes.getString("type", null);
+        type = attributes.get(String.class, "type", null);
 
         super.init(attributes);
     }

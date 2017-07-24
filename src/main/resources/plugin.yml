@@ -1,7 +1,7 @@
 name: atomic-core
 description: A core plugin designed for the Atomic Hive Minecraft server.
 main: net.atomichive.core.Main
-version: 0.0.7
+version: 0.0.8
 authors: [Sean Bailey, Quinster]
 website: http://atomichive.net
 
@@ -33,6 +33,13 @@ commands:
   level:
     description: A debug command for setting a players level.
     usage: /level <value>
+  listen:
+    description: Change command listening levels.
+    usage: /listen <verbosity(0-2)>
+  message:
+    description: Send a private message.
+    usage: /msg <player> <message>
+    aliases: [msg, tell]
   nick:
     description: Set your a custom display name.
     usage: /nick [player] <name...>
@@ -54,10 +61,17 @@ commands:
     description: Teleports one player to another.
     usage: /tp [source] <destination>
     aliases: [tp, tpsilent]
+  tpall:
+    description: Teleports all players to you.
+    usage: /tpall
   tphere:
     description: Teleports another player to you.
     usage: /tphere <player>
     aliases: [tph]
+  tppos:
+    description: Teleport to a position in your current world.
+    usage: /tppos <x> [y] <z>
+    aliases: [tpos]
   warp:
     description: Designate a warp destination, or warp somewhere.
     usage: /warp [list|add|remove] [warp]
@@ -79,6 +93,9 @@ permissions:
       atomic-core.killall: true
       atomic-core.killall.world: true
       atomic-core.level: true
+      atomic-core.listen: true
+      atomic-core.listen.3: true
+      atomic-core.message: true
       atomic-core.nick: true
       atomic-core.nick.others: true
       atomic-core.ping: true
@@ -87,9 +104,11 @@ permissions:
       atomic-core.sudo: true
       atomic-core.suicide: true
       atomic-core.tp: true
+      atomic-core.tp.all: true
+      atomic-core.tp.here: true
       atomic-core.tp.others: true
+      atomic-core.tp.pos: true
       atomic-core.tp.silent: true
-      atomic-core.tphere: true
       atomic-core.warp: true
 
   atomic-core.atomic-entity:
@@ -153,6 +172,14 @@ permissions:
     description: Gives access to the level command.
     default: op
 
+  atomic-core.listen:
+    description: Gives access to the listen command.
+    default: op
+
+  atomic-core.message:
+    description: Gives access to the message command.
+    default: true
+
   atomic-core.nick:
     description: Gives access to the nick command.
     default: op
@@ -182,16 +209,22 @@ permissions:
   atomic-core.tp:
     description: Gives access to the tp command.
     default: true
+  atomic-core.tp.all:
+    description: Gives access to the tpall command.
+    default: false
+  atomic-core.tp.here:
+    description: Gives access to the tphere command.
+    default: op
   atomic-core.tp.others:
     description: Allows a user to teleport other players.
+    default: op
+  atomic-core.tp.pos:
+    description: Gives access to the tppos command.
     default: op
   atomic-core.tp.silent:
     description: Allows a user to teleport silently.
     default: op
 
-  atomic-core.tphere:
-    description: Gives access to the tphere command.
-    default: op
 
   atomic-core.warp:
     description: Gives access to the warp command.

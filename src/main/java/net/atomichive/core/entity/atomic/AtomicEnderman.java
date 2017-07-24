@@ -23,7 +23,10 @@ public class AtomicEnderman extends AtomicEntity {
      */
     @Override
     public void init (EntityAttributes attributes) {
-        carrying = attributes.getString("carrying", null);
+
+        carrying = attributes.get(String.class, "carrying", null);
+
+        super.init(attributes);
     }
 
 

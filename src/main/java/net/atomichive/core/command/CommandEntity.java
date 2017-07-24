@@ -5,7 +5,7 @@ import net.atomichive.core.Main;
 import net.atomichive.core.entity.CustomEntity;
 import net.atomichive.core.entity.EntityManager;
 import net.atomichive.core.exception.CommandException;
-import net.atomichive.core.exception.EntityException;
+import net.atomichive.core.exception.AtomicEntityException;
 import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.exception.Reason;
 import net.atomichive.core.util.PaginatedResult;
@@ -30,7 +30,7 @@ public class CommandEntity extends BaseCommand {
                 "/entity [reload|list|spawn]",
                 "atomic-core.atomic-entity",
                 false,
-                0
+                1
         );
     }
 
@@ -49,29 +49,23 @@ public class CommandEntity extends BaseCommand {
     public void run (CommandSender sender, String label, String[] args)
             throws CommandException, PermissionException {
 
-        if (args.length == 0) {
-            listEntities(sender, args);
-        } else {
+        String arg = args[0].toLowerCase();
 
-            String arg = args[0].toLowerCase();
-
-            switch (arg) {
-                case "reload":
-                case "r":
-                    reloadEntities(sender);
-                    break;
-                case "list":
-                case "l":
-                    listEntities(sender, args);
-                    break;
-                case "spawn":
-                case "s":
-                    spawnEntity(sender, args);
-                    break;
-                default:
-                    throw new CommandException("Unknown option " + args[0] + ".");
-            }
-
+        switch (arg) {
+            case "reload":
+            case "r":
+                reloadEntities(sender);
+                break;
+            case "list":
+            case "l":
+                listEntities(sender, args);
+                break;
+            case "spawn":
+            case "s":
+                spawnEntity(sender, args);
+                break;
+            default:
+                throw new CommandException("Unknown option " + args[0] + ".");
         }
 
     }
@@ -121,11 +115,11 @@ public class CommandEntity extends BaseCommand {
      */
     private void listEntities (CommandSender sender, String[] args) throws CommandException {
 
-        int page = 1;
+        int page = 0;
 
         if (args.length >= 2) {
             try {
-                page = Integer.parseInt(args[1]);
+                page = Integer.parseInt(args[1]) - 1;
             } catch (NumberFormatException e) {
                 throw new CommandException("Please enter a valid number.");
             }
@@ -212,7 +206,7 @@ public class CommandEntity extends BaseCommand {
         // Attempt to spawn entity
         try {
             EntityManager.spawnEntity(location, entity, count, player);
-        } catch (EntityException e) {
+        } catch (AtomicEntityException e) {
             player.sendMessage(e.getMessage());
             return;
         }

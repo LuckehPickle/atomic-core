@@ -23,9 +23,10 @@ public class AtomicPig extends AtomicAgeable {
     @Override
     public void init (EntityAttributes attributes) {
 
-        hasSaddle = attributes.getBoolean("has_saddle", false);
+        hasSaddle = attributes.get(Boolean.class, "has_saddle", false);
 
         super.init(attributes);
+
     }
 
 

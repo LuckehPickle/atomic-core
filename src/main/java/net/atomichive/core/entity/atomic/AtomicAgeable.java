@@ -14,6 +14,7 @@ public abstract class AtomicAgeable extends AtomicEntity {
     private boolean isBaby;
     private boolean ageLock;
 
+
     /**
      * Init
      * Set config values.
@@ -21,8 +22,12 @@ public abstract class AtomicAgeable extends AtomicEntity {
      */
     @Override
     public void init (EntityAttributes attributes) {
-        isBaby  = attributes.getBoolean("is_baby",  false);
-        ageLock = attributes.getBoolean("age_lock", false);
+
+        isBaby  = attributes.get(Boolean.class, "is_baby",  false);
+        ageLock = attributes.get(Boolean.class, "age_lock", false);
+
+        super.init(attributes);
+
     }
 
 

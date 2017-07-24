@@ -25,7 +25,7 @@ public class AtomicZombieVillager extends AtomicZombie {
     @Override
     public void init (EntityAttributes attributes) {
 
-        profession = attributes.getString("profession", null);
+        profession = attributes.get(String.class, "profession", null);
 
         super.init(attributes);
 

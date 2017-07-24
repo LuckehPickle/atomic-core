@@ -23,8 +23,11 @@ public class AtomicOcelot extends AtomicAgeable {
      */
     @Override
     public void init (EntityAttributes attributes) {
-        type = attributes.getString("cat_type", null);
+
+        type = attributes.get(String.class, "cat_type", null);
+
         super.init(attributes);
+
     }
 
 

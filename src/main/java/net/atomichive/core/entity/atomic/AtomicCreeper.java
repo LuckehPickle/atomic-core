@@ -26,13 +26,12 @@ public class AtomicCreeper extends AtomicEntity {
     @Override
     public void init (EntityAttributes attributes) {
 
-        attributes.log();
-
-        isCharged = attributes.getBoolean("is_charged", false);
-        fuseTicks = attributes.getInt("fuse_ticks", 30);
-        explosionRadius = attributes.getInt("explosion_radius", 3);
+        isCharged       = attributes.get(Boolean.class, "is_charged",       false);
+        fuseTicks       = attributes.get(Integer.class, "fuse_ticks",       30);
+        explosionRadius = attributes.get(Integer.class, "explosion_radius", 3);
 
         super.init(attributes);
+
     }
 
 
