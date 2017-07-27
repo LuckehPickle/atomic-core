@@ -4,11 +4,13 @@ import com.google.gson.annotations.SerializedName;
 import net.atomichive.core.entity.atomic.AtomicEntity;
 import net.atomichive.core.exception.AtomicEntityException;
 import net.atomichive.core.exception.Reason;
+import net.atomichive.core.util.SmartMap;
 import net.atomichive.core.util.Util;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +44,7 @@ public class CustomEntity {
     private transient boolean preventItemPickup;
     private transient String displayName;
     private transient Map pathfinding;
+    private transient List abilities;
 
 
     /**
@@ -51,7 +54,7 @@ public class CustomEntity {
     public void init () {
 
         // Create new attributes object from global attributes
-        EntityAttributes attributes = new EntityAttributes(globalAttributes);
+        SmartMap attributes = new SmartMap(globalAttributes);
 
         // Apply global attributes
         isNameVisible     = attributes.get(Boolean.class, "is_name_visible",     true);
@@ -64,8 +67,7 @@ public class CustomEntity {
         preventItemPickup = attributes.get(Boolean.class, "prevent_item_pickup", false);
         displayName       = attributes.get(String.class,  "display_name",        null);
         pathfinding       = attributes.get(Map.class,     "pathfinding",         null);
-
-        attributes.log();
+        abilities         = attributes.get(List.class,    "abilities",           null);
 
     }
 
@@ -113,7 +115,7 @@ public class CustomEntity {
         }
 
         // Init AtomicEntity
-        entity.init(new EntityAttributes(localAttributes));
+        entity.init(new SmartMap(localAttributes));
 
         ActiveEntity activeEntity = new ActiveEntity(entity.spawn(location));
         activeEntity.setOwner(owner);
@@ -163,9 +165,13 @@ public class CustomEntity {
         }
 
 
-        // Attempt to apply pathfinding presets
+        // Attempt to apply pathfinding.
         if (this.pathfinding != null)
             activeEntity.applyPathfinding(pathfinding);
+
+        // Attempt to apply abilities.
+        if (this.abilities != null)
+            activeEntity.applyAbilities(abilities);
 
         return activeEntity;
 

@@ -1,4 +1,4 @@
-package net.atomichive.core.entity;
+package net.atomichive.core.util;
 
 import net.atomichive.core.Main;
 
@@ -6,16 +6,32 @@ import java.util.Map;
 import java.util.logging.Level;
 
 /**
- * Entity Config
- * Keeps track of various configuration options
- * for entities.
+ * Smart Map
+ * A wrapper for Java maps which lets you safely check
+ * for a particular type.
  */
-public class EntityAttributes {
+public class SmartMap {
 
-    private Map<String, Object> attributes;
+    private Map map;
 
-    public EntityAttributes (Map<String, Object> attributes) {
-        this.attributes = attributes;
+
+    /**
+     * Smart Map
+     * @param map Java map to wrap.
+     */
+    public SmartMap (Map map) {
+        this.map = map;
+    }
+
+
+    /**
+     * Get
+     * @param clazz Class of object to return
+     * @param key Attribute key
+     * @return Retrieved object or default value.
+     */
+    public <T> T get (Class<T> clazz, String key) {
+        return get(clazz, key, null);
     }
 
 
@@ -29,12 +45,12 @@ public class EntityAttributes {
      */
     public <T> T get (Class<T> clazz, String key, T defaultValue) {
 
-        // Ensure attributes aren't null
-        if (attributes == null)
+        // Ensure map isn't null
+        if (map == null)
             return defaultValue;
 
         // Get object
-        Object object = attributes.getOrDefault(key, defaultValue);
+        Object object = map.get(key);
 
         if (clazz.isInstance(object))
             return clazz.cast(object);
@@ -56,7 +72,7 @@ public class EntityAttributes {
      * Logs all attributes. For debug purposes.
      */
     public void log () {
-        Main.getInstance().log(Level.INFO, attributes.toString());
+        Main.getInstance().log(Level.INFO, map.toString());
     }
 
 }

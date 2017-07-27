@@ -1,6 +1,6 @@
 package net.atomichive.core.entity.atomic;
 
-import net.atomichive.core.entity.EntityAttributes;
+import net.atomichive.core.util.SmartMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Enderman;
@@ -22,7 +22,7 @@ public class AtomicEnderman extends AtomicEntity {
      * @param attributes Entity Config from entities.json.
      */
     @Override
-    public void init (EntityAttributes attributes) {
+    public void init (SmartMap attributes) {
 
         carrying = attributes.get(String.class, "carrying", null);
 

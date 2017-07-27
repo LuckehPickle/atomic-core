@@ -1,6 +1,6 @@
 package net.atomichive.core.entity.atomic;
 
-import net.atomichive.core.entity.EntityAttributes;
+import net.atomichive.core.util.SmartMap;
 import net.atomichive.core.util.Util;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -26,7 +26,7 @@ public class AtomicWolf extends AtomicAgeable {
      * @param attributes Entity Config from entities.json.
      */
     @Override
-    public void init (EntityAttributes attributes) {
+    public void init (SmartMap attributes) {
 
         isTamed     = attributes.get(Boolean.class, "is_tamed",     false);
         isSitting   = attributes.get(Boolean.class, "is_sitting",   false);

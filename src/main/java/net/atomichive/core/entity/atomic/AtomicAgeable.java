@@ -1,7 +1,6 @@
 package net.atomichive.core.entity.atomic;
 
-import net.atomichive.core.entity.EntityAttributes;
-import net.atomichive.core.entity.atomic.AtomicEntity;
+import net.atomichive.core.util.SmartMap;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Entity;
 
@@ -21,7 +20,7 @@ public abstract class AtomicAgeable extends AtomicEntity {
      * @param attributes Entity Config from entities.json.
      */
     @Override
-    public void init (EntityAttributes attributes) {
+    public void init (SmartMap attributes) {
 
         isBaby  = attributes.get(Boolean.class, "is_baby",  false);
         ageLock = attributes.get(Boolean.class, "age_lock", false);

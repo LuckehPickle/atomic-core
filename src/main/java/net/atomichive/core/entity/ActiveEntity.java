@@ -1,15 +1,24 @@
 package net.atomichive.core.entity;
 
 import net.atomichive.core.Main;
-import net.atomichive.core.entity.ai.PathfinderGoalFollowEntity;
+import net.atomichive.core.entity.abilities.Ability;
+import net.atomichive.core.entity.abilities.AbilityExplode;
+import net.atomichive.core.entity.abilities.AbilityIgnite;
+import net.atomichive.core.entity.abilities.AbilityLightning;
+import net.atomichive.core.entity.abilities.AbilitySwapPlaces;
+import net.atomichive.core.entity.abilities.AbilityThrow;
+import net.atomichive.core.entity.abilities.AbilityThrowBlock;
+import net.atomichive.core.entity.pathfinding.PathfinderGoalFollowEntity;
 import net.atomichive.core.exception.AtomicEntityException;
 import net.atomichive.core.util.NMSUtil;
+import net.atomichive.core.util.SmartMap;
 import net.atomichive.core.util.Util;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +27,7 @@ import java.util.logging.Level;
 /**
  * Active Entity
  * Represents an entity who is active in the world.
+ * This class is currently volatile.
  */
 @SuppressWarnings("WeakerAccess")
 public class ActiveEntity {
@@ -29,6 +39,11 @@ public class ActiveEntity {
     private PathfinderGoalSelector targets;
     private Entity owner;
 
+    // Abilities
+    private List<Ability> abilities = new ArrayList<>();
+    private List<Ability> onAttack  = new ArrayList<>();
+    private List<Ability> onDamage  = new ArrayList<>();
+
 
     /**
      * Active Entity
@@ -39,8 +54,11 @@ public class ActiveEntity {
     }
 
 
+
     /**
      * Apply pathfinding
+     * Handles pathfinding map from entities.json, and applies
+     * custom pathfinding to the entity as necessary.
      * @param pathfinding Pathfinding map.
      */
     public void applyPathfinding (Map pathfinding) {
@@ -51,11 +69,11 @@ public class ActiveEntity {
 
         // Init
         EntityInsentient entity = (EntityInsentient)((CraftLivingEntity) this.entity).getHandle();
-        Field goalsField   = NMSUtil.getPrivateField(EntityInsentient.class, "goalSelector");
+        Field goalsField = NMSUtil.getPrivateField(EntityInsentient.class, "goalSelector");
         Field targetsField = NMSUtil.getPrivateField(EntityInsentient.class, "targetSelector");
 
+        // Attempt to retrieve goal selectors
         try {
-            // Attempt to retrieve goal selectors
             this.goals   = (PathfinderGoalSelector) goalsField.get(entity);
             this.targets = (PathfinderGoalSelector) targetsField.get(entity);
         } catch (IllegalAccessException e) {
@@ -64,9 +82,9 @@ public class ActiveEntity {
         }
 
 
+        // Handle pathfinding goals
         try {
 
-            // Handle pathfinding goals
             if (pathfinding.containsKey("goals"))
                 handleGoals(entity, pathfinding.get("goals"));
 
@@ -306,6 +324,126 @@ public class ActiveEntity {
     }
 
 
+    /**
+     * Apply abilities
+     * @param abilities A map array of abilities.
+     */
+    public void applyAbilities (List abilities) {
+
+        try {
+
+            // Iterate over define abilities
+            for (Object obj : abilities) {
+
+                if (!(obj instanceof Map))
+                    throw new AtomicEntityException("Could not parse ability.");
+
+                // Get smart map
+                SmartMap smart = new SmartMap((Map) obj);
+                String base = smart.get(String.class, "base", null);
+                String trigger = smart.get(String.class, "trigger", null);
+
+                // Ensure base was found
+                if (base == null)
+                    throw new AtomicEntityException("No base ability defined.");
+
+                // Cast to string and switch
+                switch (base.toLowerCase()) {
+                    case "explode":
+                        addAbility(trigger, new AbilityExplode(smart));
+                        break;
+                    case "ignite":
+                        addAbility(trigger, new AbilityIgnite(smart));
+                        break;
+                    case "lightning":
+                        addAbility(trigger, new AbilityLightning());
+                        break;
+                    case "swap_places":
+                        addAbility(trigger, new AbilitySwapPlaces());
+                        break;
+                    case "throw":
+                        addAbility(trigger, new AbilityThrow(smart));
+                        break;
+                    case "throw_block":
+                        addAbility(trigger, new AbilityThrowBlock(smart));
+                        break;
+                    default:
+                        throw new AtomicEntityException("Unknown base ability: " + base);
+                }
+
+            }
+
+        } catch (AtomicEntityException e) {
+            Main.getInstance().log(Level.SEVERE, e.getMessage());
+        }
+
+    }
+
+
+    /**
+     * Add ability
+     * @param trigger Ability trigger as string.
+     * @param ability Ability to add.
+     */
+    private void addAbility (String trigger, Ability ability) {
+
+        if (trigger == null)
+            this.abilities.add(ability);
+
+        switch (trigger) {
+            case "on_attack":
+                this.onAttack.add(ability);
+                break;
+            case "on_damage":
+                this.onDamage.add(ability);
+                break;
+            case "on_timer":
+                this.abilities.add(ability);
+                break;
+            default:
+                this.abilities.add(ability);
+        }
+
+    }
+
+
+    /**
+     * Run on attack
+     * @param source Entity who attacked.
+     * @param target Entity being attacked.
+     */
+    public void runOnAttack (Entity source, Entity target) {
+
+        // Iterate over abilities
+        for (Ability ability : onAttack)
+            ability.execute(source, target);
+
+    }
+
+
+    /**
+     * Run on damage
+     * @param source Entity who attacked.
+     * @param target Entity being attacked.
+     */
+    public void runOnDamage (Entity source, Entity target) {
+
+        // Iterate over abilities
+        for (Ability ability : onDamage)
+            ability.execute(source, target);
+
+    }
+
+
+    /**
+     * Is
+     * @param entity Bukkit entity.
+     * @return Whether this active entity represents the given
+     *         Bukkit entity.
+     */
+    public boolean is (Entity entity) {
+        return this.entity.equals(entity);
+    }
 
     /*
         Getters and setters.
@@ -322,5 +460,4 @@ public class ActiveEntity {
     public void setOwner (Entity owner) {
         this.owner = owner;
     }
-
 }

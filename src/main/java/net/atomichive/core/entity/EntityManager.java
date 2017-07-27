@@ -19,12 +19,46 @@ import java.util.logging.Level;
 
 /**
  * Entity Manager
- * A class which tracks all custom entities.
+ * A class which tracks all custom entities, as well as
+ * currently active entities.
  */
 public class EntityManager extends JsonManager {
 
 
+    // All custom entity definitions
     private static List<CustomEntity> customEntities = new ArrayList<>();
+
+    // All currently active custom entities
+    private static List<ActiveEntity> livingEntities = new ArrayList<>();
+
+
+    /**
+     * Add
+     * Adds an active entity to the living entities array.
+     * @param entity Active entity to add.
+     */
+    public static void add (ActiveEntity entity) {
+        livingEntities.add(entity);
+    }
+
+
+    /**
+     * Get active entity
+     * Attempts to find a corresponding active entity.
+     * @param entity Bukkit entity.
+     * @return Corresponding active entity or null.
+     */
+    public static ActiveEntity getActiveEntity (Entity entity) {
+
+        // Iterate over active entities
+        for (ActiveEntity active : livingEntities) {
+            if (active.is(entity))
+                return active;
+        }
+
+        return null;
+
+    }
 
 
     /**
@@ -139,18 +173,17 @@ public class EntityManager extends JsonManager {
         }
 
         for (int i = 0; i < count; i++)
-            customEntity.spawn(location, owner);
+            add(customEntity.spawn(location, owner));
 
     }
-
 
     /*
         Getters and setters.
      */
 
+
     public static List<CustomEntity> getAll () {
         return customEntities;
     }
-
 
 }

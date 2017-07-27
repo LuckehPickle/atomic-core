@@ -1,13 +1,11 @@
-package net.atomichive.core.entity.ai;
+package net.atomichive.core.entity.pathfinding;
 
 import net.atomichive.core.util.NMSUtil;
 import net.minecraft.server.v1_12_R1.ControllerLook;
 import net.minecraft.server.v1_12_R1.EntityInsentient;
-import net.minecraft.server.v1_12_R1.MathHelper;
 import net.minecraft.server.v1_12_R1.NavigationAbstract;
 import net.minecraft.server.v1_12_R1.PathType;
 import net.minecraft.server.v1_12_R1.PathfinderGoal;
-import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
 /**

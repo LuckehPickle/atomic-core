@@ -5,6 +5,7 @@ import io.seanbailey.database.DatabaseManager;
 import net.atomichive.core.command.*;
 import net.atomichive.core.entity.EntityManager;
 import net.atomichive.core.listeners.CommandListener;
+import net.atomichive.core.listeners.EntityChangeBlockListener;
 import net.atomichive.core.listeners.EntityDamageListener;
 import net.atomichive.core.listeners.LoginListener;
 import net.atomichive.core.listeners.QuitListener;
@@ -140,6 +141,7 @@ public class Main extends JavaPlugin {
         new CommandEntity();
         new CommandFly();
         new CommandGameMode();
+        new CommandHeal();
         // new CommandHelp();
         new CommandJump();
         new CommandKill();
@@ -173,6 +175,7 @@ public class Main extends JavaPlugin {
 
         // Put all event handlers here
         new CommandListener();
+        new EntityChangeBlockListener();
         new EntityDamageListener();
         new LoginListener();
         new QuitListener();

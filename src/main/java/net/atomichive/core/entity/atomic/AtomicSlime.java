@@ -1,8 +1,7 @@
 package net.atomichive.core.entity.atomic;
 
 import net.atomichive.core.Main;
-import net.atomichive.core.entity.EntityAttributes;
-import net.atomichive.core.entity.atomic.AtomicEntity;
+import net.atomichive.core.util.SmartMap;
 import net.atomichive.core.util.Util;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -27,7 +26,7 @@ public class AtomicSlime extends AtomicEntity {
      * @param attributes Entity Config from entities.json.
      */
     @Override
-    public void init (EntityAttributes attributes) {
+    public void init (SmartMap attributes) {
 
         randomSize   = attributes.get(Boolean.class, "random_size",   true);
         size         = attributes.get(Integer.class, "size",          -1);

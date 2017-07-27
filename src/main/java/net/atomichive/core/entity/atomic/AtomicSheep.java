@@ -1,13 +1,9 @@
 package net.atomichive.core.entity.atomic;
 
-import net.atomichive.core.entity.EntityAttributes;
-import net.atomichive.core.util.NMSUtil;
+import net.atomichive.core.util.SmartMap;
 import net.atomichive.core.util.Util;
-import net.minecraft.server.v1_12_R1.EntityInsentient;
-import net.minecraft.server.v1_12_R1.GenericAttributes;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Sheep;
@@ -29,7 +25,7 @@ public class AtomicSheep extends AtomicAgeable {
      * @param attributes Entity Config from entities.json.
      */
     @Override
-    public void init (EntityAttributes attributes) {
+    public void init (SmartMap attributes) {
 
         isSheared   = attributes.get(Boolean.class, "is_sheared",   false);
         randomColor = attributes.get(Boolean.class, "random_color", true);

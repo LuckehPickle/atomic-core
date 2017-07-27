@@ -1,6 +1,6 @@
 package net.atomichive.core.entity.atomic;
 
-import net.atomichive.core.entity.EntityAttributes;
+import net.atomichive.core.util.SmartMap;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -21,7 +21,7 @@ public class AtomicPigZombie extends AtomicZombie {
      * @param attributes Entity Config from entities.json.
      */
     @Override
-    public void init (EntityAttributes attributes) {
+    public void init (SmartMap attributes) {
 
         isAngry = attributes.get(Boolean.class, "is_angry", false);
 

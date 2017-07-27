@@ -1,7 +1,6 @@
 package net.atomichive.core.entity.atomic;
 
-import net.atomichive.core.entity.EntityAttributes;
-import net.atomichive.core.entity.atomic.AtomicEntity;
+import net.atomichive.core.util.SmartMap;
 import net.atomichive.core.util.Util;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
@@ -24,7 +23,7 @@ public class AtomicShulker extends AtomicEntity {
      * @param attributes Entity Config from entities.json.
      */
     @Override
-    public void init (EntityAttributes attributes) {
+    public void init (SmartMap attributes) {
 
         color = attributes.get(String.class, "color", null);
 

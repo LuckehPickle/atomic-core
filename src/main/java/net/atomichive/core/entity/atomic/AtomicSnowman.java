@@ -1,7 +1,6 @@
 package net.atomichive.core.entity.atomic;
 
-import net.atomichive.core.entity.EntityAttributes;
-import net.atomichive.core.entity.atomic.AtomicEntity;
+import net.atomichive.core.util.SmartMap;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -22,7 +21,7 @@ public class AtomicSnowman extends AtomicEntity {
      * @param attributes Entity Config from entities.json.
      */
     @Override
-    public void init (EntityAttributes attributes) {
+    public void init (SmartMap attributes) {
 
         isDerp = attributes.get(Boolean.class, "is_derp", false);
 

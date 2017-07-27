@@ -1,6 +1,6 @@
 package net.atomichive.core.entity.atomic;
 
-import net.atomichive.core.entity.EntityAttributes;
+import net.atomichive.core.util.SmartMap;
 import net.atomichive.core.util.Util;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -23,7 +23,7 @@ public class AtomicHorse extends AtomicAbstractHorse {
      * @param attributes Entity Config from entities.json.
      */
     @Override
-    public void init (EntityAttributes attributes) {
+    public void init (SmartMap attributes) {
 
         color = attributes.get(String.class, "color", null);
         style = attributes.get(String.class, "style", null);

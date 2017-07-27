@@ -1,6 +1,6 @@
 package net.atomichive.core.entity.atomic;
 
-import net.atomichive.core.entity.EntityAttributes;
+import net.atomichive.core.util.SmartMap;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -17,8 +17,8 @@ public abstract class AtomicEntity {
      * Set config values.
      * @param attributes Entity Config from entities.json.
      */
-    public void init (EntityAttributes attributes) {
-        attributes.log();
+    public void init (SmartMap attributes) {
+
     }
 
 
