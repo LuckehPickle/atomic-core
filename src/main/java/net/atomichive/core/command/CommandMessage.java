@@ -1,5 +1,6 @@
 package net.atomichive.core.command;
 
+import net.atomichive.core.Main;
 import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.util.Util;
@@ -42,7 +43,6 @@ public class CommandMessage extends BaseCommand {
 
         // Get target player
         Player target  = Bukkit.getPlayer(args[0]);
-        String name = "console";
 
         // Ensure target player could be found
         if (target == null)
@@ -51,8 +51,35 @@ public class CommandMessage extends BaseCommand {
         // Get message
         String message = Util.argsJoiner(args, 1);
 
-        if (sender instanceof Player)
-            name = ((Player) sender).getDisplayName();
+
+        sendMessage(sender, target, message);
+
+    }
+
+
+    /**
+     * Send message
+     * @param sender  Command sender.
+     * @param target  Message recipient.
+     * @param message Message contents.
+     */
+    static void sendMessage (CommandSender sender, Player target, String message) {
+
+        String name = "console";
+
+        // Set name if sender is a player
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+
+            name = player.getDisplayName();
+
+            // Update last sender
+            Main.getInstance()
+                    .getPlayerManager()
+                    .getOrCreate(target)
+                    .setLastMessageFrom(player);
+        }
+
 
         target.sendMessage(String.format(
                 "%s -> %s: %s",

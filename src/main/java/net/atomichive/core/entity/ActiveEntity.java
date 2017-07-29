@@ -1,14 +1,9 @@
 package net.atomichive.core.entity;
 
 import net.atomichive.core.Main;
-import net.atomichive.core.entity.abilities.Ability;
-import net.atomichive.core.entity.abilities.AbilityExplode;
-import net.atomichive.core.entity.abilities.AbilityIgnite;
-import net.atomichive.core.entity.abilities.AbilityLightning;
-import net.atomichive.core.entity.abilities.AbilitySwapPlaces;
-import net.atomichive.core.entity.abilities.AbilityThrow;
-import net.atomichive.core.entity.abilities.AbilityThrowBlock;
+import net.atomichive.core.entity.abilities.*;
 import net.atomichive.core.entity.pathfinding.PathfinderGoalFollowEntity;
+import net.atomichive.core.exception.AbilityException;
 import net.atomichive.core.exception.AtomicEntityException;
 import net.atomichive.core.util.NMSUtil;
 import net.atomichive.core.util.SmartMap;
@@ -43,6 +38,7 @@ public class ActiveEntity {
     private List<Ability> abilities = new ArrayList<>();
     private List<Ability> onAttack  = new ArrayList<>();
     private List<Ability> onDamage  = new ArrayList<>();
+    private List<TimedAbilityHandler> onTimer   = new ArrayList<>();
 
 
     /**
@@ -326,7 +322,8 @@ public class ActiveEntity {
 
     /**
      * Apply abilities
-     * @param abilities A map array of abilities.
+     * Parses and applies abilities to this entity.
+     * @param abilities A list of abilities strings.
      */
     public void applyAbilities (List abilities) {
 
@@ -336,72 +333,80 @@ public class ActiveEntity {
             for (Object obj : abilities) {
 
                 if (!(obj instanceof Map))
-                    throw new AtomicEntityException("Could not parse ability.");
+                    throw new AbilityException("Could not parse ability.");
 
-                // Get smart map
-                SmartMap smart = new SmartMap((Map) obj);
-                String base = smart.get(String.class, "base", null);
-                String trigger = smart.get(String.class, "trigger", null);
+                // Get attributes map
+                SmartMap attributes = new SmartMap((Map) obj);
+                Ability ability = getBaseAbility(attributes);
 
-                // Ensure base was found
-                if (base == null)
-                    throw new AtomicEntityException("No base ability defined.");
 
-                // Cast to string and switch
-                switch (base.toLowerCase()) {
-                    case "explode":
-                        addAbility(trigger, new AbilityExplode(smart));
+                // Get trigger and add ability
+                String trigger = attributes.get(String.class, "trigger");
+
+                Ability.Target target = Util.getEnumValue(
+                        Ability.Target.class,
+                        attributes.get(String.class, "target")
+                );
+
+                if (trigger == null)
+                    this.abilities.add(ability);
+
+                switch (trigger) {
+                    case "on_attack":
+                        this.onAttack.add(ability);
                         break;
-                    case "ignite":
-                        addAbility(trigger, new AbilityIgnite(smart));
+                    case "on_damage":
+                        this.onDamage.add(ability);
                         break;
-                    case "lightning":
-                        addAbility(trigger, new AbilityLightning());
-                        break;
-                    case "swap_places":
-                        addAbility(trigger, new AbilitySwapPlaces());
-                        break;
-                    case "throw":
-                        addAbility(trigger, new AbilityThrow(smart));
-                        break;
-                    case "throw_block":
-                        addAbility(trigger, new AbilityThrowBlock(smart));
+                    case "on_timer":
+                        this.onTimer.add(new TimedAbilityHandler(ability, target));
                         break;
                     default:
-                        throw new AtomicEntityException("Unknown base ability: " + base);
+                        this.abilities.add(ability);
                 }
 
             }
 
-        } catch (AtomicEntityException e) {
+        } catch (AbilityException e) {
             Main.getInstance().log(Level.SEVERE, e.getMessage());
         }
 
     }
 
 
+
     /**
-     * Add ability
-     * @param trigger Ability trigger as string.
-     * @param ability Ability to add.
+     * Get base ability
+     * Returns a base ability constructed from
+     * an ability attributes map.
+     * @param attributes Ability attributes map.
+     * @return Base ability
+     * @throws AbilityException if no base ability is defined.
      */
-    private void addAbility (String trigger, Ability ability) {
+    private Ability getBaseAbility (SmartMap attributes) throws AbilityException {
 
-        if (trigger == null)
-            this.abilities.add(ability);
+        // Get base as string
+        String base = attributes.get(String.class, "base");
 
-        switch (trigger) {
-            case "on_attack":
-                this.onAttack.add(ability);
-                break;
-            case "on_damage":
-                this.onDamage.add(ability);
-                break;
-            case "on_timer":
-                this.abilities.add(ability);
-                break;
+        // Ensure base was defined
+        if (base == null)
+            throw new AbilityException("No base ability defined.");
+
+        switch (base.toLowerCase()) {
+            case "explode":
+                return new AbilityExplode(attributes);
+            case "ignite":
+                return new AbilityIgnite(attributes);
+            case "lightning":
+                return new AbilityLightning();
+            case "swap_places":
+                return new AbilitySwapPlaces();
+            case "throw":
+                return new AbilityThrow(attributes);
+            case "throw_block":
+                return new AbilityThrowBlock(attributes);
             default:
-                this.abilities.add(ability);
+                throw new AbilityException("Unknown base ability: '" + base + "'.");
         }
 
     }
@@ -459,5 +464,9 @@ public class ActiveEntity {
 
     public void setOwner (Entity owner) {
         this.owner = owner;
+    }
+
+    public List<TimedAbilityHandler> getOnTimer () {
+        return onTimer;
     }
 }

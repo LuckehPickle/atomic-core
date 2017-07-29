@@ -1,5 +1,6 @@
 package net.atomichive.core.command;
 
+import net.atomichive.core.Main;
 import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.Reason;
 import net.atomichive.core.exception.UnknownWarpException;
@@ -101,7 +102,7 @@ public class CommandWarp extends BaseCommand {
 
 
         // Get all warps
-        List<Warp> warps = WarpManager.getAll();
+        List<Warp> warps = Main.getInstance().getWarpManager().getAll();
 
         // Create a new paginated result
         new PaginatedResult<Warp>("Warps") {
@@ -145,6 +146,7 @@ public class CommandWarp extends BaseCommand {
         Location location = player.getLocation();
         String name = args[1];
         String message = null;
+        WarpManager manager = Main.getInstance().getWarpManager();
 
         // Get message
         if (args.length >= 3) {
@@ -158,7 +160,7 @@ public class CommandWarp extends BaseCommand {
         }
 
         // Ensure warp does not already exist
-        if (WarpManager.contains(name))
+        if (manager.contains(name))
             throw new CommandException("A warp named '" + name + "' already exists.");
 
         // Create new warp
@@ -167,7 +169,7 @@ public class CommandWarp extends BaseCommand {
 
         // Add to managers and DB
         WarpDAO.insert(warp);
-        WarpManager.add(warp);
+        manager.add(warp);
 
         player.sendMessage("Created warp " + ChatColor.GREEN + warp.toString() + ChatColor.RESET + ".");
 
@@ -195,7 +197,7 @@ public class CommandWarp extends BaseCommand {
 
         // Attempt to delete warp
         try {
-            warp = WarpManager.delete(args[1]);
+            warp = Main.getInstance().getWarpManager().delete(args[1]);
         } catch (UnknownWarpException e) {
             throw new CommandException(e.getMessage());
         }
@@ -222,7 +224,7 @@ public class CommandWarp extends BaseCommand {
         }
 
         // Retrieve target warp
-        Warp warp = WarpManager.get(args[0]);
+        Warp warp = Main.getInstance().getWarpManager().get(args[0]);
         Player player = (Player) sender;
 
         // Ensure warp exists

@@ -1,5 +1,6 @@
 package net.atomichive.core.command;
 
+import net.atomichive.core.Main;
 import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.exception.Reason;
@@ -43,7 +44,7 @@ public class CommandListen extends BaseCommand {
             throws CommandException, PermissionException {
 
         // Get player
-        AtomicPlayer player = PlayerManager.getOrCreate((Player) sender);
+        AtomicPlayer player = Main.getInstance().getPlayerManager().getOrCreate((Player) sender);
         int verbosity;
 
         // Print verbosity levels

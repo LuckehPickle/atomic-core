@@ -11,9 +11,9 @@ import java.util.List;
  */
 public class WarpManager {
 
-    private static List<Warp> warps = new ArrayList<>();
+    private List<Warp> warps = new ArrayList<>();
 
-    public static void add (Warp warp) {
+    public void add (Warp warp) {
         warps.add(warp);
     }
 
@@ -24,7 +24,7 @@ public class WarpManager {
      * @return Warp with corresponding name, null
      *         if not found.
      */
-    public static Warp get (String name) {
+    public Warp get (String name) {
 
         // Iterate over warps
         for (Warp warp : warps) {
@@ -37,7 +37,7 @@ public class WarpManager {
     }
 
 
-    public static List<Warp> getAll () {
+    public List<Warp> getAll () {
         return warps;
     }
 
@@ -47,7 +47,7 @@ public class WarpManager {
      * Retrieves all warps from the database and loads
      * them into memory.
      */
-    public static void load () {
+    public void load () {
         warps = WarpDAO.getAll();
     }
 
@@ -59,7 +59,7 @@ public class WarpManager {
      * @param name Name of the warp.
      * @return Whether the warp already exists.
      */
-    public static boolean contains (String name) {
+    public boolean contains (String name) {
 
         // Iterate over warps
         for (Warp warp : warps) {
@@ -80,7 +80,7 @@ public class WarpManager {
      * @param name Name of the warp to delete.
      * @return deleted warp for output purposes.
      */
-    public static Warp delete (String name) throws UnknownWarpException {
+    public Warp delete (String name) throws UnknownWarpException {
 
         // Ensure warp exists.
         if (!contains(name))
@@ -104,7 +104,7 @@ public class WarpManager {
      * Removes all warps from the list, but first
      * pushes them all to the db.
      */
-    public static void removeAll () {
+    public void removeAll () {
         warps.clear();
     }
 

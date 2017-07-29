@@ -3,6 +3,7 @@ package net.atomichive.core;
 import com.google.gson.stream.MalformedJsonException;
 import io.seanbailey.database.DatabaseManager;
 import net.atomichive.core.command.*;
+import net.atomichive.core.entity.EntityAsyncClock;
 import net.atomichive.core.entity.EntityManager;
 import net.atomichive.core.listeners.CommandListener;
 import net.atomichive.core.listeners.EntityChangeBlockListener;
@@ -18,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -34,7 +36,11 @@ public class Main extends JavaPlugin {
 
     private Configuration config;
     private Logger logger;
-    private DatabaseManager manager;
+
+    private PlayerManager playerManager;
+    private EntityManager entityManager;
+    private DatabaseManager databaseManager;
+    private WarpManager warpManager;
 
 
     /**
@@ -65,12 +71,17 @@ public class Main extends JavaPlugin {
             }
         }
 
+        playerManager = new PlayerManager();
+        warpManager   = new WarpManager();
+
         // Add currently logged in players to player manager
         for (Player player : Bukkit.getOnlinePlayers())
-            PlayerManager.addPlayer(player);
+            playerManager.addPlayer(player);
 
         log(Level.INFO, "Loading warps.");
-        WarpManager.load();
+        warpManager.load();
+
+        BukkitTask task = new EntityAsyncClock().runTaskTimer(this, 0l, 10l);
 
     }
 
@@ -83,10 +94,10 @@ public class Main extends JavaPlugin {
     public void onDisable () {
 
         // Empty player manager
-        PlayerManager.removeAll();
-        WarpManager.removeAll();
+        playerManager.removeAll();
+        warpManager.removeAll();
 
-        manager.closeConnection();
+        databaseManager.closeConnection();
 
     }
 
@@ -102,7 +113,7 @@ public class Main extends JavaPlugin {
 
 
         // Init database manager
-        manager = new DatabaseManager(
+        databaseManager = new DatabaseManager(
                 config.getString("database", "atomic_core"),
                 config.getString("host", DatabaseManager.DEFAULT_HOST),
                 config.getInt("port", DatabaseManager.DEFAULT_PORT),
@@ -112,18 +123,18 @@ public class Main extends JavaPlugin {
 
 
         try {
-            AtomicPlayerDAO.init(manager);
-            WarpDAO.init(manager);
+            AtomicPlayerDAO.init(databaseManager);
+            WarpDAO.init(databaseManager);
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
 
-        manager.setLogger(logger);
-        manager.setMigrationsPath("migrations");
+        databaseManager.setLogger(logger);
+        databaseManager.setMigrationsPath("migrations");
 
         if (config.getBoolean("auto_migrate", true))
-            manager.migrate();
+            databaseManager.migrate();
 
         logger.log(Level.INFO, "Initialised database.");
 
@@ -141,6 +152,7 @@ public class Main extends JavaPlugin {
         new CommandEntity();
         new CommandFly();
         new CommandGameMode();
+        new CommandGod();
         new CommandHeal();
         // new CommandHelp();
         new CommandJump();
@@ -151,6 +163,8 @@ public class Main extends JavaPlugin {
         new CommandMessage();
         new CommandNickname();
         new CommandPing();
+        new CommandPosition();
+        new CommandReply();
         new CommandSpeed();
         new CommandSudo();
         new CommandSuicide();
@@ -202,4 +216,13 @@ public class Main extends JavaPlugin {
     public Configuration getBukkitConfig () {
         return config;
     }
+
+    public PlayerManager getPlayerManager () {
+        return playerManager;
+    }
+
+    public WarpManager getWarpManager () {
+        return warpManager;
+    }
+
 }

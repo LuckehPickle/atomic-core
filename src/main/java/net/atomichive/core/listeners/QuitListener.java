@@ -1,5 +1,6 @@
 package net.atomichive.core.listeners;
 
+import net.atomichive.core.Main;
 import net.atomichive.core.util.Util;
 import net.atomichive.core.player.AtomicPlayer;
 import net.atomichive.core.player.AtomicPlayerDAO;
@@ -23,9 +24,11 @@ public final class QuitListener extends BaseListener implements Listener {
     @EventHandler
     public void onQuit (PlayerQuitEvent event) {
 
+        PlayerManager manager = Main.getInstance().getPlayerManager();
+
         // Get player
-        AtomicPlayer player = PlayerManager.getOrCreate(event.getPlayer());
-        PlayerManager.removePlayer(player);
+        AtomicPlayer player = manager.getOrCreate(event.getPlayer());
+        manager.removePlayer(player);
 
         // Update last seen value
         player.setLastSeen(Util.getCurrentTimestamp());

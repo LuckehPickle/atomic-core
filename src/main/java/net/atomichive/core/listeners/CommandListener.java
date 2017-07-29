@@ -1,5 +1,6 @@
 package net.atomichive.core.listeners;
 
+import net.atomichive.core.Main;
 import net.atomichive.core.player.AtomicPlayer;
 import net.atomichive.core.player.PlayerManager;
 import org.bukkit.Bukkit;
@@ -26,7 +27,7 @@ public class CommandListener extends BaseListener implements Listener {
         String command = event.getMessage();
 
         // Alert users with appropriate perms
-        for (AtomicPlayer player : PlayerManager.getAll()) {
+        for (AtomicPlayer player : Main.getInstance().getPlayerManager().getAll()) {
 
             // Ensure player is not sender
             if (player.is(sender))

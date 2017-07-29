@@ -4,6 +4,7 @@ import net.atomichive.core.Main;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
@@ -14,6 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.StringJoiner;
@@ -321,5 +323,32 @@ public class Util {
         return true;
 
     }
+
+
+    /**
+     * Get closest
+     * @param entities Collection of entities.
+     * @return Closest entity.
+     */
+    public static Collection<Entity> getClosest (Location location, Collection<Entity> entities) {
+
+        double lowestDistance = -1;
+        Entity closest = null;
+
+        for (Entity entity : entities) {
+            double dist = location.distanceSquared(entity.getLocation());
+            if (lowestDistance == -1 || dist < lowestDistance) {
+                lowestDistance = dist;
+                closest = entity;
+            }
+        }
+
+        entities.clear();
+        entities.add(closest);
+
+        return entities;
+
+    }
+
 
 }

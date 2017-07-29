@@ -31,7 +31,7 @@ public final class LoginListener extends BaseListener implements Listener {
 
         // Get atomic player and bukkit player
         Player bukkitPlayer = event.getPlayer();
-        AtomicPlayer atomicPlayer = PlayerManager.addPlayer(bukkitPlayer);
+        AtomicPlayer atomicPlayer = Main.getInstance().getPlayerManager().addPlayer(bukkitPlayer);
 
         // Update most recent alias
         atomicPlayer.setUsername(bukkitPlayer.getName());

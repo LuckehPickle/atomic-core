@@ -14,7 +14,7 @@ public class PlayerManager {
 
 
     // An array list of all currently active players
-    private static List<AtomicPlayer> players = new ArrayList<>();
+    private List<AtomicPlayer> players = new ArrayList<>();
 
 
     /**
@@ -22,7 +22,7 @@ public class PlayerManager {
      * @param player Bukkit player to add.
      * @return Bukkit player converted to Atomic player.
      */
-    public static AtomicPlayer addPlayer (Player player) {
+    public AtomicPlayer addPlayer (Player player) {
 
         player.setCollidable(false);
 
@@ -44,7 +44,7 @@ public class PlayerManager {
      * Add player
      * @param player Atomic player to add.
      */
-    public static void addPlayer (AtomicPlayer player) {
+    public void addPlayer (AtomicPlayer player) {
         players.add(player);
     }
 
@@ -53,7 +53,7 @@ public class PlayerManager {
      * Remove player
      * @param player Atomic player to remove.
      */
-    public static void removePlayer (AtomicPlayer player) {
+    public void removePlayer (AtomicPlayer player) {
         players.remove(player);
     }
 
@@ -62,7 +62,7 @@ public class PlayerManager {
      * Remove all
      * Remove all players from the player manager.
      */
-    public static void removeAll () {
+    public void removeAll () {
         AtomicPlayerDAO.update(players);
         players.clear();
     }
@@ -75,7 +75,7 @@ public class PlayerManager {
      * @param player Bukkit player.
      * @return Atomic player.
      */
-    public static AtomicPlayer getOrCreate (Player player) {
+    public AtomicPlayer getOrCreate (Player player) {
 
         // Iterate over all stored players.
         for (AtomicPlayer atomicPlayer : players) {
@@ -106,7 +106,8 @@ public class PlayerManager {
 
     }
 
-    public static List<AtomicPlayer> getAll () {
+    public List<AtomicPlayer> getAll () {
         return players;
     }
+
 }

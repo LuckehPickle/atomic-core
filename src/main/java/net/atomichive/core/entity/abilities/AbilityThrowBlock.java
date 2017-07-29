@@ -61,10 +61,6 @@ public class AbilityThrowBlock implements Ability {
         );
 
         block.setHurtEntities(true);
-        block.setMetadata(
-                "remove_on_ground",
-                new FixedMetadataValue(Main.getInstance(), true)
-        );
 
         Vector deltaV = target.getLocation().toVector().subtract(source.getLocation().toVector());
 

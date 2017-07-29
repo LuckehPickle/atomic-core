@@ -1,5 +1,6 @@
 package net.atomichive.core.command;
 
+import net.atomichive.core.Main;
 import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.exception.Reason;
@@ -45,7 +46,7 @@ public class CommandNickname extends BaseCommand {
 
         // Get player
         Player player = (Player) sender;
-        AtomicPlayer atomicPlayer = PlayerManager.getOrCreate(player);
+        AtomicPlayer atomicPlayer = Main.getInstance().getPlayerManager().getOrCreate(player);
 
 
         // Reset display name

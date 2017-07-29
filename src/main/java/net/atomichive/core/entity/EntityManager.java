@@ -186,4 +186,8 @@ public class EntityManager extends JsonManager {
         return customEntities;
     }
 
+    public static List<ActiveEntity> getActiveEntities () {
+        return livingEntities;
+    }
+
 }

@@ -24,6 +24,8 @@ public class AtomicPlayer {
     private int warningCount = 0;
     private short verbosity = 0;
 
+    private transient Player lastMessageFrom = null;
+
 
 
     /**
@@ -136,6 +138,14 @@ public class AtomicPlayer {
 
     public void setVerbosity (short verbosity) {
         this.verbosity = verbosity;
+    }
+
+    public Player getLastMessageFrom () {
+        return lastMessageFrom;
+    }
+
+    public void setLastMessageFrom (Player lastMessageFrom) {
+        this.lastMessageFrom = lastMessageFrom;
     }
 
 }

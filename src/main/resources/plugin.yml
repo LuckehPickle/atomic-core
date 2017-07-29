@@ -17,6 +17,9 @@ commands:
     description: Updates a player's game mode.
     usage: /gamemode <mode> [player]
     aliases: [gm, mode]
+  god:
+    description: Toggles god mode.
+    usage: /god
   heal:
     description: Restores health and hunger.
     usage: /heal
@@ -51,6 +54,14 @@ commands:
     description: Returns the delay between a players and the server in milliseconds.
     usage: /ping [player]
     aliases: [delay]
+  position:
+    description: Returns your current position and the position of the block you're looking at.
+    usage: /pos [player]
+    aliases: [pos]
+  reply:
+    description: Respond to the last message you received.
+    usage: /reply <message>
+    aliases: [r]
   speed:
     description: Change your flying or walking speeds.
     usage: /speed <value>
@@ -91,6 +102,7 @@ permissions:
       atomic-core.gamemode: true
       atomic-core.gamemode.*: true
       atomic-core.gamemode.others: true
+      atomic-core.god: true
       atomic-core.heal: true
       # atomic-core.help: true
       atomic-core.jump: true
@@ -100,10 +112,13 @@ permissions:
       atomic-core.level: true
       atomic-core.listen: true
       atomic-core.message: true
+      atomic-core.message.reply: true
       atomic-core.nick: true
       atomic-core.nick.others: true
       atomic-core.ping: true
       atomic-core.ping.others: true
+      atomic-core.position: true
+      atomic-core.position.others: true
       atomic-core.speed: true
       atomic-core.sudo: true
       atomic-core.suicide: true
@@ -153,6 +168,10 @@ permissions:
     description: Allows users to set other user's game modes.
     default: op
 
+  atomic-core.god:
+    description: Gives access to the god command.
+    default: op
+
   atomic-core.heal:
     description: Gives access to the heal command.
     default: op
@@ -187,6 +206,9 @@ permissions:
   atomic-core.message:
     description: Gives access to the message command.
     default: true
+  atomic-core.message.reply:
+    description: Gives access to the reply command.
+    default: true
 
   atomic-core.nick:
     description: Gives access to the nick command.
@@ -200,6 +222,13 @@ permissions:
     default: true
   atomic-core.ping.others:
     description: Allows a player to get another player's ping.
+    default: op
+
+  atomic-core.position:
+    description: Gives access to the position command.
+    default: true
+  atomic-core.position.others:
+    description: Allows a player to get another player's position.
     default: op
 
   atomic-core.speed:
