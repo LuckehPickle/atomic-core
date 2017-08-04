@@ -29,7 +29,7 @@ public class AtomicSlime extends AtomicEntity {
     public void init (SmartMap attributes) {
 
         randomSize   = attributes.get(Boolean.class, "random_size",   true);
-        size         = attributes.get(Integer.class, "size",          -1);
+        size         = attributes.getInteger("size", -1);
         preventSplit = attributes.get(Boolean.class, "prevent_split", false);
 
         super.init(attributes);

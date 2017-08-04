@@ -36,8 +36,8 @@ public class ActiveEntity {
 
     // Abilities
     private List<Ability> abilities = new ArrayList<>();
-    private List<Ability> onAttack  = new ArrayList<>();
-    private List<Ability> onDamage  = new ArrayList<>();
+    private List<GenericAbilityHandler> onAttack  = new ArrayList<>();
+    private List<GenericAbilityHandler> onDamage  = new ArrayList<>();
     private List<TimedAbilityHandler> onTimer   = new ArrayList<>();
 
 
@@ -342,24 +342,29 @@ public class ActiveEntity {
 
                 // Get trigger and add ability
                 String trigger = attributes.get(String.class, "trigger");
+                int radius = attributes.getInteger("radius", 30);
+                int ticks  = attributes.getInteger("ticks", 10);
 
                 Ability.Target target = Util.getEnumValue(
                         Ability.Target.class,
                         attributes.get(String.class, "target")
                 );
 
-                if (trigger == null)
+
+                // Handle null trigger
+                if (trigger == null) {
                     this.abilities.add(ability);
+                }
 
                 switch (trigger) {
                     case "on_attack":
-                        this.onAttack.add(ability);
+                        this.onAttack.add(new GenericAbilityHandler(ability, target, radius));
                         break;
                     case "on_damage":
-                        this.onDamage.add(ability);
+                        this.onDamage.add(new GenericAbilityHandler(ability, target, radius));
                         break;
                     case "on_timer":
-                        this.onTimer.add(new TimedAbilityHandler(ability, target));
+                        this.onTimer.add(new TimedAbilityHandler(ability, target, radius, ticks));
                         break;
                     default:
                         this.abilities.add(ability);
@@ -393,12 +398,20 @@ public class ActiveEntity {
             throw new AbilityException("No base ability defined.");
 
         switch (base.toLowerCase()) {
+            case "effect":
+                return new AbilityEffect(attributes);
             case "explode":
                 return new AbilityExplode(attributes);
+            case "fireball":
+                return new AbilityFireball();
             case "ignite":
                 return new AbilityIgnite(attributes);
             case "lightning":
                 return new AbilityLightning();
+            case "snowball":
+                return new AbilitySnowball();
+            case "summon":
+                return new AbilitySummon(attributes);
             case "swap_places":
                 return new AbilitySwapPlaces();
             case "throw":
@@ -420,8 +433,9 @@ public class ActiveEntity {
     public void runOnAttack (Entity source, Entity target) {
 
         // Iterate over abilities
-        for (Ability ability : onAttack)
-            ability.execute(source, target);
+        for (GenericAbilityHandler ability : onAttack) {
+            ability.run(source, target);
+        }
 
     }
 
@@ -434,8 +448,9 @@ public class ActiveEntity {
     public void runOnDamage (Entity source, Entity target) {
 
         // Iterate over abilities
-        for (Ability ability : onDamage)
-            ability.execute(source, target);
+        for (GenericAbilityHandler ability : onDamage) {
+            ability.run(source, target);
+        }
 
     }
 
@@ -469,4 +484,5 @@ public class ActiveEntity {
     public List<TimedAbilityHandler> getOnTimer () {
         return onTimer;
     }
+
 }

@@ -5,9 +5,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Predicate;
 
 /**
  * Base Ability
@@ -23,43 +23,61 @@ public interface Ability {
         CLOSEST_PLAYER,
         CLOSEST_ENTITY,
         NEARBY_PLAYERS,
-        NEARBY_ENTITIES;
+        NEARBY_ENTITIES,
+        SELF;
+
 
         /**
-         * Get
-         * Retrieves all entities which match the
-         * target.
+         * Get targets
+         * Retrieves all matching targets.
          * @param source Source entity.
-         * @param radius Maximum radius.
-         * @return Matching entities.
+         * @param target Target type.
+         * @param radius Maximum targeting radius (if applicable).
+         * @return Matching targets.
          */
-        public static Collection<Entity> get (Target target, Entity source, int radius) {
+        public static List<Entity> getTargets (Entity source, Target target, int radius) {
+
+            List<Entity> entities = new ArrayList<>();
+
+            if (target.equals(SELF)) {
+                entities.add(source);
+                return entities;
+            }
 
             // Get nearby entities
-            Collection<Entity> entities = source.getWorld().getNearbyEntities(
-                    source.getLocation(),
-                    radius, radius, radius
-            );
-
+            entities.addAll(getNearby(source, radius));
 
             // Remove non-players if necessary
-            if (target.equals(Target.CLOSEST_PLAYER) || target.equals(Target.NEARBY_PLAYERS)) {
-                entities.removeIf(e -> !(e instanceof Player));
-            }
+            if (target.equals(NEARBY_PLAYERS) || target.equals(CLOSEST_PLAYER))
+                entities.removeIf((entity) -> !(entity instanceof Player));
 
             switch (target) {
                 case CLOSEST_ENTITY:
                 case CLOSEST_PLAYER:
                     return Util.getClosest(source.getLocation(), entities);
-                case NEARBY_ENTITIES:
-                case NEARBY_PLAYERS:
+                default:
                     return entities;
             }
 
-            return null;
+        }
+
+
+        /**
+         * Get nearby
+         * Returns a collection of all nearby entities.
+         * @param source Source entity.
+         * @param radius Max radius to search.
+         * @return A collection of all entities within the given radius.
+         */
+        private static Collection<Entity> getNearby (Entity source, int radius) {
+            return source.getWorld().getNearbyEntities(
+                    source.getLocation(),
+                    radius, radius, radius
+            );
         }
 
     }
+
 
     /**
      * Execute

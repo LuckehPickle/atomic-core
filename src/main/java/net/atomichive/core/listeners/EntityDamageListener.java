@@ -26,14 +26,19 @@ public class EntityDamageListener extends BaseListener implements Listener {
         // Get entity
         Entity entity = event.getEntity();
 
-        if (entity.isInvulnerable())
+        // By default, making an entity invulnerable seems to
+        // have no effect. So we cancel damage instead
+        if (entity.isInvulnerable()) {
             event.setCancelled(true);
+        }
 
     }
 
 
     /**
      * On entity damage entity
+     * An event which occurs whenever an entity damages
+     * another entity.
      * @param event Entity damage entity event
      */
     @EventHandler
@@ -43,17 +48,22 @@ public class EntityDamageListener extends BaseListener implements Listener {
         Entity entity = event.getDamager();
         ActiveEntity activeEntity = EntityManager.getActiveEntity(entity);
 
-        if (activeEntity != null)
+        // Check if entity is active entity
+        if (activeEntity != null) {
+            // Run on attack abilities
             activeEntity.runOnAttack(entity, event.getEntity());
+        }
 
 
+        // Handle damagee
         entity = event.getEntity();
         activeEntity = EntityManager.getActiveEntity(entity);
 
-        if (activeEntity != null)
-            activeEntity.runOnDamage(event.getDamager(), entity);
-
-
+        // Check if entity is active entity
+        if (activeEntity != null) {
+            // Run on damage abilities
+            activeEntity.runOnDamage(entity, event.getDamager());
+        }
 
     }
 

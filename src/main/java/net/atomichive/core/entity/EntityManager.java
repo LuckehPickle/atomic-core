@@ -10,6 +10,7 @@ import net.atomichive.core.exception.AtomicEntityException;
 import net.atomichive.core.exception.Reason;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -39,6 +40,26 @@ public class EntityManager extends JsonManager {
      */
     public static void add (ActiveEntity entity) {
         livingEntities.add(entity);
+    }
+
+
+    /**
+     * Remove
+     * Removes a Bukkit entity from the living entities array.
+     * @param entity Bukkit entity to remove.
+     */
+    public static void remove (Entity entity) {
+        remove(getActiveEntity(entity));
+    }
+
+
+    /**
+     * Remove
+     * Removes an active entity from the living entities array.
+     * @param entity Active entity to remove.
+     */
+    public static void remove (ActiveEntity entity) {
+        livingEntities.remove(entity);
     }
 
 
@@ -140,7 +161,6 @@ public class EntityManager extends JsonManager {
         spawnEntity(location, entityName, count, null);
     }
 
-
     /**
      * Spawn entity
      * Spawns a new custom entity
@@ -177,10 +197,10 @@ public class EntityManager extends JsonManager {
 
     }
 
+
     /*
         Getters and setters.
      */
-
 
     public static List<CustomEntity> getAll () {
         return customEntities;
@@ -189,5 +209,4 @@ public class EntityManager extends JsonManager {
     public static List<ActiveEntity> getActiveEntities () {
         return livingEntities;
     }
-
 }

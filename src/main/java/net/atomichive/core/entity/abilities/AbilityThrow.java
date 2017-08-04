@@ -11,7 +11,7 @@ import org.bukkit.util.Vector;
 public class AbilityThrow implements Ability {
 
 
-    private SmartMap attributes;
+    private final double multiplier;
 
 
     /**
@@ -19,7 +19,7 @@ public class AbilityThrow implements Ability {
      * @param attributes Ability attributes.
      */
     public AbilityThrow (SmartMap attributes) {
-        this.attributes = attributes;
+        this.multiplier = attributes.get(Double.class, "multiplier", 1.0d);
     }
 
 
@@ -31,15 +31,12 @@ public class AbilityThrow implements Ability {
     @Override
     public void execute (Entity source, Entity target) {
 
-        // Get throw multiplier
-        double multiplier = attributes.get(Double.class, "multiplier", 1.0d);
-
         // Get delta vector
         Vector delta = target.getLocation().toVector().subtract(source.getLocation().toVector());
 
         // Normalize and multiply
         delta.normalize();
-        delta.setY(0.5);
+        delta.setY(0.25);
         delta.multiply(multiplier);
 
         target.setVelocity(delta);

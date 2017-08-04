@@ -12,7 +12,7 @@ import java.util.Map;
 public class AbilityIgnite implements Ability {
 
 
-    private SmartMap attributes;
+    private final int ticks;
 
 
     /**
@@ -20,7 +20,7 @@ public class AbilityIgnite implements Ability {
      * @param attributes Ability attributes.
      */
     public AbilityIgnite (SmartMap attributes) {
-        this.attributes = attributes;
+        this.ticks = attributes.getInteger("ticks", 40);
     }
 
 
@@ -31,12 +31,7 @@ public class AbilityIgnite implements Ability {
      */
     @Override
     public void execute (Entity source, Entity target) {
-
-        // Get ticks
-        double ticks = attributes.get(Double.class, "ticks", 40.0);
-
-        target.setFireTicks((int) ticks);
-
+        target.setFireTicks(ticks);
     }
 
 }

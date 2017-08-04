@@ -10,13 +10,11 @@ import java.util.List;
 
 /**
  * Entity Change Block Listener
+ * An event which fires whenever an entity (such
+ * as a falling block) changes a block.
  */
 public class EntityChangeBlockListener extends BaseListener implements Listener {
 
-    /**
-     * On change
-     * @param event Entity change block event.
-     */
     @EventHandler
     public void onChange (EntityChangeBlockEvent event) {
 

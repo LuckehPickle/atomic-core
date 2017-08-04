@@ -12,13 +12,11 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 /**
  * Command Listener
+ * An event which fires whenever a player sends a command.
  */
 public class CommandListener extends BaseListener implements Listener {
 
 
-    /**
-     * On command
-     */
     @EventHandler
     public void onCommand (PlayerCommandPreprocessEvent event) {
 

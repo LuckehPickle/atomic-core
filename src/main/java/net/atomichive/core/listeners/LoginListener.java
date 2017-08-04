@@ -1,22 +1,22 @@
 package net.atomichive.core.listeners;
 
 import net.atomichive.core.Main;
+import net.atomichive.core.util.BroadcastTask;
 import net.atomichive.core.util.Util;
 import net.atomichive.core.player.AtomicPlayer;
-import net.atomichive.core.player.PlayerManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.logging.Level;
 
 /**
  * Login listener
  * Handles player login events.
+ * TODO: Clean up this mess...
  */
 public final class LoginListener extends BaseListener implements Listener {
 
@@ -73,26 +73,3 @@ public final class LoginListener extends BaseListener implements Listener {
 
 
 
-/**
- * Broadcast Task
- * A task which broadcasts a message to the server.
- * This task can be scheduled, and run later.
- */
-final class BroadcastTask extends BukkitRunnable {
-
-    private final String message;
-
-    /**
-     * Broadcast Task
-     * @param message Message to be broadcast
-     */
-    public BroadcastTask (String message) {
-        this.message = message;
-    }
-
-    @Override
-    public void run () {
-        Main.getInstance().getServer().broadcastMessage(message);
-    }
-
-}

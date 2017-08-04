@@ -19,7 +19,7 @@ import org.bukkit.util.Vector;
 public class AbilityThrowBlock implements Ability {
 
 
-    private String material;
+    private final String material;
 
 
     public AbilityThrowBlock (SmartMap attributes) {
@@ -61,8 +61,13 @@ public class AbilityThrowBlock implements Ability {
         );
 
         block.setHurtEntities(true);
+        block.setMetadata(
+                "remove_on_ground",
+                new FixedMetadataValue(Main.getInstance(), true)
+        );
 
         Vector deltaV = target.getLocation().toVector().subtract(source.getLocation().toVector());
+        deltaV.normalize();
 
         // Set vector
         block.setVelocity(deltaV);

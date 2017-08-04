@@ -1,6 +1,7 @@
 package net.atomichive.core.command;
 
 import net.atomichive.core.Main;
+import net.atomichive.core.entity.EntityManager;
 import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.exception.Reason;
@@ -116,6 +117,7 @@ public class CommandKillAll extends BaseCommand {
         // Iterate over all entities.
         for (Entity entity : entities) {
             if (!(entity instanceof Player)) {
+                EntityManager.remove(entity);
                 entity.remove();
                 count++;
             }

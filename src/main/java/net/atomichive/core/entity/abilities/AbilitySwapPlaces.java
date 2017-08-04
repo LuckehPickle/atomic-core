@@ -1,6 +1,5 @@
 package net.atomichive.core.entity.abilities;
 
-import net.atomichive.core.util.SmartMap;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 

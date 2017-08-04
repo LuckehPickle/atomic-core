@@ -330,11 +330,12 @@ public class Util {
      * @param entities Collection of entities.
      * @return Closest entity.
      */
-    public static Collection<Entity> getClosest (Location location, Collection<Entity> entities) {
+    public static List<Entity> getClosest (Location location, List<Entity> entities) {
 
         double lowestDistance = -1;
         Entity closest = null;
 
+        // Iterate over entities
         for (Entity entity : entities) {
             double dist = location.distanceSquared(entity.getLocation());
             if (lowestDistance == -1 || dist < lowestDistance) {
@@ -344,11 +345,25 @@ public class Util {
         }
 
         entities.clear();
-        entities.add(closest);
+
+        // Add closest, if its not null
+        if (closest != null)
+            entities.add(closest);
 
         return entities;
 
     }
 
 
+    /**
+     * Get delta v
+     * @param source Source entity.
+     * @param target Target entity.
+     * @return Difference in location as a vector.
+     */
+    public static Vector getDeltaV (Entity source, Entity target) {
+        return target.getLocation()
+                .toVector()
+                .subtract(source.getLocation().toVector());
+    }
 }

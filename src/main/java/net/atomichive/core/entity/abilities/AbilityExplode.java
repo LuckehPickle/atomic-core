@@ -11,9 +11,9 @@ import org.bukkit.entity.Entity;
 public class AbilityExplode implements Ability {
 
 
-    private float power;
-    private boolean setFire;
-    private boolean breakBlocks;
+    private final float power;
+    private final boolean setFire;
+    private final boolean breakBlocks;
 
 
     public AbilityExplode (SmartMap attributes) {

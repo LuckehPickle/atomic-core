@@ -6,9 +6,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.List;
 
 /**
- * Asynchronous Entity Clock
+ * Entity Clock
+ * This clocks entire purpose is essentially just
+ * to tick entity abilities.
  */
-public class EntityAsyncClock extends BukkitRunnable {
+public class EntityClock extends BukkitRunnable {
 
     @Override
     public void run () {
@@ -20,6 +22,7 @@ public class EntityAsyncClock extends BukkitRunnable {
         for (ActiveEntity entity : entities)
             for (TimedAbilityHandler handler : entity.getOnTimer())
                 handler.tick(entity.getEntity());
+
     }
 
 }

@@ -1,5 +1,6 @@
 package net.atomichive.core.entity.atomic;
 
+import net.atomichive.core.Main;
 import net.atomichive.core.util.SmartMap;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -7,13 +8,16 @@ import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.material.MaterialData;
+import org.bukkit.metadata.FixedMetadataValue;
 
 /**
  * Atomic Enderman
  */
 public class AtomicEnderman extends AtomicEntity {
 
+
     private String carrying;
+    private boolean preventTeleport;
 
 
     /**
@@ -25,6 +29,7 @@ public class AtomicEnderman extends AtomicEntity {
     public void init (SmartMap attributes) {
 
         carrying = attributes.get(String.class, "carrying", null);
+        preventTeleport = attributes.get(Boolean.class, "prevent_teleport", false);
 
         super.init(attributes);
     }
@@ -61,6 +66,11 @@ public class AtomicEnderman extends AtomicEntity {
                 enderman.setCarriedMaterial(new MaterialData(material));
 
         }
+
+        enderman.setMetadata(
+                "prevent_teleport",
+                new FixedMetadataValue(Main.getInstance(), preventTeleport)
+        );
 
         return enderman;
     }

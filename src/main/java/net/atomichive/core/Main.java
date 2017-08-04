@@ -3,14 +3,9 @@ package net.atomichive.core;
 import com.google.gson.stream.MalformedJsonException;
 import io.seanbailey.database.DatabaseManager;
 import net.atomichive.core.command.*;
-import net.atomichive.core.entity.EntityAsyncClock;
+import net.atomichive.core.entity.EntityClock;
 import net.atomichive.core.entity.EntityManager;
-import net.atomichive.core.listeners.CommandListener;
-import net.atomichive.core.listeners.EntityChangeBlockListener;
-import net.atomichive.core.listeners.EntityDamageListener;
-import net.atomichive.core.listeners.LoginListener;
-import net.atomichive.core.listeners.QuitListener;
-import net.atomichive.core.listeners.SlimeSplitListener;
+import net.atomichive.core.listeners.*;
 import net.atomichive.core.player.AtomicPlayerDAO;
 import net.atomichive.core.player.PlayerManager;
 import net.atomichive.core.warp.WarpDAO;
@@ -38,7 +33,6 @@ public class Main extends JavaPlugin {
     private Logger logger;
 
     private PlayerManager playerManager;
-    private EntityManager entityManager;
     private DatabaseManager databaseManager;
     private WarpManager warpManager;
 
@@ -81,7 +75,7 @@ public class Main extends JavaPlugin {
         log(Level.INFO, "Loading warps.");
         warpManager.load();
 
-        BukkitTask task = new EntityAsyncClock().runTaskTimer(this, 0l, 10l);
+        BukkitTask task = new EntityClock().runTaskTimer(this, 0L, 5L);
 
     }
 
@@ -191,6 +185,8 @@ public class Main extends JavaPlugin {
         new CommandListener();
         new EntityChangeBlockListener();
         new EntityDamageListener();
+        new EntityDeathListener();
+        new EntityTeleportListener();
         new LoginListener();
         new QuitListener();
         new SlimeSplitListener();

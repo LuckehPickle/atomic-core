@@ -25,6 +25,20 @@ public class SmartMap {
 
 
     /**
+     * Get integer
+     * Use this method to retrieve Integers.
+     * This is needed because JSON automatically
+     * treats all numbers as doubles/floats.
+     * @param key Attribute key
+     * @param defaultValue Default value.
+     * @return Retrieved integer or default value.
+     */
+    public int getInteger (String key, int defaultValue) {
+        return get(Double.class, key, (double) defaultValue).intValue();
+    }
+
+
+    /**
      * Get
      * @param clazz Class of object to return
      * @param key Attribute key
