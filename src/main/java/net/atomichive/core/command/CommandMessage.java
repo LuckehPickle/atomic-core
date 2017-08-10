@@ -76,7 +76,7 @@ public class CommandMessage extends BaseCommand {
             // Update last sender
             Main.getInstance()
                     .getPlayerManager()
-                    .getOrCreate(target)
+                    .get(target)
                     .setLastMessageFrom(player);
         }
 

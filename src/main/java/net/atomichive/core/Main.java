@@ -1,5 +1,7 @@
 package net.atomichive.core;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import com.google.gson.stream.MalformedJsonException;
 import io.seanbailey.database.DatabaseManager;
 import net.atomichive.core.command.*;
@@ -35,6 +37,7 @@ public class Main extends JavaPlugin {
     private PlayerManager playerManager;
     private DatabaseManager databaseManager;
     private WarpManager warpManager;
+    private ProtocolManager protocolManager;
 
 
     /**
@@ -52,6 +55,10 @@ public class Main extends JavaPlugin {
         saveDefaultConfig();
         config = this.getConfig();
 
+        playerManager   = new PlayerManager();
+        warpManager     = new WarpManager();
+        protocolManager = ProtocolLibrary.getProtocolManager();
+
         initDatabase();
         registerCommands();
         registerEvents();
@@ -65,8 +72,6 @@ public class Main extends JavaPlugin {
             }
         }
 
-        playerManager = new PlayerManager();
-        warpManager   = new WarpManager();
 
         // Add currently logged in players to player manager
         for (Player player : Bukkit.getOnlinePlayers())
@@ -163,7 +168,10 @@ public class Main extends JavaPlugin {
         new CommandSudo();
         new CommandSuicide();
         new CommandTeleport();
+        new CommandTeleportAccept();
         new CommandTeleportAll();
+        new CommandTeleportAsk();
+        new CommandTeleportDeny();
         new CommandTeleportHere();
         new CommandTeleportPosition();
         new CommandWarp();
@@ -187,7 +195,9 @@ public class Main extends JavaPlugin {
         new EntityDamageListener();
         new EntityDeathListener();
         new EntityTeleportListener();
+        new InteractEntityListener();
         new LoginListener();
+        new PacketListener();
         new QuitListener();
         new SlimeSplitListener();
 
@@ -219,6 +229,10 @@ public class Main extends JavaPlugin {
 
     public WarpManager getWarpManager () {
         return warpManager;
+    }
+
+    public ProtocolManager getProtocolManager () {
+        return protocolManager;
     }
 
 }

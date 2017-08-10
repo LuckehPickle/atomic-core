@@ -1,5 +1,7 @@
 package net.atomichive.core.player;
 
+import net.atomichive.core.Main;
+import net.atomichive.core.util.ExpiringValue;
 import net.atomichive.core.util.Util;
 import org.bukkit.entity.Player;
 
@@ -25,6 +27,7 @@ public class AtomicPlayer {
     private short verbosity = 0;
 
     private transient Player lastMessageFrom = null;
+    private transient ExpiringValue<Player> lastTeleportRequest;
 
 
 
@@ -45,6 +48,9 @@ public class AtomicPlayer {
         this.identifier = identifier;
         this.username = username;
         this.lastSeen = Util.getCurrentTimestamp();
+
+        int expiry = Main.getInstance().getBukkitConfig().getInt("teleport_request_expiry", 30);
+        this.lastTeleportRequest = new ExpiringValue<>(expiry);
 
     }
 
@@ -146,6 +152,14 @@ public class AtomicPlayer {
 
     public void setLastMessageFrom (Player lastMessageFrom) {
         this.lastMessageFrom = lastMessageFrom;
+    }
+
+    public ExpiringValue<Player> getLastTeleportRequest () {
+        return lastTeleportRequest;
+    }
+
+    public void setLastTeleportRequest (ExpiringValue<Player> lastTeleportRequest) {
+        this.lastTeleportRequest = lastTeleportRequest;
     }
 
 }

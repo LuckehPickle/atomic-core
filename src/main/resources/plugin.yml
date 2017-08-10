@@ -1,9 +1,10 @@
 name: atomic-core
 description: A core plugin designed for the Atomic Hive Minecraft server.
 main: net.atomichive.core.Main
-version: 0.0.8
-authors: [Sean Bailey, Quinster]
+version: 0.0.9
+authors: [Sean Bailey]
 website: http://atomichive.net
+depends: [ProtocolLib]
 
 commands:
   entity:
@@ -76,9 +77,21 @@ commands:
     description: Teleports one player to another.
     usage: /tp [source] <destination>
     aliases: [tp, tpsilent]
+  tpa:
+    description: Sends a teleport request to another player.
+    usage: /tpa <player>
+    aliases: [tprequest, tpask]
+  tpaccept:
+    description: Accepts the most recent teleport request.
+    usage: /tpaccept
+    aliases: [tpyes, accept]
   tpall:
     description: Teleports all players to you.
     usage: /tpall
+  tpdeny:
+    description: Denies the most recent teleport request.
+    usage: /tpdeny
+    aliases: [tpno, deny]
   tphere:
     description: Teleports another player to you.
     usage: /tphere <player>
@@ -127,6 +140,7 @@ permissions:
       atomic-core.tp.here: true
       atomic-core.tp.others: true
       atomic-core.tp.pos: true
+      atomic-core.tp.request: true
       atomic-core.tp.silent: true
       atomic-core.warp: true
 
@@ -258,6 +272,9 @@ permissions:
   atomic-core.tp.pos:
     description: Gives access to the tppos command.
     default: op
+  atomic-core.tp.request:
+    description: Gives access to tpa, tpyes and tpno.
+    default: true
   atomic-core.tp.silent:
     description: Allows a user to teleport silently.
     default: op

@@ -3,25 +3,27 @@ package net.atomichive.core.command;
 import net.atomichive.core.Main;
 import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.PermissionException;
-import net.atomichive.core.util.Util;
+import net.atomichive.core.player.AtomicPlayer;
+import net.atomichive.core.util.ExpiringValue;
+import net.atomichive.core.util.TeleportUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Command Reply
- * Respond to the last message you received.
+ * Teleport Accept
+ * Accepts the most recent teleport request.
  */
-public class CommandReply extends BaseCommand {
+public class CommandTeleportAccept extends BaseCommand {
 
 
-    public CommandReply () {
+    public CommandTeleportAccept () {
         super (
-                "reply",
-                "Respond to the last message you received.",
-                "/reply <message>",
-                "atomic-core.message.reply",
+                "tpaccept",
+                "Accepts the most recent teleport request.",
+                "/tpaccept",
+                "atomic-core.tp.request",
                 true,
-                1
+                0
         );
     }
 
@@ -41,20 +43,19 @@ public class CommandReply extends BaseCommand {
 
         // Get player
         Player player = (Player) sender;
+        AtomicPlayer atomicPlayer = Main.getInstance().getPlayerManager().get(player);
 
-        // Get target
-        Player target = Main.getInstance()
-                .getPlayerManager()
-                .get(player)
-                .getLastMessageFrom();
+        // Retrieve last tp request
+        ExpiringValue<Player> value = atomicPlayer.getLastTeleportRequest();
+        Player target = value.get();
 
         // Ensure target exists
         if (target == null)
-            throw new CommandException("You have not received a message yet.");
+            throw new CommandException("There are currently no pending teleport requests.");
 
-        String message = Util.argsJoiner(args);
+        value.expire();
 
-        CommandMessage.sendMessage(sender, target, message);
+        TeleportUtil.teleport(player, target);
 
     }
 

@@ -2,6 +2,7 @@ package net.atomichive.core.command;
 
 import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.PermissionException;
+import net.atomichive.core.util.TeleportUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -19,7 +20,7 @@ public class CommandTeleportHere extends BaseCommand {
                 "tphere",
                 "Teleports another player to you.",
                 "/tphere <player>",
-                "atomic-core.tphere",
+                "atomic-core.tp.here",
                 true,
                 1
         );
@@ -53,32 +54,7 @@ public class CommandTeleportHere extends BaseCommand {
         if (target == null)
             throw new CommandException("Player '" + args[0] + "' could not be found.");
 
-        teleport(player, target);
-
-    }
-
-
-
-    /**
-     * Teleport
-     * @param destination Destination player.
-     * @param source Player to be teleported.
-     */
-    private void teleport (Player destination, Player source) {
-
-        // tp
-        source.teleport(destination);
-
-        // Send contextual information
-        source.sendMessage(String.format(
-                "You've been teleported to %s.",
-                ChatColor.YELLOW + destination.getDisplayName() + ChatColor.RESET
-        ));
-
-        destination.sendMessage(String.format(
-                "You teleported %s to you.",
-                ChatColor.YELLOW + source.getDisplayName() + ChatColor.RESET
-        ));
+        TeleportUtil.teleportHere(player, target);
 
     }
 

@@ -3,6 +3,7 @@ package net.atomichive.core.command;
 import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.exception.Reason;
+import net.atomichive.core.util.TeleportUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -71,7 +72,7 @@ public class CommandTeleport extends BaseCommand {
                 silent = true;
             }
 
-            teleport(player, target, silent);
+            TeleportUtil.teleport(player, target, silent);
 
         } else {
 
@@ -90,7 +91,7 @@ public class CommandTeleport extends BaseCommand {
             if (destination == null)
                 throw new CommandException("Player '" + args[1] + "' could not be found.");
 
-            teleport(source, destination);
+            TeleportUtil.teleport(source, destination);
 
             // Update sender
             sender.sendMessage(String.format(
@@ -99,45 +100,6 @@ public class CommandTeleport extends BaseCommand {
                     ChatColor.YELLOW + destination.getDisplayName() + ChatColor.RESET
             ));
 
-        }
-
-    }
-
-
-
-    /**
-     * Teleport
-     * @param source      Player being teleported.
-     * @param destination Player to teleport to.
-     */
-    private void teleport (Player source, Player destination) {
-        teleport(source, destination, false);
-    }
-
-
-
-    /**
-     * Teleport
-     * @param source      Player being teleported.
-     * @param destination Player to teleport to.
-     * @param silent      Whether to make the teleport silent.
-     */
-    private void teleport (Player source, Player destination, boolean silent) {
-
-        // Teleport
-        source.teleport(destination);
-
-        // Send contextual information
-        source.sendMessage(String.format(
-                !silent ? "Teleported to %s." : "Silently teleported to %s.",
-                ChatColor.YELLOW + destination.getDisplayName() + ChatColor.RESET
-        ));
-
-        if (!silent) {
-            destination.sendMessage(String.format(
-                    "%s teleported to you.",
-                    ChatColor.YELLOW + source.getDisplayName() + ChatColor.RESET
-            ));
         }
 
     }

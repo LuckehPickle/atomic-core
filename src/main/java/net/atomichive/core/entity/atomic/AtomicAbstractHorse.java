@@ -1,10 +1,12 @@
 package net.atomichive.core.entity.atomic;
 
+import net.atomichive.core.Main;
 import net.atomichive.core.util.SmartMap;
 import org.bukkit.Location;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.metadata.FixedMetadataValue;
 
 /**
  * Abstract Horse
@@ -14,6 +16,9 @@ public class AtomicAbstractHorse extends AtomicAgeable {
 
     private double jumpStrength;
     private boolean isDomesticated;
+    private boolean isRideable;
+
+
 
     /**
      * Init
@@ -25,6 +30,7 @@ public class AtomicAbstractHorse extends AtomicAgeable {
 
         jumpStrength   = attributes.get(Double.class,  "jump_strength",   -1.0d);
         isDomesticated = attributes.get(Boolean.class, "is_domesticated", false);
+        isRideable     = attributes.get(Boolean.class, "is_rideable",     true);
 
         super.init(attributes);
     }
@@ -60,6 +66,11 @@ public class AtomicAbstractHorse extends AtomicAgeable {
             horse.setDomestication(horse.getMaxDomestication());
             horse.setTamed(true);
         }
+
+        horse.setMetadata(
+                "is_rideable",
+                new FixedMetadataValue(Main.getInstance(), this.isRideable)
+        );
 
         return super.applyAttributes(horse);
 

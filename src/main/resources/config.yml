@@ -32,7 +32,8 @@ auto_migrate: true
 # production servers.
 development_mode: false
 
-
+# The number of seconds until a teleport request expires.
+teleport_request_expiry: 30.0
 
 
 

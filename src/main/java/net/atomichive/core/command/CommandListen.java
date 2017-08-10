@@ -5,7 +5,6 @@ import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.exception.Reason;
 import net.atomichive.core.player.AtomicPlayer;
-import net.atomichive.core.player.PlayerManager;
 import net.atomichive.core.util.Util;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -44,7 +43,7 @@ public class CommandListen extends BaseCommand {
             throws CommandException, PermissionException {
 
         // Get player
-        AtomicPlayer player = Main.getInstance().getPlayerManager().getOrCreate((Player) sender);
+        AtomicPlayer player = Main.getInstance().getPlayerManager().get((Player) sender);
         int verbosity;
 
         // Print verbosity levels

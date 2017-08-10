@@ -27,7 +27,7 @@ public final class QuitListener extends BaseListener implements Listener {
         PlayerManager manager = Main.getInstance().getPlayerManager();
 
         // Get player
-        AtomicPlayer player = manager.getOrCreate(event.getPlayer());
+        AtomicPlayer player = manager.get(event.getPlayer());
         manager.removePlayer(player);
 
         // Update last seen value

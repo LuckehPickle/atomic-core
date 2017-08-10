@@ -136,13 +136,16 @@ public class CustomEntity {
 
         // Get entity
         Entity entity = activeEntity.getEntity();
+        String customName;
 
         // Set entity name
         if (this.displayName == null) {
-            entity.setCustomName(Util.toTitleCase(this.name));
+            customName = Util.toTitleCase(this.name);
         } else {
-            entity.setCustomName(this.displayName);
+            customName = this.displayName;
         }
+
+        entity.setCustomName("%s" + customName + " [%d]");
 
         // Apply misc. attributes
         entity.setCustomNameVisible(this.isNameVisible);

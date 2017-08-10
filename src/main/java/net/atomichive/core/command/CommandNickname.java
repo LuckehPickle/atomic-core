@@ -5,7 +5,6 @@ import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.exception.Reason;
 import net.atomichive.core.player.AtomicPlayer;
-import net.atomichive.core.player.PlayerManager;
 import net.atomichive.core.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -46,7 +45,7 @@ public class CommandNickname extends BaseCommand {
 
         // Get player
         Player player = (Player) sender;
-        AtomicPlayer atomicPlayer = Main.getInstance().getPlayerManager().getOrCreate(player);
+        AtomicPlayer atomicPlayer = Main.getInstance().getPlayerManager().get(player);
 
 
         // Reset display name

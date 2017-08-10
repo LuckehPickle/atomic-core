@@ -29,7 +29,7 @@ public class PlayerManager {
         Bukkit.broadcastMessage(String.valueOf(player.isCollidable()));
 
         // Convert to atomic player
-        AtomicPlayer atomicPlayer = getOrCreate(player);
+        AtomicPlayer atomicPlayer = get(player);
 
         // Add to player list
         addPlayer(atomicPlayer);
@@ -69,13 +69,13 @@ public class PlayerManager {
 
 
     /**
-     * Get or create
+     * Get
      * Returns a corresponding atomic player object, or
      * creates a new one if none exists.
      * @param player Bukkit player.
      * @return Atomic player.
      */
-    public AtomicPlayer getOrCreate (Player player) {
+    public AtomicPlayer get (Player player) {
 
         // Iterate over all stored players.
         for (AtomicPlayer atomicPlayer : players) {
