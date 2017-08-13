@@ -7,6 +7,7 @@ import io.seanbailey.database.DatabaseManager;
 import net.atomichive.core.command.*;
 import net.atomichive.core.entity.EntityClock;
 import net.atomichive.core.entity.EntityManager;
+import net.atomichive.core.item.ItemManager;
 import net.atomichive.core.listeners.*;
 import net.atomichive.core.player.AtomicPlayerDAO;
 import net.atomichive.core.player.PlayerManager;
@@ -16,7 +17,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -34,7 +34,10 @@ public class Main extends JavaPlugin {
     private Configuration config;
     private Logger logger;
 
+    // Management classes
     private PlayerManager playerManager;
+    private EntityManager entityManager;
+    private ItemManager itemManager;
     private DatabaseManager databaseManager;
     private WarpManager warpManager;
     private ProtocolManager protocolManager;
@@ -55,21 +58,29 @@ public class Main extends JavaPlugin {
         saveDefaultConfig();
         config = this.getConfig();
 
-        playerManager   = new PlayerManager();
-        warpManager     = new WarpManager();
+        playerManager = new PlayerManager();
+        entityManager = new EntityManager("entities.json");
+        itemManager = new ItemManager("items.json");
+        warpManager = new WarpManager();
         protocolManager = ProtocolLibrary.getProtocolManager();
 
         initDatabase();
         registerCommands();
         registerEvents();
 
-        if (config.getBoolean("development_mode", false)) {
-            logger.log(Level.INFO, "Loading custom entities...");
-            try {
-                EntityManager.load();
-            } catch (MalformedJsonException e) {
-                e.printStackTrace();
-            }
+        try {
+
+            logBreak();
+            log(Level.INFO, "Loading custom items...");
+            itemManager.load();
+
+            logBreak();
+            log(Level.INFO, "Loading custom entities...");
+            entityManager.load();
+            logBreak();
+
+        } catch (MalformedJsonException e) {
+            log(Level.SEVERE, "Malformed JSON");
         }
 
 
@@ -77,10 +88,10 @@ public class Main extends JavaPlugin {
         for (Player player : Bukkit.getOnlinePlayers())
             playerManager.addPlayer(player);
 
-        log(Level.INFO, "Loading warps.");
+        log(Level.INFO, "Loading warps from database...");
         warpManager.load();
 
-        BukkitTask task = new EntityClock().runTaskTimer(this, 0L, 5L);
+        new EntityClock().runTaskTimer(this, 0L, 5L);
 
     }
 
@@ -93,8 +104,9 @@ public class Main extends JavaPlugin {
     public void onDisable () {
 
         // Empty player manager
-        playerManager.removeAll();
-        warpManager.removeAll();
+        playerManager = null;
+        entityManager = null;
+        warpManager = null;
 
         databaseManager.closeConnection();
 
@@ -108,7 +120,8 @@ public class Main extends JavaPlugin {
      */
     private void initDatabase () {
 
-        logger.log(Level.INFO, "Initialising database...");
+        logBreak();
+        log(Level.INFO, "Initialising database...");
 
 
         // Init database manager
@@ -135,7 +148,7 @@ public class Main extends JavaPlugin {
         if (config.getBoolean("auto_migrate", true))
             databaseManager.migrate();
 
-        logger.log(Level.INFO, "Initialised database.");
+        logBreak();
 
     }
 
@@ -146,14 +159,15 @@ public class Main extends JavaPlugin {
      */
     private void registerCommands () {
 
-        logger.log(Level.INFO, "Registering commands...");
+        log(Level.INFO, "Registering commands...");
 
+        new CommandClear();
         new CommandEntity();
         new CommandFly();
         new CommandGameMode();
         new CommandGod();
         new CommandHeal();
-        // new CommandHelp();
+        new CommandItem();
         new CommandJump();
         new CommandKill();
         new CommandKillAll();
@@ -176,8 +190,6 @@ public class Main extends JavaPlugin {
         new CommandTeleportPosition();
         new CommandWarp();
 
-        logger.log(Level.INFO, "Commands registered.");
-
     }
 
 
@@ -187,7 +199,7 @@ public class Main extends JavaPlugin {
      */
     private void registerEvents () {
 
-        logger.log(Level.INFO, "Registering events...");
+        log(Level.INFO, "Registering events...");
 
         // Put all event handlers here
         new CommandListener();
@@ -201,13 +213,15 @@ public class Main extends JavaPlugin {
         new QuitListener();
         new SlimeSplitListener();
 
-        logger.log(Level.INFO, "Events registered.");
-
     }
 
 
     public void log (Level level, String out) {
         logger.log(level, out);
+    }
+
+    public void logBreak () {
+        log(Level.INFO, "-*-");
     }
 
 
@@ -225,6 +239,14 @@ public class Main extends JavaPlugin {
 
     public PlayerManager getPlayerManager () {
         return playerManager;
+    }
+
+    public EntityManager getEntityManager () {
+        return entityManager;
+    }
+
+    public ItemManager getItemManager () {
+        return itemManager;
     }
 
     public WarpManager getWarpManager () {

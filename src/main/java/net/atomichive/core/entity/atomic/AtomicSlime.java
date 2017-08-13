@@ -23,13 +23,14 @@ public class AtomicSlime extends AtomicEntity {
     /**
      * Init
      * Set config values.
+     *
      * @param attributes Entity Config from entities.json.
      */
     @Override
     public void init (SmartMap attributes) {
 
-        randomSize   = attributes.get(Boolean.class, "random_size",   true);
-        size         = attributes.getInteger("size", -1);
+        randomSize = attributes.get(Boolean.class, "random_size", true);
+        size = attributes.getInteger("size", -1);
         preventSplit = attributes.get(Boolean.class, "prevent_split", false);
 
         super.init(attributes);
@@ -39,6 +40,7 @@ public class AtomicSlime extends AtomicEntity {
     /**
      * Spawn
      * Generates a new entity, and places it in the world.
+     *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
@@ -51,6 +53,7 @@ public class AtomicSlime extends AtomicEntity {
     /**
      * Apply attributes
      * Applies everything defined in config to the entity.
+     *
      * @param entity Entity to edit.
      * @return Modified entity.
      */

@@ -17,6 +17,7 @@ public class SlimeSplitListener extends BaseListener implements Listener {
     /**
      * On slime split
      * Occurs whenever a slime splits.
+     *
      * @param event Slime split event.
      */
     @EventHandler

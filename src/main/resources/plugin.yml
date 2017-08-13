@@ -1,12 +1,16 @@
 name: atomic-core
 description: A core plugin designed for the Atomic Hive Minecraft server.
 main: net.atomichive.core.Main
-version: 0.0.9
+version: 0.0.11
 authors: [Sean Bailey]
 website: http://atomichive.net
 depends: [ProtocolLib]
 
 commands:
+  clear:
+    description: Clears the target player's inventory.
+    usage: /clear [player]
+    aliases: [empty, ci]
   entity:
     description: Used to manage Atomic Entities.
     usage: /entity [reload|list|spawn]
@@ -24,10 +28,10 @@ commands:
   heal:
     description: Restores health and hunger.
     usage: /heal
-  # help:
-  #   description: Lists all available Atomic Hive commands.
-  #   usage: /help [--legacy] [page]
-  #   aliases: [?]
+  item:
+    description: Give an item to the specified player.
+    usage: /item [player] <material> [amount]
+    aliases: [give, i]
   jump:
     description: Jump to the block you're looking at.
     usage: /jump
@@ -109,7 +113,9 @@ permissions:
   atomic-core.*:
     description: Gives access to all atomic-core commands.
     children:
-      atomic-core.atomic-entity: true
+      atomic-core.clear: true
+      atomic-core.clear.others: true
+      atomic-core.entity: true
       atomic-core.fly: true
       atomic-core.fly.other: true
       atomic-core.gamemode: true
@@ -117,7 +123,7 @@ permissions:
       atomic-core.gamemode.others: true
       atomic-core.god: true
       atomic-core.heal: true
-      # atomic-core.help: true
+      atomic-core.item: true
       atomic-core.jump: true
       atomic-core.kill: true
       atomic-core.killall: true
@@ -144,7 +150,14 @@ permissions:
       atomic-core.tp.silent: true
       atomic-core.warp: true
 
-  atomic-core.atomic-entity:
+  atomic-core.clear:
+    description: Gives access to the clear command.
+    default: op
+  atomic-core.clear.others:
+    description: Allows a user to clear someone else's inventory.
+    default: op
+
+  atomic-core.entity:
     description: Gives access to the entity command.
     default: op
 
@@ -190,9 +203,12 @@ permissions:
     description: Gives access to the heal command.
     default: op
 
-  # atomic-core.help:
-  #   description: Gives access to the help command.
-  #   default: true
+  atomic-core.item:
+    description: Gives access to the item command.
+    default: op
+  atomic-core.item.others:
+    description: Allows players to give items to other players.
+    default: op
 
   atomic-core.jump:
     description: Gives access to the jump command.

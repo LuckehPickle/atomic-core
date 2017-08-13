@@ -28,8 +28,9 @@ public class PathfinderGoalFollowEntity extends PathfinderGoal {
 
     /**
      * Pathfinder goal follow entity
-     * @param entity Entity that is following.
-     * @param follow Entity to be followed.
+     *
+     * @param entity      Entity that is following.
+     * @param follow      Entity to be followed.
      * @param minDistance Maximum distance before a teleport is carried out.
      */
     public PathfinderGoalFollowEntity (EntityInsentient entity, Entity follow, double speed, float minDistance, float maxDistance) {
@@ -45,6 +46,7 @@ public class PathfinderGoalFollowEntity extends PathfinderGoal {
     /**
      * a
      * Validates goal. If false, then entity will ignore this goal.
+     *
      * @return Whether the goal is valid.
      */
     @Override
@@ -60,13 +62,13 @@ public class PathfinderGoalFollowEntity extends PathfinderGoal {
     }
 
 
-    public void c() {
+    public void c () {
         this.count = 0;
         this.h = this.entity.a(PathType.WATER);
         this.entity.a(PathType.WATER, 0.0F);
     }
 
-    public void d() {
+    public void d () {
         this.follow = null;
         this.navigation.p();
         this.entity.a(PathType.WATER, this.h);

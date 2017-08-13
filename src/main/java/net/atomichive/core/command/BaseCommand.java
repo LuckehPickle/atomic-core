@@ -30,6 +30,7 @@ public abstract class BaseCommand implements CommandExecutor {
 
     /**
      * Command constructor
+     *
      * @param name           Name of the command.
      * @param description    Command description.
      * @param usage          Command usage.
@@ -65,6 +66,7 @@ public abstract class BaseCommand implements CommandExecutor {
 
     /**
      * On command
+     *
      * @param sender Object that sent the command.
      * @param cmd    Command that was run.
      * @param label  The exact command label typed by the user.
@@ -106,12 +108,13 @@ public abstract class BaseCommand implements CommandExecutor {
     /**
      * Run
      * Toggles a players flight state.
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.
-     * @throws CommandException if an error occurs.
+     * @throws CommandException    if an error occurs.
      * @throws PermissionException if the user doesn't have
-     *                                    appropriate permissions.
+     *                             appropriate permissions.
      */
     public abstract void run (CommandSender sender, String label, String[] args)
             throws CommandException, PermissionException;

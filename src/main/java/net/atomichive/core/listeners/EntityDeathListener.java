@@ -1,6 +1,6 @@
 package net.atomichive.core.listeners;
 
-import net.atomichive.core.entity.EntityManager;
+import net.atomichive.core.Main;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -13,7 +13,8 @@ public class EntityDeathListener extends BaseListener implements Listener {
 
     @EventHandler
     public void onDeath (EntityDeathEvent event) {
-        EntityManager.remove(event.getEntity());
+        Main.getInstance().getEntityManager()
+                .remove(event.getEntity());
     }
 
 }

@@ -31,6 +31,7 @@ public class CommandKill extends BaseCommand {
     /**
      * Run
      * The main logic for the command is handled here.
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.

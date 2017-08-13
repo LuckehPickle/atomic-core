@@ -1,7 +1,5 @@
 package net.atomichive.core.entity;
 
-import static org.junit.Assert.*;
-
 /**
  * Entity Manager Test
  */

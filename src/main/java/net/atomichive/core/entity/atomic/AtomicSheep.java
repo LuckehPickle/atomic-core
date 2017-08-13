@@ -22,14 +22,15 @@ public class AtomicSheep extends AtomicAgeable {
     /**
      * Init
      * Set config values.
+     *
      * @param attributes Entity Config from entities.json.
      */
     @Override
     public void init (SmartMap attributes) {
 
-        isSheared   = attributes.get(Boolean.class, "is_sheared",   false);
+        isSheared = attributes.get(Boolean.class, "is_sheared", false);
         randomColor = attributes.get(Boolean.class, "random_color", true);
-        color       = attributes.get(String.class,  "color", null);
+        color = attributes.get(String.class, "color", null);
 
         super.init(attributes);
 
@@ -39,6 +40,7 @@ public class AtomicSheep extends AtomicAgeable {
     /**
      * Spawn
      * Generates a new entity, and places it in the world.
+     *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
@@ -51,6 +53,7 @@ public class AtomicSheep extends AtomicAgeable {
     /**
      * Apply attributes
      * Applies everything defined in config to the entity.
+     *
      * @param entity Entity to edit.
      * @return Modified entity.
      */

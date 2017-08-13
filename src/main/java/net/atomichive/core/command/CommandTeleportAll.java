@@ -15,7 +15,7 @@ public class CommandTeleportAll extends BaseCommand {
 
 
     public CommandTeleportAll () {
-        super (
+        super(
                 "tpall",
                 "Teleports all players to you.",
                 "/tpall",
@@ -28,6 +28,7 @@ public class CommandTeleportAll extends BaseCommand {
 
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.

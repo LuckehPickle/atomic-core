@@ -22,6 +22,7 @@ public abstract class PaginatedResult<T> {
 
     /**
      * Paginated result
+     *
      * @param header String to be printed at the top of each page.
      */
     public PaginatedResult (String header) {
@@ -61,7 +62,7 @@ public abstract class PaginatedResult<T> {
 
         // Output header
         sender.sendMessage(localHeader);
-        for (int i = ITEMS_PER_PAGE * page; i < ITEMS_PER_PAGE * page + ITEMS_PER_PAGE  && i < results.size(); i++) {
+        for (int i = ITEMS_PER_PAGE * page; i < ITEMS_PER_PAGE * page + ITEMS_PER_PAGE && i < results.size(); i++) {
             sender.sendMessage(format(results.get(i)));
         }
 

@@ -57,25 +57,25 @@ public class CustomEntity {
         SmartMap attributes = new SmartMap(globalAttributes);
 
         // Apply global attributes
-        isNameVisible     = attributes.get(Boolean.class, "is_name_visible",     true);
-        despawn           = attributes.get(Boolean.class, "despawn",             true);
-        isInvulnerable    = attributes.get(Boolean.class, "is_invulnerable",     false);
-        isGlowing         = attributes.get(Boolean.class, "is_glowing",          false);
-        respectsGravity   = attributes.get(Boolean.class, "respects_gravity",    true);
-        isSilent          = attributes.get(Boolean.class, "is_silent",           false);
-        isCollidable      = attributes.get(Boolean.class, "is_collidable",       true);
+        isNameVisible = attributes.get(Boolean.class, "is_name_visible", true);
+        despawn = attributes.get(Boolean.class, "despawn", true);
+        isInvulnerable = attributes.get(Boolean.class, "is_invulnerable", false);
+        isGlowing = attributes.get(Boolean.class, "is_glowing", false);
+        respectsGravity = attributes.get(Boolean.class, "respects_gravity", true);
+        isSilent = attributes.get(Boolean.class, "is_silent", false);
+        isCollidable = attributes.get(Boolean.class, "is_collidable", true);
         preventItemPickup = attributes.get(Boolean.class, "prevent_item_pickup", false);
-        displayName       = attributes.get(String.class,  "display_name",        null);
-        pathfinding       = attributes.get(Map.class,     "pathfinding",         null);
-        abilities         = attributes.get(List.class,    "abilities",           null);
+        displayName = attributes.get(String.class, "display_name", null);
+        pathfinding = attributes.get(Map.class, "pathfinding", null);
+        abilities = attributes.get(List.class, "abilities", null);
 
     }
-
 
 
     /**
      * Spawn
      * Creates a new active entity.
+     *
      * @param location Location to spawn entity.
      * @return Active Entity.
      */
@@ -87,6 +87,7 @@ public class CustomEntity {
     /**
      * Spawn
      * Creates a new active entity.
+     *
      * @param location Location to spawn entity.
      * @return Active Entity.
      */
@@ -129,6 +130,7 @@ public class CustomEntity {
     /**
      * Apply local attributes
      * Apply local attributes to the active entity
+     *
      * @param activeEntity Active entity to modify.
      * @return Modified active entity.
      */
@@ -181,6 +183,11 @@ public class CustomEntity {
 
     }
 
+
+    @Override
+    public String toString () {
+        return String.format("%s [%s]", this.name, this.atomicClass);
+    }
 
 
     /*

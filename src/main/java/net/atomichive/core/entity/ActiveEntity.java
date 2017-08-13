@@ -36,13 +36,14 @@ public class ActiveEntity {
 
     // Abilities
     private List<Ability> abilities = new ArrayList<>();
-    private List<GenericAbilityHandler> onAttack  = new ArrayList<>();
-    private List<GenericAbilityHandler> onDamage  = new ArrayList<>();
-    private List<TimedAbilityHandler> onTimer   = new ArrayList<>();
+    private List<GenericAbilityHandler> onAttack = new ArrayList<>();
+    private List<GenericAbilityHandler> onDamage = new ArrayList<>();
+    private List<TimedAbilityHandler> onTimer = new ArrayList<>();
 
 
     /**
      * Active Entity
+     *
      * @param entity Bukkit entity.
      */
     public ActiveEntity (Entity entity) {
@@ -50,11 +51,11 @@ public class ActiveEntity {
     }
 
 
-
     /**
      * Apply pathfinding
      * Handles pathfinding map from entities.json, and applies
      * custom pathfinding to the entity as necessary.
+     *
      * @param pathfinding Pathfinding map.
      */
     public void applyPathfinding (Map pathfinding) {
@@ -64,13 +65,13 @@ public class ActiveEntity {
             return;
 
         // Init
-        EntityInsentient entity = (EntityInsentient)((CraftLivingEntity) this.entity).getHandle();
+        EntityInsentient entity = (EntityInsentient) ((CraftLivingEntity) this.entity).getHandle();
         Field goalsField = NMSUtil.getPrivateField(EntityInsentient.class, "goalSelector");
         Field targetsField = NMSUtil.getPrivateField(EntityInsentient.class, "targetSelector");
 
         // Attempt to retrieve goal selectors
         try {
-            this.goals   = (PathfinderGoalSelector) goalsField.get(entity);
+            this.goals = (PathfinderGoalSelector) goalsField.get(entity);
             this.targets = (PathfinderGoalSelector) targetsField.get(entity);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -94,12 +95,12 @@ public class ActiveEntity {
     }
 
 
-
     /**
      * Handle goals
      * Parses and applies pathfinding goals.
+     *
      * @param entity Entity to apply goals to.
-     * @param goals List of goals.
+     * @param goals  List of goals.
      * @throws AtomicEntityException if an exception occurs.
      */
     private void handleGoals (EntityInsentient entity, Object goals)
@@ -133,11 +134,11 @@ public class ActiveEntity {
     }
 
 
-
     /**
      * Handle goal
      * Parses and applies a pathfinding goal.
-     * @param g Pathfinding goal as a string.
+     *
+     * @param g      Pathfinding goal as a string.
      * @param entity Entity to apply goal to.
      */
     private void handleGoal (EntityInsentient entity, String g)
@@ -196,10 +197,10 @@ public class ActiveEntity {
     }
 
 
-
     /**
      * Handle targets
      * Parses and applies pathfinding targets.
+     *
      * @param targets List of targets.
      */
     private void handleTargets (EntityInsentient entity, Object targets) throws AtomicEntityException {
@@ -232,11 +233,11 @@ public class ActiveEntity {
     }
 
 
-
     /**
      * Handle target
+     *
      * @param entity Entity to give pathfinding target.
-     * @param t Pathfinding target as string.
+     * @param t      Pathfinding target as string.
      * @throws AtomicEntityException if an exception is encountered.
      */
     private void handleTarget (EntityInsentient entity, String t)
@@ -274,9 +275,9 @@ public class ActiveEntity {
     }
 
 
-
     /**
      * Parse priority
+     *
      * @param str Priority as a string.
      * @return Parsed priority.
      * @throws AtomicEntityException if priority cannot be parsed.
@@ -298,10 +299,10 @@ public class ActiveEntity {
     }
 
 
-
     /**
      * Clear
      * Uses reflection to clear pathfinder goal selectors.
+     *
      * @param selector Goal select to clear.
      */
     @SuppressWarnings("ConstantConditions")
@@ -323,6 +324,7 @@ public class ActiveEntity {
     /**
      * Apply abilities
      * Parses and applies abilities to this entity.
+     *
      * @param abilities A list of abilities strings.
      */
     public void applyAbilities (List abilities) {
@@ -343,7 +345,7 @@ public class ActiveEntity {
                 // Get trigger and add ability
                 String trigger = attributes.get(String.class, "trigger");
                 int radius = attributes.getInteger("radius", 30);
-                int ticks  = attributes.getInteger("ticks", 10);
+                int ticks = attributes.getInteger("ticks", 10);
 
                 Ability.Target target = Util.getEnumValue(
                         Ability.Target.class,
@@ -379,11 +381,11 @@ public class ActiveEntity {
     }
 
 
-
     /**
      * Get base ability
      * Returns a base ability constructed from
      * an ability attributes map.
+     *
      * @param attributes Ability attributes map.
      * @return Base ability
      * @throws AbilityException if no base ability is defined.
@@ -427,6 +429,7 @@ public class ActiveEntity {
 
     /**
      * Run on attack
+     *
      * @param source Entity who attacked.
      * @param target Entity being attacked.
      */
@@ -442,6 +445,7 @@ public class ActiveEntity {
 
     /**
      * Run on damage
+     *
      * @param source Entity who attacked.
      * @param target Entity being attacked.
      */
@@ -457,9 +461,10 @@ public class ActiveEntity {
 
     /**
      * Is
+     *
      * @param entity Bukkit entity.
      * @return Whether this active entity represents the given
-     *         Bukkit entity.
+     * Bukkit entity.
      */
     public boolean is (Entity entity) {
         return this.entity.equals(entity);

@@ -1,9 +1,9 @@
 package net.atomichive.core.listeners;
 
 import net.atomichive.core.Main;
+import net.atomichive.core.player.AtomicPlayer;
 import net.atomichive.core.util.BroadcastTask;
 import net.atomichive.core.util.Util;
-import net.atomichive.core.player.AtomicPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,6 +24,7 @@ public final class LoginListener extends BaseListener implements Listener {
     /**
      * On login
      * An event which occurs whenever a player logs in.
+     *
      * @param event Player login event object.
      */
     @EventHandler(priority = EventPriority.HIGHEST)

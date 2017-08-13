@@ -19,7 +19,7 @@ public class CommandNickname extends BaseCommand {
 
 
     public CommandNickname () {
-        super (
+        super(
                 "nick",
                 "Set your a custom display name.",
                 "/nick <name...>",
@@ -32,6 +32,7 @@ public class CommandNickname extends BaseCommand {
 
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.

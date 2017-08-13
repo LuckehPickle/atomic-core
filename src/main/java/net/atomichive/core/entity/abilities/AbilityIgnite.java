@@ -3,8 +3,6 @@ package net.atomichive.core.entity.abilities;
 import net.atomichive.core.util.SmartMap;
 import org.bukkit.entity.Entity;
 
-import java.util.Map;
-
 /**
  * Ability Ignite
  * Sets target on fire.
@@ -17,6 +15,7 @@ public class AbilityIgnite implements Ability {
 
     /**
      * Ability
+     *
      * @param attributes Ability attributes.
      */
     public AbilityIgnite (SmartMap attributes) {
@@ -26,6 +25,7 @@ public class AbilityIgnite implements Ability {
 
     /**
      * Execute
+     *
      * @param source Entity who executed the ability.
      * @param target Entity being targeted by the ability.
      */

@@ -19,18 +19,18 @@ public class AtomicAbstractHorse extends AtomicAgeable {
     private boolean isRideable;
 
 
-
     /**
      * Init
      * Set config values.
+     *
      * @param attributes Entity Config from entities.json.
      */
     @Override
     public void init (SmartMap attributes) {
 
-        jumpStrength   = attributes.get(Double.class,  "jump_strength",   -1.0d);
+        jumpStrength = attributes.get(Double.class, "jump_strength", -1.0d);
         isDomesticated = attributes.get(Boolean.class, "is_domesticated", false);
-        isRideable     = attributes.get(Boolean.class, "is_rideable",     true);
+        isRideable = attributes.get(Boolean.class, "is_rideable", true);
 
         super.init(attributes);
     }
@@ -39,6 +39,7 @@ public class AtomicAbstractHorse extends AtomicAgeable {
     /**
      * Spawn
      * Generates a new entity, and places it in the world.
+     *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
@@ -51,6 +52,7 @@ public class AtomicAbstractHorse extends AtomicAgeable {
     /**
      * Apply attributes
      * Applies everything defined in config to the entity.
+     *
      * @param entity Entity to edit.
      * @return Modified entity.
      */

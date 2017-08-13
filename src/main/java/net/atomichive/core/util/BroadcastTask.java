@@ -14,6 +14,7 @@ public final class BroadcastTask extends BukkitRunnable {
 
     /**
      * Broadcast Task
+     *
      * @param message Message to be broadcast
      */
     public BroadcastTask (String message) {

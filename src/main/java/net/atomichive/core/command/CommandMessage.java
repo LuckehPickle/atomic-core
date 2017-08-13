@@ -17,7 +17,7 @@ public class CommandMessage extends BaseCommand {
 
 
     public CommandMessage () {
-        super (
+        super(
                 "message",
                 "Send a private message.",
                 "/msg <player> <message>",
@@ -30,6 +30,7 @@ public class CommandMessage extends BaseCommand {
 
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.
@@ -42,7 +43,7 @@ public class CommandMessage extends BaseCommand {
             throws CommandException, PermissionException {
 
         // Get target player
-        Player target  = Bukkit.getPlayer(args[0]);
+        Player target = Bukkit.getPlayer(args[0]);
 
         // Ensure target player could be found
         if (target == null)
@@ -59,6 +60,7 @@ public class CommandMessage extends BaseCommand {
 
     /**
      * Send message
+     *
      * @param sender  Command sender.
      * @param target  Message recipient.
      * @param message Message contents.

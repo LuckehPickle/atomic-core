@@ -20,7 +20,7 @@ public class CommandPosition extends BaseCommand {
 
 
     public CommandPosition () {
-        super (
+        super(
                 "position",
                 "Returns your current position and the position of the block you're looking at.",
                 "/pos [player]",
@@ -33,6 +33,7 @@ public class CommandPosition extends BaseCommand {
 
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.
@@ -108,6 +109,7 @@ public class CommandPosition extends BaseCommand {
      * Simple trace
      * Performs a simple ray trace to the block the
      * player is looking at.
+     *
      * @param player Player to trace from.
      */
     private Location simpleTrace (Player player) {

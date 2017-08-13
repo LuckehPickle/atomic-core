@@ -29,6 +29,7 @@ public class CommandSudo extends BaseCommand {
 
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.
@@ -65,9 +66,9 @@ public class CommandSudo extends BaseCommand {
     }
 
 
-
     /**
      * Run command
+     *
      * @param sender  Player or thing that ran the sudo command.
      * @param target  Target player.
      * @param command Command for target player to run.

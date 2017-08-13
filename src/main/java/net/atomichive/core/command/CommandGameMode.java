@@ -33,6 +33,7 @@ public class CommandGameMode extends BaseCommand {
     /**
      * Run
      * The main logic for the command is handled here.
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.
@@ -94,14 +95,14 @@ public class CommandGameMode extends BaseCommand {
     }
 
 
-
     /**
      * Get game mode from string
      * Returns a game mode which matches the entered string.
+     *
      * @param mode Game mode as string.
      * @return Corresponding game mode object, or null.
      * @throws PermissionException if the sender does
-     *                                    not permission to set specified game mode.
+     *                             not permission to set specified game mode.
      */
     private GameMode getGameModeFromString (CommandSender sender, String mode)
             throws PermissionException {

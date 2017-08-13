@@ -17,6 +17,7 @@ public class SmartMap {
 
     /**
      * Smart Map
+     *
      * @param map Java map to wrap.
      */
     public SmartMap (Map map) {
@@ -29,7 +30,8 @@ public class SmartMap {
      * Use this method to retrieve Integers.
      * This is needed because JSON automatically
      * treats all numbers as doubles/floats.
-     * @param key Attribute key
+     *
+     * @param key          Attribute key
      * @param defaultValue Default value.
      * @return Retrieved integer or default value.
      */
@@ -40,8 +42,9 @@ public class SmartMap {
 
     /**
      * Get
+     *
      * @param clazz Class of object to return
-     * @param key Attribute key
+     * @param key   Attribute key
      * @return Retrieved object or default value.
      */
     public <T> T get (Class<T> clazz, String key) {
@@ -51,10 +54,11 @@ public class SmartMap {
 
     /**
      * Get
-     * @param clazz Class of object to return
-     * @param key Attribute key
+     *
+     * @param clazz        Class of object to return
+     * @param key          Attribute key
      * @param defaultValue Default value
-     * @param <T> Type of object
+     * @param <T>          Type of object
      * @return Retrieved object or default value.
      */
     public <T> T get (Class<T> clazz, String key, T defaultValue) {

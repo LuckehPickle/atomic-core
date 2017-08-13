@@ -7,8 +7,6 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import net.atomichive.core.Main;
 
-import java.util.logging.Level;
-
 /**
  * Packet Listener
  * Listens to and modifies packets.

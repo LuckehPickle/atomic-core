@@ -20,6 +20,7 @@ public class AtomicZombieVillager extends AtomicZombie {
     /**
      * Init
      * Set config values.
+     *
      * @param attributes Entity Config from entities.json.
      */
     @Override
@@ -35,6 +36,7 @@ public class AtomicZombieVillager extends AtomicZombie {
     /**
      * Spawn
      * Generates a new entity, and places it in the world.
+     *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
@@ -47,6 +49,7 @@ public class AtomicZombieVillager extends AtomicZombie {
     /**
      * Apply attributes
      * Applies everything defined in config to the entity.
+     *
      * @param entity Entity to edit.
      * @return Modified entity.
      */

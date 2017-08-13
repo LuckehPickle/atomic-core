@@ -15,6 +15,7 @@ public class AtomicMagmaCube extends AtomicSlime {
     /**
      * Spawn
      * Generates a new entity, and places it in the world.
+     *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
@@ -27,6 +28,7 @@ public class AtomicMagmaCube extends AtomicSlime {
     /**
      * Apply attributes
      * Applies everything defined in config to the entity.
+     *
      * @param entity Entity to edit.
      * @return Modified entity.
      */

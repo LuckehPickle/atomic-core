@@ -2,7 +2,6 @@ package net.atomichive.core.listeners;
 
 import net.atomichive.core.Main;
 import net.atomichive.core.player.AtomicPlayer;
-import net.atomichive.core.player.PlayerManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

@@ -2,11 +2,9 @@ package net.atomichive.core.command;
 
 import com.google.gson.stream.MalformedJsonException;
 import net.atomichive.core.Main;
-import net.atomichive.core.entity.ActiveEntity;
 import net.atomichive.core.entity.CustomEntity;
-import net.atomichive.core.entity.EntityManager;
-import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.AtomicEntityException;
+import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.exception.Reason;
 import net.atomichive.core.util.PaginatedResult;
@@ -27,18 +25,18 @@ public class CommandEntity extends BaseCommand {
     public CommandEntity () {
         super(
                 "entity",
-                "Used to manage Atomic Entities.",
+                "Used to manage custom entities.",
                 "/entity [reload|list|spawn]",
-                "atomic-core.atomic-entity",
+                "atomic-core.entity",
                 false,
                 1
         );
     }
 
 
-
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.
@@ -65,9 +63,6 @@ public class CommandEntity extends BaseCommand {
             case "s":
                 spawnEntity(sender, args);
                 break;
-            case "debug":
-                debug(sender);
-                break;
             default:
                 throw new CommandException("Unknown option '" + args[0] + "'.");
         }
@@ -78,6 +73,7 @@ public class CommandEntity extends BaseCommand {
     /**
      * Reload entities
      * Reloads all custom entities from entities.json.
+     *
      * @param sender The person or thing that sent the command.
      */
     private void reloadEntities (CommandSender sender) throws CommandException {
@@ -86,7 +82,7 @@ public class CommandEntity extends BaseCommand {
         int found = 0;
 
         try {
-            found = EntityManager.load();
+            found = Main.getInstance().getEntityManager().load();
         } catch (MalformedJsonException e) {
             throw new CommandException("Malformed JSON in entities.json. View console for more information.");
         }
@@ -114,8 +110,9 @@ public class CommandEntity extends BaseCommand {
 
     /**
      * List entities
+     *
      * @param sender Command sender.
-     * @param args Any command arguments.
+     * @param args   Any command arguments.
      */
     private void listEntities (CommandSender sender, String[] args) throws CommandException {
 
@@ -130,7 +127,7 @@ public class CommandEntity extends BaseCommand {
         }
 
         // Get all warps
-        List<CustomEntity> entities = EntityManager.getAll();
+        List<CustomEntity> entities = Main.getInstance().getEntityManager().getAll();
 
         // Create a new paginated result
         new PaginatedResult<CustomEntity>("Custom entities") {
@@ -149,11 +146,11 @@ public class CommandEntity extends BaseCommand {
     }
 
 
-
     /**
      * Spawn entity
+     *
      * @param sender Command sender.
-     * @param args Any command arguments.
+     * @param args   Any command arguments.
      */
     private void spawnEntity (CommandSender sender, String[] args) throws CommandException {
 
@@ -209,7 +206,8 @@ public class CommandEntity extends BaseCommand {
 
         // Attempt to spawn entity
         try {
-            EntityManager.spawnEntity(location, entity, count, player);
+            Main.getInstance().getEntityManager()
+                    .spawnEntity(location, entity, count, player);
         } catch (AtomicEntityException e) {
             player.sendMessage(e.getMessage());
             return;
@@ -217,13 +215,6 @@ public class CommandEntity extends BaseCommand {
 
         player.sendMessage("Spawned " + ChatColor.GREEN + count + ChatColor.RESET + " entities.");
 
-    }
-
-
-    private void debug (CommandSender sender) {
-        for (ActiveEntity entity : EntityManager.getActiveEntities()) {
-            sender.sendMessage(entity.getEntity().getName());
-        }
     }
 
 

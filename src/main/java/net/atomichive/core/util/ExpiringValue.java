@@ -21,6 +21,7 @@ public class ExpiringValue<P> {
      * Expiring Value
      * A value which expires to null after the given
      * number of seconds elapses.
+     *
      * @param seconds Time before the value expires.
      */
     public ExpiringValue (int seconds) {
@@ -31,6 +32,7 @@ public class ExpiringValue<P> {
      * Expiring Value
      * A value which expires to null after the given
      * number of seconds elapses.
+     *
      * @param seconds Time before the value expires.
      * @param value   Initial value.
      */
@@ -47,6 +49,7 @@ public class ExpiringValue<P> {
      * Update
      * Updates the internal value and resets the
      * expiration timer.
+     *
      * @param value New value.
      */
     public void update (P value) {

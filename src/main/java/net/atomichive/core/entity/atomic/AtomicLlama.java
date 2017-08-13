@@ -21,14 +21,15 @@ public class AtomicLlama extends AtomicAbstractHorse {
     /**
      * Init
      * Set config values.
+     *
      * @param attributes Entity Config from entities.json.
      */
     @Override
     public void init (SmartMap attributes) {
 
         isCarryingChest = attributes.get(Boolean.class, "is_carrying_chest", false);
-        strength        = attributes.get(Integer.class, "strength", -1);
-        color           = attributes.get(String.class,  "color",    null);
+        strength = attributes.get(Integer.class, "strength", -1);
+        color = attributes.get(String.class, "color", null);
 
         super.init(attributes);
 
@@ -38,6 +39,7 @@ public class AtomicLlama extends AtomicAbstractHorse {
     /**
      * Spawn
      * Generates a new entity, and places it in the world.
+     *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
@@ -50,6 +52,7 @@ public class AtomicLlama extends AtomicAbstractHorse {
     /**
      * Apply attributes
      * Applies everything defined in config to the entity.
+     *
      * @param entity Entity to edit.
      * @return Modified entity.
      */

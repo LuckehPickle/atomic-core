@@ -1,7 +1,6 @@
 package net.atomichive.core.entity.abilities;
 
 import net.atomichive.core.util.Util;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
@@ -30,6 +29,7 @@ public interface Ability {
         /**
          * Get targets
          * Retrieves all matching targets.
+         *
          * @param source Source entity.
          * @param target Target type.
          * @param radius Maximum targeting radius (if applicable).
@@ -65,6 +65,7 @@ public interface Ability {
         /**
          * Get nearby
          * Returns a collection of all nearby entities.
+         *
          * @param source Source entity.
          * @param radius Max radius to search.
          * @return A collection of all entities within the given radius.
@@ -81,6 +82,7 @@ public interface Ability {
 
     /**
      * Execute
+     *
      * @param source Entity who executed the ability.
      * @param target Entity being targeted by the ability.
      */

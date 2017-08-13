@@ -13,6 +13,7 @@ public class TeleportUtil {
 
     /**
      * Teleport
+     *
      * @param source      Player being teleported.
      * @param destination Player to teleport to.
      */
@@ -23,6 +24,7 @@ public class TeleportUtil {
 
     /**
      * Teleport
+     *
      * @param source      Player being teleported.
      * @param destination Player to teleport to.
      * @param silent      Whether to make the teleport silent.
@@ -48,9 +50,9 @@ public class TeleportUtil {
     }
 
 
-
     /**
      * Teleport Here
+     *
      * @param source      Player to teleport to.
      * @param destination Player being teleported.
      */

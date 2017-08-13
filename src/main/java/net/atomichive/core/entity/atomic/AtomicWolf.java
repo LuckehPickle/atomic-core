@@ -23,15 +23,16 @@ public class AtomicWolf extends AtomicAgeable {
     /**
      * Init
      * Set config values.
+     *
      * @param attributes Entity Config from entities.json.
      */
     @Override
     public void init (SmartMap attributes) {
 
-        isTamed     = attributes.get(Boolean.class, "is_tamed",     false);
-        isSitting   = attributes.get(Boolean.class, "is_sitting",   false);
-        isAngry     = attributes.get(Boolean.class, "is_angry",     false);
-        collarColor = attributes.get(String.class,  "collar_color", null);
+        isTamed = attributes.get(Boolean.class, "is_tamed", false);
+        isSitting = attributes.get(Boolean.class, "is_sitting", false);
+        isAngry = attributes.get(Boolean.class, "is_angry", false);
+        collarColor = attributes.get(String.class, "collar_color", null);
 
         super.init(attributes);
     }
@@ -40,6 +41,7 @@ public class AtomicWolf extends AtomicAgeable {
     /**
      * Spawn
      * Generates a new entity, and places it in the world.
+     *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
@@ -52,6 +54,7 @@ public class AtomicWolf extends AtomicAgeable {
     /**
      * Apply attributes
      * Applies everything defined in config to the entity.
+     *
      * @param entity Entity to edit.
      * @return Modified entity.
      */

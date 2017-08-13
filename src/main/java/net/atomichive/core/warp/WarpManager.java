@@ -20,9 +20,10 @@ public class WarpManager {
 
     /**
      * Get
+     *
      * @param name Name of warp to retrieve.
      * @return Warp with corresponding name, null
-     *         if not found.
+     * if not found.
      */
     public Warp get (String name) {
 
@@ -56,6 +57,7 @@ public class WarpManager {
      * Contains
      * Checks to see if a warp by this name already
      * exists.
+     *
      * @param name Name of the warp.
      * @return Whether the warp already exists.
      */
@@ -72,11 +74,11 @@ public class WarpManager {
     }
 
 
-
     /**
      * Delete
      * Removes a warp from the db, and from
      * the warp manager.
+     *
      * @param name Name of the warp to delete.
      * @return deleted warp for output purposes.
      */
@@ -96,7 +98,6 @@ public class WarpManager {
         return warp;
 
     }
-
 
 
     /**

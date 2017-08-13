@@ -16,7 +16,7 @@ public class CommandJump extends BaseCommand {
 
 
     public CommandJump () {
-        super (
+        super(
                 "jump",
                 "Jump to the block you're looking at.",
                 "/jump",
@@ -30,6 +30,7 @@ public class CommandJump extends BaseCommand {
     /**
      * Run
      * Toggles a players flight state.
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.

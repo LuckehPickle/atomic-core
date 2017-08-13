@@ -1,6 +1,6 @@
 package net.atomichive.core.entity.abilities;
 
-import net.atomichive.core.entity.EntityManager;
+import net.atomichive.core.Main;
 import net.atomichive.core.exception.AtomicEntityException;
 import net.atomichive.core.util.SmartMap;
 import org.bukkit.Location;
@@ -21,20 +21,22 @@ public class AbilitySummon implements Ability {
     /**
      * Ability Summon
      * Accepts any of the following attributes:
-     *  1. `entity`: Unique name of the entity to summon.
-     *  2. `count`: Number of entities to summon.
-     *  3. `radius`: Radius around target to summon.
+     * 1. `entity`: Unique name of the entity to summon.
+     * 2. `count`: Number of entities to summon.
+     * 3. `radius`: Radius around target to summon.
+     *
      * @param attributes Ability attributes.
      */
     public AbilitySummon (SmartMap attributes) {
-        entity = attributes.get(String.class,  "entity", null);
-        count  = attributes.getInteger("count",  3);
+        entity = attributes.get(String.class, "entity", null);
+        count = attributes.getInteger("count", 3);
         radius = attributes.getInteger("radius", 3);
     }
 
 
     /**
      * Execute
+     *
      * @param source Entity who executed the ability.
      * @param target Entity being targeted by the ability.
      */
@@ -50,7 +52,8 @@ public class AbilitySummon implements Ability {
             location.setX(target.getLocation().getX() + radius * Math.cos(i * theta));
             location.setZ(target.getLocation().getZ() + radius * Math.sin(i * theta));
             try {
-                EntityManager.spawnEntity(location, entity, 1, source);
+                Main.getInstance().getEntityManager()
+                        .spawnEntity(location, entity, 1, source);
             } catch (AtomicEntityException e) {
                 e.printStackTrace();
             }

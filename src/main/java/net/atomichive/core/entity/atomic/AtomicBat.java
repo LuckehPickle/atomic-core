@@ -13,6 +13,7 @@ public class AtomicBat extends AtomicEntity {
     /**
      * Spawn
      * Generates a new entity, and places it in the world.
+     *
      * @param location to spawn entity.
      * @return Spawned entity.
      */

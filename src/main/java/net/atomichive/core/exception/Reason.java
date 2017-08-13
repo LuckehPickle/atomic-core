@@ -8,13 +8,13 @@ import org.bukkit.ChatColor;
  */
 public enum Reason {
 
-    ERROR          ("Error: %s"),
-    ENTITY_ERROR   ("Entity error: %s"),
-    INVALID_USAGE  ("Usage: %s"),
-    INVALID_SENDER ("Invalid sender: %s"),
-    INVALID_INPUT  ("Invalid input: %s"),
-    UNKNOWN_CLASS  ("Unknown class: %s"),
-    WARP_FAILED    ("Warp failed: %s");
+    ERROR("Error: %s"),
+    ENTITY_ERROR("Entity error: %s"),
+    INVALID_USAGE("Usage: %s"),
+    INVALID_SENDER("Invalid sender: %s"),
+    INVALID_INPUT("Invalid input: %s"),
+    UNKNOWN_CLASS("Unknown class: %s"),
+    WARP_FAILED("Warp failed: %s");
 
     private final String format;
 

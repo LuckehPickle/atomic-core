@@ -36,12 +36,13 @@ public class CommandFly extends BaseCommand {
     /**
      * Run
      * Toggles a players flight state.
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.
-     * @throws CommandException if an error occurs.
+     * @throws CommandException    if an error occurs.
      * @throws PermissionException if the user doesn't have
-     *                                    appropriate permissions.
+     *                             appropriate permissions.
      */
     @Override
     public void run (CommandSender sender, String label, String[] args)
@@ -84,6 +85,7 @@ public class CommandFly extends BaseCommand {
     /**
      * Toggle flight
      * Toggles the flying status of a particular player.
+     *
      * @param player Player whose flight status should be toggled.
      */
     private void toggleFlight (Player player) {
@@ -104,6 +106,7 @@ public class CommandFly extends BaseCommand {
     /**
      * Get output string
      * Constructs a string which details a user's flight status.
+     *
      * @param player Player whose flight status will be printed.
      * @return A string which details whether a player can fly or not.
      */

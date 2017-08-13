@@ -38,6 +38,7 @@ public class CommandPing extends BaseCommand {
 
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.
@@ -92,6 +93,7 @@ public class CommandPing extends BaseCommand {
      * Returns a players ping (this function does not check
      * if a player is online).
      * Reflection is used to make this function version independent.
+     *
      * @param player Player whose ping should be retrieved.
      * @return Delay in ms.
      */
@@ -120,10 +122,10 @@ public class CommandPing extends BaseCommand {
 
         } catch (
                 ClassNotFoundException |
-                InvocationTargetException |
-                NoSuchFieldException |
-                IllegalAccessException |
-                NoSuchMethodException e
+                        InvocationTargetException |
+                        NoSuchFieldException |
+                        IllegalAccessException |
+                        NoSuchMethodException e
                 ) {
             return null;
         }
@@ -134,6 +136,7 @@ public class CommandPing extends BaseCommand {
     /**
      * Colourise
      * Adds colour to a ping depending on how high it is.
+     *
      * @param ping Ping to colourise.
      * @return A colourised ping.
      */

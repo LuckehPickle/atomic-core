@@ -12,7 +12,7 @@ public class CommandHelp extends BaseCommand {
 
 
     public CommandHelp () {
-        super (
+        super(
                 "help",
                 "Lists all available Atomic Hive commands.",
                 "/help [--legacy] [page]",
@@ -23,9 +23,9 @@ public class CommandHelp extends BaseCommand {
     }
 
 
-
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.

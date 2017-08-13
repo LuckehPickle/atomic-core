@@ -40,12 +40,13 @@ public class Warp {
     /**
      * Warp constructor.
      * Create a new warp.
+     *
      * @param name     Warp name, must be unique.
      * @param location Location of warp.
      */
     public Warp (String name, Location location) {
 
-        this (
+        this(
                 name,
                 location.getWorld().getUID(),
                 location.getBlockX(),
@@ -63,6 +64,7 @@ public class Warp {
     /**
      * Warp constructor.
      * Create a new warp.
+     *
      * @param name  Warp name, must be unique.
      * @param world UUID of the world.
      * @param x     X coordinate.
@@ -85,10 +87,10 @@ public class Warp {
     }
 
 
-
     /**
      * Warp player
      * Warp the specified player to this warp.
+     *
      * @param player Player to teleport/warp.
      * @throws UnknownWorldException if the world could not be found.
      */
@@ -115,7 +117,6 @@ public class Warp {
         }
 
     }
-
 
 
     @Override

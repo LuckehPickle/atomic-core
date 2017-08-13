@@ -1,1 +1,2 @@
-ALTER TABLE players ADD COLUMN IF NOT EXISTS display_name VARCHAR(24);
+ALTER TABLE players
+    ADD COLUMN IF NOT EXISTS display_name VARCHAR(24);

@@ -15,7 +15,7 @@ public class CommandReply extends BaseCommand {
 
 
     public CommandReply () {
-        super (
+        super(
                 "reply",
                 "Respond to the last message you received.",
                 "/reply <message>",
@@ -28,6 +28,7 @@ public class CommandReply extends BaseCommand {
 
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.

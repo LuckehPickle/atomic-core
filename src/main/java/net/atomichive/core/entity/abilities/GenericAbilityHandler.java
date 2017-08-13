@@ -1,11 +1,8 @@
 package net.atomichive.core.entity.abilities;
 
-import net.atomichive.core.Main;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * Generic Ability Handler
@@ -22,6 +19,7 @@ public class GenericAbilityHandler {
 
     /**
      * Generic ability handler
+     *
      * @param ability Base ability to handle
      * @param target  Ability target.
      */
@@ -31,6 +29,7 @@ public class GenericAbilityHandler {
 
     /**
      * Generic Ability Handle
+     *
      * @param ability Base ability to handle.
      * @param target  Ability target.
      * @param radius  Maximum target radius (if applicable).
@@ -46,6 +45,7 @@ public class GenericAbilityHandler {
      * Run
      * Finds applicable targets and executes related
      * ability.
+     *
      * @param source Source entity
      */
     public void run (Entity source) {
@@ -64,6 +64,7 @@ public class GenericAbilityHandler {
      * Run
      * Executes related ability with specified
      * target.
+     *
      * @param source Source entity.
      * @param target Ability target (can be overwritten if
      *               target is specified).

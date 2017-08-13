@@ -48,6 +48,7 @@ public class WarpDAO {
 
     /**
      * Get all
+     *
      * @return all warps.
      */
     public static List<Warp> getAll () {
@@ -100,10 +101,10 @@ public class WarpDAO {
     }
 
 
-
     /**
      * Insert
      * Add a warp to the db
+     *
      * @param warp Warp to insert.
      */
     public static void insert (Warp warp) {
@@ -134,9 +135,9 @@ public class WarpDAO {
     }
 
 
-
     /**
      * Drop
+     *
      * @param warp Warp object to drop.
      */
     public static void drop (Warp warp) {
@@ -144,10 +145,10 @@ public class WarpDAO {
     }
 
 
-
     /**
      * Drop
      * Drops a warp from the db.
+     *
      * @param identifier Warp identifier.
      */
     public static void drop (UUID identifier) {

@@ -17,6 +17,7 @@ public class NMSUtil {
 
     /**
      * Get NMS Entity
+     *
      * @param entity Bukkit entity.
      * @return Corresponding NMS entity.
      */
@@ -27,7 +28,8 @@ public class NMSUtil {
 
     /**
      * Get private field
-     * @param clazz Class to get field from.
+     *
+     * @param clazz     Class to get field from.
      * @param fieldName Name of private field to retrieve.
      * @return Private field, set as accessible.
      */
@@ -51,7 +53,8 @@ public class NMSUtil {
 
     /**
      * Set creeper radius
-     * @param c Bukkit creeper.
+     *
+     * @param c      Bukkit creeper.
      * @param radius Explosion radius.
      */
     public static void setCreeperRadius (Creeper c, int radius) {
@@ -72,7 +75,8 @@ public class NMSUtil {
 
     /**
      * Set creeper fuse
-     * @param c Bukkit creeper
+     *
+     * @param c     Bukkit creeper
      * @param ticks Fuse ticks.
      */
     public static void setCreeperFuse (Creeper c, int ticks) {

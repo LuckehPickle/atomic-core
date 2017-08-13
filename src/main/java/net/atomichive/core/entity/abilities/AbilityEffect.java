@@ -1,7 +1,6 @@
 package net.atomichive.core.entity.abilities;
 
 import net.atomichive.core.util.SmartMap;
-import net.atomichive.core.util.Util;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
@@ -21,21 +20,21 @@ public class AbilityEffect implements Ability {
 
 
     public AbilityEffect (SmartMap attributes) {
-        effect       = attributes.get(String.class, "effect");
-        duration     = attributes.getInteger("duration",  30);
-        amplifier    = attributes.getInteger("amplifier", 0);
+        effect = attributes.get(String.class, "effect");
+        duration = attributes.getInteger("duration", 30);
+        amplifier = attributes.getInteger("amplifier", 0);
         hasParticles = attributes.get(Boolean.class, "has_particles", true);
     }
 
 
     /**
      * Execute
+     *
      * @param source Entity who executed the ability.
      * @param target Entity being targeted by the ability.
      */
     @Override
     public void execute (Entity source, Entity target) {
-
 
 
         // Ensure target is living entity

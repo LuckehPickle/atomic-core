@@ -2,9 +2,6 @@ package net.atomichive.core.entity.abilities;
 
 import org.bukkit.entity.Entity;
 
-import java.util.Collection;
-import java.util.List;
-
 /**
  * Timed Ability Handler
  * Wraps around a regular ability for time
@@ -18,6 +15,7 @@ public class TimedAbilityHandler extends GenericAbilityHandler {
 
     /**
      * Timed Ability Handler
+     *
      * @param ability Base ability to handle.
      * @param target  Ability target.
      * @param radius  Maximum target radius (if applicable).
@@ -28,6 +26,7 @@ public class TimedAbilityHandler extends GenericAbilityHandler {
 
     /**
      * Timed Ability Handler
+     *
      * @param ability  Base ability to handle.
      * @param target   Ability target.
      * @param radius   Maximum target radius (if applicable).
@@ -41,6 +40,7 @@ public class TimedAbilityHandler extends GenericAbilityHandler {
 
     /**
      * Tick
+     *
      * @param source Ability source
      */
     public void tick (Entity source) {

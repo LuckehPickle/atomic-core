@@ -17,7 +17,7 @@ public class CommandTeleportAccept extends BaseCommand {
 
 
     public CommandTeleportAccept () {
-        super (
+        super(
                 "tpaccept",
                 "Accepts the most recent teleport request.",
                 "/tpaccept",
@@ -30,6 +30,7 @@ public class CommandTeleportAccept extends BaseCommand {
 
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.

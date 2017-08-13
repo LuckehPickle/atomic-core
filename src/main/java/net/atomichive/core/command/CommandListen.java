@@ -18,7 +18,7 @@ public class CommandListen extends BaseCommand {
 
 
     public CommandListen () {
-        super (
+        super(
                 "listen",
                 "Change command listening levels.",
                 "/listen <help|verbosity(0-2)>",
@@ -31,6 +31,7 @@ public class CommandListen extends BaseCommand {
 
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.

@@ -17,12 +17,13 @@ public abstract class AtomicAgeable extends AtomicEntity {
     /**
      * Init
      * Set config values.
+     *
      * @param attributes Entity Config from entities.json.
      */
     @Override
     public void init (SmartMap attributes) {
 
-        isBaby  = attributes.get(Boolean.class, "is_baby",  false);
+        isBaby = attributes.get(Boolean.class, "is_baby", false);
         ageLock = attributes.get(Boolean.class, "age_lock", false);
 
         super.init(attributes);
@@ -33,6 +34,7 @@ public abstract class AtomicAgeable extends AtomicEntity {
     /**
      * Apply attributes
      * Applies everything defined in config to the entity.
+     *
      * @param entity Entity to edit.
      * @return Modified entity.
      */

@@ -4,7 +4,6 @@ import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.util.TeleportUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -16,7 +15,7 @@ public class CommandTeleportHere extends BaseCommand {
 
 
     public CommandTeleportHere () {
-        super (
+        super(
                 "tphere",
                 "Teleports another player to you.",
                 "/tphere <player>",
@@ -27,10 +26,10 @@ public class CommandTeleportHere extends BaseCommand {
     }
 
 
-
     /**
      * Run
      * Toggles a players flight state.
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.

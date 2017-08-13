@@ -15,7 +15,7 @@ public class CommandTeleportPosition extends BaseCommand {
 
 
     public CommandTeleportPosition () {
-        super (
+        super(
                 "tppos",
                 "Teleport to a position in your current world.",
                 "/tppos <x> [y] <z>",
@@ -28,6 +28,7 @@ public class CommandTeleportPosition extends BaseCommand {
 
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.

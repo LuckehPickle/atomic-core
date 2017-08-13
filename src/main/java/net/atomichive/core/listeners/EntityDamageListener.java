@@ -1,8 +1,8 @@
 package net.atomichive.core.listeners;
 
+import net.atomichive.core.Main;
 import net.atomichive.core.entity.ActiveEntity;
 import net.atomichive.core.entity.EntityManager;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,6 +18,7 @@ public class EntityDamageListener extends BaseListener implements Listener {
 
     /**
      * On entity damage
+     *
      * @param event Entity damage event.
      */
     @EventHandler
@@ -39,14 +40,16 @@ public class EntityDamageListener extends BaseListener implements Listener {
      * On entity damage entity
      * An event which occurs whenever an entity damages
      * another entity.
+     *
      * @param event Entity damage entity event
      */
     @EventHandler
     public void onEntityDamageEntity (EntityDamageByEntityEvent event) {
 
         // Handle damager first
+        EntityManager manager = Main.getInstance().getEntityManager();
         Entity entity = event.getDamager();
-        ActiveEntity activeEntity = EntityManager.getActiveEntity(entity);
+        ActiveEntity activeEntity = manager.getActiveEntity(entity);
 
         // Check if entity is active entity
         if (activeEntity != null) {
@@ -57,7 +60,7 @@ public class EntityDamageListener extends BaseListener implements Listener {
 
         // Handle damagee
         entity = event.getEntity();
-        activeEntity = EntityManager.getActiveEntity(entity);
+        activeEntity = manager.getActiveEntity(entity);
 
         // Check if entity is active entity
         if (activeEntity != null) {

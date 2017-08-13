@@ -70,6 +70,7 @@ public class AtomicPlayerDAO {
     /**
      * Find all
      * Returns a list of all players stored in the db.
+     *
      * @return All players stored in the db.
      */
     public static List<AtomicPlayer> findAll () {
@@ -81,8 +82,8 @@ public class AtomicPlayerDAO {
             // Execute query
             ResultSet set = statement.executeQuery(
                     new SelectBuilder("players")
-                        .addColumn("*")
-                        .toString()
+                            .addColumn("*")
+                            .toString()
             );
 
             // Map results to player
@@ -101,6 +102,7 @@ public class AtomicPlayerDAO {
      * Find by identifier (READ)
      * Returns a list of all players which match
      * the provided identifier.
+     *
      * @param identifier UUID of player.
      * @return List of all matching players. Should theoretically
      * never be more than one player long.
@@ -127,6 +129,7 @@ public class AtomicPlayerDAO {
     /**
      * Insert
      * Adds a new atomic player to the database.
+     *
      * @param player Atomic Player to add.
      */
     public static void insert (AtomicPlayer player) {
@@ -160,6 +163,7 @@ public class AtomicPlayerDAO {
     /**
      * Update
      * Updates an existing atomic player in the database.
+     *
      * @param player Player to update
      */
     public static void update (AtomicPlayer player) {
@@ -198,6 +202,7 @@ public class AtomicPlayerDAO {
 
     /**
      * Map player to results
+     *
      * @param statement Prepared statement to map player to.
      * @param player    Player to map to statement.
      * @throws SQLException if an SQL exception is encountered (duh?)
@@ -225,6 +230,7 @@ public class AtomicPlayerDAO {
      * Map Results to Players
      * Takes an SQL result set, and maps the returned columns
      * to Atomic Player objects.
+     *
      * @param rs Result set from SQL query.
      * @return List of players from the result set.
      * @throws SQLException If an exception is encountered whilst handling SQL.

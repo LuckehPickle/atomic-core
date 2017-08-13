@@ -30,7 +30,6 @@ public class AtomicPlayer {
     private transient ExpiringValue<Player> lastTeleportRequest;
 
 
-
     /**
      * Atomic Player constructor
      */
@@ -40,6 +39,7 @@ public class AtomicPlayer {
 
     /**
      * Atomic Player constructor
+     *
      * @param identifier UUID of player.
      * @param username   Player's current username;
      */
@@ -57,6 +57,7 @@ public class AtomicPlayer {
 
     /**
      * Is
+     *
      * @param player Bukkit player.
      * @return Whether the atomic player is the same as the bukkit player.
      */

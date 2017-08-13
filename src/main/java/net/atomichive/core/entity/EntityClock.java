@@ -1,5 +1,6 @@
 package net.atomichive.core.entity;
 
+import net.atomichive.core.Main;
 import net.atomichive.core.entity.abilities.TimedAbilityHandler;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -16,7 +17,8 @@ public class EntityClock extends BukkitRunnable {
     public void run () {
 
         // Get all active entities
-        List<ActiveEntity> entities = EntityManager.getActiveEntities();
+        List<ActiveEntity> entities = Main.getInstance().getEntityManager()
+                .getActiveEntities();
 
         // Tick all entities
         for (ActiveEntity entity : entities)

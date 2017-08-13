@@ -14,7 +14,7 @@ public class CommandHeal extends BaseCommand {
 
 
     public CommandHeal () {
-        super (
+        super(
                 "heal",
                 "Restores health and hunger.",
                 "/heal",
@@ -27,6 +27,7 @@ public class CommandHeal extends BaseCommand {
 
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.

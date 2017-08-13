@@ -17,7 +17,7 @@ public class CommandTeleportDeny extends BaseCommand {
 
 
     public CommandTeleportDeny () {
-        super (
+        super(
                 "tpdeny",
                 "Denies the most recent teleport request.",
                 "/tpdeny",
@@ -30,6 +30,7 @@ public class CommandTeleportDeny extends BaseCommand {
 
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.

@@ -18,7 +18,7 @@ public class CommandTeleportAsk extends BaseCommand {
 
 
     public CommandTeleportAsk () {
-        super (
+        super(
                 "tpa",
                 "Sends a teleport request to another player.",
                 "/tpa <player>",
@@ -31,6 +31,7 @@ public class CommandTeleportAsk extends BaseCommand {
 
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.

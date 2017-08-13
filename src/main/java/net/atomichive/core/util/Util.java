@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.StringJoiner;
@@ -34,6 +33,7 @@ public class Util {
      * Get current timestamp
      * Returns a timestamp object representing the current
      * time.
+     *
      * @return The current timestamp.
      */
     public static Timestamp getCurrentTimestamp () {
@@ -43,6 +43,7 @@ public class Util {
 
     /**
      * Export resource
+     *
      * @param resource Path to resource
      */
     public static void exportResource (String resource) throws Exception {
@@ -73,6 +74,7 @@ public class Util {
      * To title case
      * Converts an underscored string to title case.
      * E.g. custom_zombie -> Custom Zombie
+     *
      * @param str Underscored string
      * @return Title cased string
      */
@@ -108,6 +110,7 @@ public class Util {
      * To camel case
      * Converts an underscored string to camel case.
      * E.g. custom_zombie -> customZombie.
+     *
      * @param capitaliseFirst Should the first letter be uppercase?
      * @param str             Underscored string to convert.
      * @return Camel case version of string.
@@ -140,7 +143,8 @@ public class Util {
     /**
      * Args joiner
      * Joins arguments together by spaces.
-     * @param args       String array of arguments.
+     *
+     * @param args String array of arguments.
      * @return Joined args.
      */
     public static String argsJoiner (String[] args) {
@@ -150,6 +154,7 @@ public class Util {
     /**
      * Args joiner
      * Joins arguments together by spaces.
+     *
      * @param args       String array of arguments.
      * @param startIndex Index to start at.
      * @return Joined args.
@@ -161,6 +166,7 @@ public class Util {
     /**
      * Args joiner
      * Joins arguments together by spaces.
+     *
      * @param args       String array of arguments.
      * @param startIndex Index to start at.
      * @param endIndex   Index to end at.
@@ -186,6 +192,7 @@ public class Util {
 
     /**
      * Get random int
+     *
      * @param min Minimum value.
      * @param max Maximum value.
      * @return Random integer within specified range.
@@ -195,10 +202,9 @@ public class Util {
     }
 
 
-
-
     /**
      * Get random dye color
+     *
      * @return Returns a random dye color.
      */
     public static DyeColor getRandomDyeColor () {
@@ -212,6 +218,7 @@ public class Util {
 
     /**
      * Get enum value
+     *
      * @param e     Enum class.
      * @param value Enum constant as a string.
      * @param <T>   An enum/enum constant.
@@ -236,9 +243,10 @@ public class Util {
     /**
      * Trace
      * Perform a ray trace.
+     *
      * @param player Location to ray trace from.
      * @return First location above the target block
-     *         that is not air.
+     * that is not air.
      */
     public static Location trace (Player player) {
 
@@ -278,6 +286,7 @@ public class Util {
 
     /**
      * Format location
+     *
      * @param location Location to format.
      * @return Formatted location.
      */
@@ -294,6 +303,7 @@ public class Util {
     /**
      * Is integer
      * https://stackoverflow.com/a/237204
+     *
      * @param str String to analyse.
      * @return Whether the string can be parsed as an integer.
      */
@@ -327,6 +337,7 @@ public class Util {
 
     /**
      * Get closest
+     *
      * @param entities Collection of entities.
      * @return Closest entity.
      */
@@ -357,6 +368,7 @@ public class Util {
 
     /**
      * Get delta v
+     *
      * @param source Source entity.
      * @param target Target entity.
      * @return Difference in location as a vector.

@@ -12,7 +12,7 @@ public class CommandGod extends BaseCommand {
 
 
     public CommandGod () {
-        super (
+        super(
                 "god",
                 "Toggles god mode.",
                 "/god",
@@ -25,6 +25,7 @@ public class CommandGod extends BaseCommand {
 
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.

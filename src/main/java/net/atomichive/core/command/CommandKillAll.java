@@ -22,7 +22,7 @@ public class CommandKillAll extends BaseCommand {
 
 
     public CommandKillAll () {
-        super (
+        super(
                 "killall",
                 "Kills all entities.",
                 "/killall [range]",
@@ -33,9 +33,9 @@ public class CommandKillAll extends BaseCommand {
     }
 
 
-
     /**
      * Run
+     *
      * @param sender The object that sent the command.
      * @param label  The exact command label typed by the user.
      * @param args   Any command arguments.
@@ -91,10 +91,10 @@ public class CommandKillAll extends BaseCommand {
     }
 
 
-
     /**
      * Remove
      * Removes all non-player entities in a collection.
+     *
      * @param entities Collection of entities to remove.
      * @return Number of entities removed.
      */
@@ -106,6 +106,7 @@ public class CommandKillAll extends BaseCommand {
     /**
      * Remove
      * Removes all non-player entities in a list.
+     *
      * @param entities List of entities to remove.
      * @return Number of entities removed.
      */
@@ -113,11 +114,12 @@ public class CommandKillAll extends BaseCommand {
 
         // Tracks the number of entities killed
         int count = 0;
+        EntityManager manager = Main.getInstance().getEntityManager();
 
         // Iterate over all entities.
         for (Entity entity : entities) {
             if (!(entity instanceof Player)) {
-                EntityManager.remove(entity);
+                manager.remove(entity);
                 entity.remove();
                 count++;
             }
@@ -128,10 +130,10 @@ public class CommandKillAll extends BaseCommand {
     }
 
 
-
     /**
      * Out
      * Formats and outputs a kill count to the player.
+     *
      * @param player Player who initiated the command
      * @param count  Number of entities killed.
      */

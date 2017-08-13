@@ -15,6 +15,7 @@ public abstract class AtomicEntity {
     /**
      * Init
      * Set config values.
+     *
      * @param attributes Entity Config from entities.json.
      */
     public void init (SmartMap attributes) {
@@ -25,6 +26,7 @@ public abstract class AtomicEntity {
     /**
      * Spawn
      * Generates a new entity, and places it in the world.
+     *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
@@ -34,8 +36,9 @@ public abstract class AtomicEntity {
     /**
      * Spawn
      * Generates a new entity, and places it in the world.
+     *
      * @param location to spawn entity.
-     * @param type Bukkit type of entity.
+     * @param type     Bukkit type of entity.
      * @return Spawned entity.
      */
     public Entity spawn (Location location, EntityType type) {
@@ -46,6 +49,7 @@ public abstract class AtomicEntity {
     /**
      * Apply attributes
      * Applies everything defined in config to the entity.
+     *
      * @param entity Entity to edit.
      * @return Modified entity.
      */

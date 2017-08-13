@@ -1,7 +1,7 @@
 package net.atomichive.core.entity.atomic;
 
-import net.atomichive.core.util.SmartMap;
 import net.atomichive.core.util.NMSUtil;
+import net.atomichive.core.util.SmartMap;
 import org.bukkit.Location;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
@@ -21,13 +21,14 @@ public class AtomicCreeper extends AtomicEntity {
     /**
      * Init
      * Set config values.
+     *
      * @param attributes Entity Config from entities.json.
      */
     @Override
     public void init (SmartMap attributes) {
 
-        isCharged       = attributes.get(Boolean.class, "is_charged",       false);
-        fuseTicks       = attributes.get(Integer.class, "fuse_ticks",       30);
+        isCharged = attributes.get(Boolean.class, "is_charged", false);
+        fuseTicks = attributes.get(Integer.class, "fuse_ticks", 30);
         explosionRadius = attributes.get(Integer.class, "explosion_radius", 3);
 
         super.init(attributes);
@@ -38,6 +39,7 @@ public class AtomicCreeper extends AtomicEntity {
     /**
      * Spawn
      * Generates a new entity, and places it in the world.
+     *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
@@ -49,6 +51,7 @@ public class AtomicCreeper extends AtomicEntity {
     /**
      * Apply attributes
      * Applies everything defined in config to the entity.
+     *
      * @param entity Entity to edit.
      * @return Modified entity.
      */
