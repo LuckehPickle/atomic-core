@@ -9,6 +9,7 @@ import net.atomichive.core.entity.EntityClock;
 import net.atomichive.core.entity.EntityManager;
 import net.atomichive.core.item.ItemManager;
 import net.atomichive.core.listeners.*;
+import net.atomichive.core.player.AtomicPlayer;
 import net.atomichive.core.player.AtomicPlayerDAO;
 import net.atomichive.core.player.PlayerManager;
 import net.atomichive.core.warp.WarpDAO;
@@ -17,6 +18,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -41,6 +46,8 @@ public class Main extends JavaPlugin {
     private DatabaseManager databaseManager;
     private WarpManager warpManager;
     private ProtocolManager protocolManager;
+
+    private Scoreboard scoreboard;
 
 
     /**
@@ -83,10 +90,18 @@ public class Main extends JavaPlugin {
             log(Level.SEVERE, "Malformed JSON");
         }
 
+        ScoreboardManager manager = Bukkit.getScoreboardManager();
+        scoreboard = manager.getNewScoreboard();
+        Objective objective = scoreboard.registerNewObjective("level", "level");
+        objective.setDisplayName("Level");
+        objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
 
         // Add currently logged in players to player manager
-        for (Player player : Bukkit.getOnlinePlayers())
-            playerManager.addPlayer(player);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            AtomicPlayer atomicPlayer = playerManager.addPlayer(player);
+            player.setScoreboard(scoreboard);
+            atomicPlayer.updateExperience();
+        }
 
         log(Level.INFO, "Loading warps from database...");
         warpManager.load();
@@ -102,6 +117,8 @@ public class Main extends JavaPlugin {
      */
     @Override
     public void onDisable () {
+
+        playerManager.removeAll();
 
         // Empty player manager
         playerManager = null;
@@ -163,6 +180,7 @@ public class Main extends JavaPlugin {
 
         new CommandClear();
         new CommandEntity();
+        new CommandExperience();
         new CommandFly();
         new CommandGameMode();
         new CommandGod();
@@ -255,6 +273,10 @@ public class Main extends JavaPlugin {
 
     public ProtocolManager getProtocolManager () {
         return protocolManager;
+    }
+
+    public Scoreboard getScoreboard () {
+        return scoreboard;
     }
 
 }

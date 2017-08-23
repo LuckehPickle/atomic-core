@@ -1,15 +1,17 @@
 package net.atomichive.core.command;
 
+import net.atomichive.core.Main;
 import net.atomichive.core.exception.CommandException;
+import net.atomichive.core.exception.InvalidNumberException;
+import net.atomichive.core.exception.UnknownPlayerException;
+import net.atomichive.core.player.AtomicPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Command Level
- * A debug command which lets you set your experience level
- * to any double.
+ * A debug command for setting a players level.
  */
 public class CommandLevel extends BaseCommand {
 
@@ -27,15 +29,16 @@ public class CommandLevel extends BaseCommand {
 
 
     /**
-     * Run
-     * The main logic for the command is handled here.
+     * Executes this command.
      *
-     * @param sender The object that sent the command.
+     * @param sender Command sender.
      * @param label  The exact command label typed by the user.
-     * @param args   Any command arguments.
+     * @param args   Command arguments.
+     * @throws CommandException if a generic error occurs.
      */
     @Override
-    public void run (CommandSender sender, String label, String[] args) throws CommandException {
+    public void run (CommandSender sender, String label, String[] args)
+            throws CommandException {
 
         if (args.length == 1) {
 
@@ -46,7 +49,7 @@ public class CommandLevel extends BaseCommand {
             try {
                 level = Float.parseFloat(args[0]);
             } catch (NumberFormatException e) {
-                throw new CommandException("Please enter a valid number.");
+                throw new InvalidNumberException();
             }
 
             setExperience(player, level);
@@ -59,14 +62,14 @@ public class CommandLevel extends BaseCommand {
 
             // Ensure the target player exists
             if (target == null)
-                throw new CommandException("The player " + args[0] + " could not be found.");
+                throw new UnknownPlayerException(args[0]);
 
 
             // Ensure the user entered a valid float
             try {
                 level = Float.parseFloat(args[1]);
             } catch (NumberFormatException e) {
-                throw new CommandException("Please enter a valid number.");
+                throw new InvalidNumberException();
             }
 
             setExperience(target, level);
@@ -83,7 +86,6 @@ public class CommandLevel extends BaseCommand {
 
 
     /**
-     * Set experience
      * Sets a players experience level to a defined float.
      *
      * @param player Player whose experience should be set.
@@ -96,8 +98,10 @@ public class CommandLevel extends BaseCommand {
         int wholePart = (int) level;
         float quotient = level - wholePart;
 
-        player.setLevel(wholePart);
-        player.setExp(quotient);
+        AtomicPlayer atomicPlayer = Main.getInstance().getPlayerManager().get(player);
+        atomicPlayer.setLevel(wholePart);
+        atomicPlayer.setExperienceFloat(quotient);
+        atomicPlayer.updateExperience();
 
         player.sendMessage("Set level to " + ChatColor.GREEN + level + ChatColor.RESET + ".");
 

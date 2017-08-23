@@ -1,7 +1,7 @@
 package net.atomichive.core.entity.abilities;
 
 import net.atomichive.core.Main;
-import net.atomichive.core.exception.AtomicEntityException;
+import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.util.SmartMap;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -54,7 +54,7 @@ public class AbilitySummon implements Ability {
             try {
                 Main.getInstance().getEntityManager()
                         .spawnEntity(location, entity, 1, source);
-            } catch (AtomicEntityException e) {
+            } catch (CustomObjectException e) {
                 e.printStackTrace();
             }
         }

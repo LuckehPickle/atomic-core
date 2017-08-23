@@ -2,7 +2,8 @@ package net.atomichive.core.command;
 
 import net.atomichive.core.Main;
 import net.atomichive.core.exception.CommandException;
-import net.atomichive.core.exception.PermissionException;
+import net.atomichive.core.exception.Reason;
+import net.atomichive.core.exception.UnknownPlayerException;
 import net.atomichive.core.player.AtomicPlayer;
 import net.atomichive.core.util.ExpiringValue;
 import org.bukkit.Bukkit;
@@ -11,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Teleport Ask
  * Sends a teleport request to another player.
  */
 public class CommandTeleportAsk extends BaseCommand {
@@ -30,30 +30,33 @@ public class CommandTeleportAsk extends BaseCommand {
 
 
     /**
-     * Run
+     * Executes this command.
      *
-     * @param sender The object that sent the command.
+     * @param sender Command sender.
      * @param label  The exact command label typed by the user.
-     * @param args   Any command arguments.
-     * @throws CommandException    if an error occurs.
-     * @throws PermissionException if the user doesn't have
-     *                             appropriate permissions.
+     * @param args   Command arguments.
+     * @throws CommandException if a generic error occurs.
      */
     @Override
     public void run (CommandSender sender, String label, String[] args)
-            throws CommandException, PermissionException {
+            throws CommandException {
 
         // Get source and target players
         Player player = (Player) sender;
         Player target = Bukkit.getPlayer(args[0]);
 
         // Ensure target exists
-        if (target == null)
-            throw new CommandException("Player '" + args[0] + "' could not be found.");
+        if (target == null) {
+            throw new UnknownPlayerException(args[0]);
+        }
 
         // Ensure target is not player
-        if (player.equals(target))
-            throw new CommandException("You can't send a teleport request to yourself!");
+        if (player.equals(target)) {
+            throw new CommandException(
+                    Reason.GENERIC_ERROR,
+                    "You can't send a teleport request to yourself!"
+            );
+        }
 
 
         // Retrieve atomic player
@@ -61,11 +64,12 @@ public class CommandTeleportAsk extends BaseCommand {
         ExpiringValue<Player> value = atomicTarget.getLastTeleportRequest();
 
         // Ensure request is not already pending
-        if (value.is(player))
+        if (value.is(player)) {
             throw new CommandException(String.format(
                     "You already have a pending teleport request with %s.",
                     target.getDisplayName()
             ));
+        }
 
         value.update(player);
 
@@ -86,4 +90,5 @@ public class CommandTeleportAsk extends BaseCommand {
         ));
 
     }
+
 }

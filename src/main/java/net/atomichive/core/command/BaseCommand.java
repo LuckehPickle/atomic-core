@@ -2,20 +2,21 @@ package net.atomichive.core.command;
 
 import net.atomichive.core.Main;
 import net.atomichive.core.exception.CommandException;
-import net.atomichive.core.exception.PermissionException;
+import net.atomichive.core.exception.Reason;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 
 /**
- * Command.
  * A generic class that all commands extend. This class
  * also handles command registration. Any subclasses
  * will automatically be registered when they are
  * initialised.
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class BaseCommand implements CommandExecutor {
 
 
@@ -38,7 +39,13 @@ public abstract class BaseCommand implements CommandExecutor {
      * @param requiresPlayer Whether the command can only be run by a player.
      * @param steps          The minimum number of steps arguments required from the user.
      */
-    BaseCommand (String name, String description, String usage, String permission, boolean requiresPlayer, int steps) {
+    BaseCommand (
+            String name,
+            String description,
+            String usage,
+            String permission,
+            boolean requiresPlayer,
+            int steps) {
 
         this.name = name;
         this.description = description;
@@ -53,7 +60,6 @@ public abstract class BaseCommand implements CommandExecutor {
 
 
     /**
-     * Register
      * Registers this command with Bukkit.
      */
     private void register () {
@@ -65,39 +71,47 @@ public abstract class BaseCommand implements CommandExecutor {
 
 
     /**
-     * On command
+     * Function fired whenever this command is called.
      *
-     * @param sender Object that sent the command.
+     * @param sender Command sender.
      * @param cmd    Command that was run.
      * @param label  The exact command label typed by the user.
-     * @param args   Any arguments.
+     * @param args   Command arguments.
      * @return Whether the command was successfully run.
      */
     @Override
-    public boolean onCommand (CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
-
-        // Ensure sender has appropriate permissions
-        if (!sender.hasPermission(permission)) {
-            sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
-            return true;
-        }
-
-        // Ensure sender is a player (if necessary)
-        if (requiresPlayer && !(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "Invalid sender: Only players can execute this command.");
-            return true;
-        }
-
-        // Ensure enough args where entered
-        if (args.length < steps) {
-            sender.sendMessage(ChatColor.RED + "Invalid usage: " + this.getUsage());
-            return true;
-        }
+    public boolean onCommand (CommandSender sender, Command cmd, String label, String[] args) {
 
         try {
+
+            // Ensure sender has appropriate permissions
+            if (!sender.hasPermission(permission)) {
+                throw new CommandException(
+                        Reason.INSUFFICIENT_PERMISSIONS,
+                        "You do not have permission to use this command."
+                );
+            }
+
+            // Ensure sender is a player (if necessary)
+            if (requiresPlayer && !(sender instanceof Player)) {
+                throw new CommandException(
+                        Reason.INVALID_SENDER,
+                        "Only players can execute this command."
+                );
+            }
+
+            // Ensure enough args where entered
+            if (args.length < steps) {
+                throw new CommandException(
+                        Reason.INVALID_USAGE,
+                        this.usage
+                );
+            }
+
             run(sender, label, args);
-        } catch (CommandException | PermissionException e) {
-            sender.sendMessage(e.getMessage());
+
+        } catch (CommandException e) {
+            sender.sendMessage(ChatColor.RED + e.getMessage());
         }
 
         return true;
@@ -106,18 +120,15 @@ public abstract class BaseCommand implements CommandExecutor {
 
 
     /**
-     * Run
-     * Toggles a players flight state.
+     * Executes this command.
      *
-     * @param sender The object that sent the command.
+     * @param sender Command sender.
      * @param label  The exact command label typed by the user.
-     * @param args   Any command arguments.
-     * @throws CommandException    if an error occurs.
-     * @throws PermissionException if the user doesn't have
-     *                             appropriate permissions.
+     * @param args   Command arguments.
+     * @throws CommandException if a generic error occurs.
      */
     public abstract void run (CommandSender sender, String label, String[] args)
-            throws CommandException, PermissionException;
+            throws CommandException;
 
 
 	/*
@@ -138,14 +149,6 @@ public abstract class BaseCommand implements CommandExecutor {
 
     public String getPermission () {
         return permission;
-    }
-
-    public boolean isRequiresPlayer () {
-        return requiresPlayer;
-    }
-
-    public int getSteps () {
-        return steps;
     }
 
 }

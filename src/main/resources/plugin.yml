@@ -1,7 +1,7 @@
 name: atomic-core
 description: A core plugin designed for the Atomic Hive Minecraft server.
 main: net.atomichive.core.Main
-version: 0.0.11
+version: 0.1.3
 authors: [Sean Bailey]
 website: http://atomichive.net
 depends: [ProtocolLib]
@@ -15,6 +15,10 @@ commands:
     description: Used to manage Atomic Entities.
     usage: /entity [reload|list|spawn]
     aliases: [ae]
+  experience:
+    description: Gives experience.
+    usage: /xp <experience>
+    aliases: [xp]
   fly:
     description: Toggles whether a player can fly.
     usage: /fly [player]
@@ -116,6 +120,7 @@ permissions:
       atomic-core.clear: true
       atomic-core.clear.others: true
       atomic-core.entity: true
+      atomic-core.experience: true
       atomic-core.fly: true
       atomic-core.fly.other: true
       atomic-core.gamemode: true
@@ -159,6 +164,10 @@ permissions:
 
   atomic-core.entity:
     description: Gives access to the entity command.
+    default: op
+
+  atomic-core.experience:
+    description: Gives access to the xp command.
     default: op
 
   atomic-core.fly:

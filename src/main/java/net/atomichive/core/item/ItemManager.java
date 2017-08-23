@@ -2,6 +2,7 @@ package net.atomichive.core.item;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.stream.MalformedJsonException;
 import net.atomichive.core.JsonManager;
 import net.atomichive.core.exception.ElementAlreadyExistsException;
 
@@ -25,6 +26,19 @@ public class ItemManager extends JsonManager {
      */
     public ItemManager (String resource) {
         super(resource, "item", "items");
+    }
+
+
+    /**
+     * Load
+     * Attempts to reload items from items.json
+     *
+     * @return Number of elements loaded.
+     */
+    @Override
+    public int load () throws MalformedJsonException {
+        customItems.clear();
+        return super.load();
     }
 
 
@@ -92,6 +106,10 @@ public class ItemManager extends JsonManager {
 
         return null;
 
+    }
+
+    public List<CustomItem> getCustomItems () {
+        return customItems;
     }
 
 }

@@ -1,7 +1,7 @@
 package net.atomichive.core.command;
 
 import net.atomichive.core.exception.CommandException;
-import net.atomichive.core.exception.PermissionException;
+import net.atomichive.core.exception.UnknownPlayerException;
 import net.atomichive.core.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Command Sudo.
  * Run a command as another player.
  */
 public class CommandSudo extends BaseCommand {
@@ -28,25 +27,24 @@ public class CommandSudo extends BaseCommand {
 
 
     /**
-     * Run
+     * Executes this command.
      *
-     * @param sender The object that sent the command.
+     * @param sender Command sender.
      * @param label  The exact command label typed by the user.
-     * @param args   Any command arguments.
-     * @throws CommandException    if an error occurs.
-     * @throws PermissionException if the user doesn't have
-     *                             appropriate permissions.
+     * @param args   Command arguments.
+     * @throws CommandException if a generic error occurs.
      */
     @Override
     public void run (CommandSender sender, String label, String[] args)
-            throws CommandException, PermissionException {
+            throws CommandException {
 
         // Get target player
         Player target = Bukkit.getPlayer(args[0]);
 
         // Ensure player exists
-        if (target == null)
-            throw new CommandException("Player '" + args[0] + "' not found.");
+        if (target == null) {
+            throw new UnknownPlayerException(args[0]);
+        }
 
         // Join args
         String command = Util.argsJoiner(args, 1);
@@ -67,7 +65,7 @@ public class CommandSudo extends BaseCommand {
 
 
     /**
-     * Run command
+     * Runs a command on another player's behalf.
      *
      * @param sender  Player or thing that ran the sudo command.
      * @param target  Target player.

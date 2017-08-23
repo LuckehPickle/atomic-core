@@ -18,10 +18,10 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 /**
- * Command Warp
  * Designate a warp destination, or warp somewhere.
  */
 public class CommandWarp extends BaseCommand {
+
 
     public CommandWarp () {
         super(
@@ -36,15 +36,16 @@ public class CommandWarp extends BaseCommand {
 
 
     /**
-     * Run
-     * The main logic for the command is handled here.
+     * Executes this command.
      *
-     * @param sender The object that sent the command.
+     * @param sender Command sender.
      * @param label  The exact command label typed by the user.
-     * @param args   Any command arguments.
+     * @param args   Command arguments.
+     * @throws CommandException if a generic error occurs.
      */
     @Override
-    public void run (CommandSender sender, String label, String[] args) throws CommandException {
+    public void run (CommandSender sender, String label, String[] args)
+            throws CommandException {
 
         // If no arguments are entered
         if (args.length == 0) {
@@ -82,7 +83,6 @@ public class CommandWarp extends BaseCommand {
 
 
     /**
-     * List warps
      * Sends a list of all warps to the sender.
      *
      * @param sender Command sender.
@@ -119,7 +119,7 @@ public class CommandWarp extends BaseCommand {
 
 
     /**
-     * Create warp
+     * Creates a new warp.
      *
      * @param sender Command sender.
      * @param args   Command arguments.
@@ -161,8 +161,12 @@ public class CommandWarp extends BaseCommand {
         }
 
         // Ensure warp does not already exist
-        if (manager.contains(name))
-            throw new CommandException("A warp named '" + name + "' already exists.");
+        if (manager.contains(name)) {
+            throw new CommandException(
+                    Reason.GENERIC_ERROR,
+                    "A warp named '" + name + "' already exists."
+            );
+        }
 
         // Create new warp
         Warp warp = new Warp(name, location);
@@ -229,15 +233,19 @@ public class CommandWarp extends BaseCommand {
         Player player = (Player) sender;
 
         // Ensure warp exists
-        if (warp == null)
-            throw new CommandException("Unknown warp '" + args[0] + "'.");
+        if (warp == null) {
+            throw new CommandException(
+                    Reason.GENERIC_ERROR,
+                    "Unknown warp '" + args[0] + "'."
+            );
+        }
 
         // Attempt to warp player.
         try {
             warp.warpPlayer(player);
         } catch (UnknownWorldException e) {
             throw new CommandException(
-                    Reason.WARP_FAILED,
+                    Reason.GENERIC_ERROR,
                     "Unknown destination world. Has it been deleted?"
             );
         }

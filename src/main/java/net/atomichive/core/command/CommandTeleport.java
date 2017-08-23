@@ -1,8 +1,8 @@
 package net.atomichive.core.command;
 
 import net.atomichive.core.exception.CommandException;
-import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.exception.Reason;
+import net.atomichive.core.exception.UnknownPlayerException;
 import net.atomichive.core.util.TeleportUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,8 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Command Teleport
  * Teleports one player to another.
+ * TODO This could use a rewrite
  */
 public class CommandTeleport extends BaseCommand {
 
@@ -23,29 +23,24 @@ public class CommandTeleport extends BaseCommand {
                 "/tp [source] <destination>",
                 "atomic-core.tp",
                 false,
-                0
+                1
         );
     }
 
 
     /**
-     * Run
-     * Toggles a players flight state.
+     * Executes this command.
      *
-     * @param sender The object that sent the command.
+     * @param sender Command sender.
      * @param label  The exact command label typed by the user.
-     * @param args   Any command arguments.
-     * @throws CommandException    if an error occurs.
-     * @throws PermissionException if the user doesn't have
-     *                             appropriate permissions.
+     * @param args   Command arguments.
+     * @throws CommandException if a generic error occurs.
      */
     @Override
     public void run (CommandSender sender, String label, String[] args)
-            throws CommandException, PermissionException {
+            throws CommandException {
 
-        if (args.length == 0) {
-            throw new CommandException(Reason.INVALID_USAGE, getUsage());
-        } else if (args.length == 1) {
+        if (args.length == 1) {
 
             // Ensure sender is a player.
             if (!(sender instanceof Player)) {
@@ -60,15 +55,20 @@ public class CommandTeleport extends BaseCommand {
             boolean silent = false;
 
             // Ensure target player exists
-            if (target == null)
-                throw new CommandException("Player '" + args[0] + "' could not be found.");
+            if (target == null) {
+                throw new UnknownPlayerException(args[0]);
+            }
 
             // Check if the tp is silent
             if (label.equalsIgnoreCase("tpsilent") || label.equalsIgnoreCase("tps")) {
 
                 // Ensure player has permission
-                if (!player.hasPermission("atomic-core.tp.silent"))
-                    throw new PermissionException("You do not have permission to silently teleport.");
+                if (!player.hasPermission("atomic-core.tp.silent")) {
+                    throw new CommandException(
+                            Reason.INSUFFICIENT_PERMISSIONS,
+                            "You do not have permission to silently teleport."
+                    );
+                }
 
                 silent = true;
             }
@@ -78,19 +78,25 @@ public class CommandTeleport extends BaseCommand {
         } else {
 
             // Ensure sender has permission
-            if (!sender.hasPermission("atomic-core.tp.others"))
-                throw new PermissionException("You do not have permission to teleport other players.");
+            if (!sender.hasPermission("atomic-core.tp.others")) {
+                throw new CommandException(
+                        Reason.INSUFFICIENT_PERMISSIONS,
+                        "You do not have permission to teleport other players."
+                );
+            }
 
             // Get players
             Player source = Bukkit.getPlayer(args[0]);
             Player destination = Bukkit.getPlayer(args[1]);
 
             // Ensure players exist
-            if (source == null)
-                throw new CommandException("Player '" + args[0] + "' could not be found.");
+            if (source == null) {
+                throw new UnknownPlayerException(args[0]);
+            }
 
-            if (destination == null)
-                throw new CommandException("Player '" + args[1] + "' could not be found.");
+            if (destination == null) {
+                throw new UnknownPlayerException(args[1]);
+            }
 
             TeleportUtil.teleport(source, destination);
 

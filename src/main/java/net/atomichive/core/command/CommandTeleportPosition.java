@@ -1,14 +1,12 @@
 package net.atomichive.core.command;
 
 import net.atomichive.core.exception.CommandException;
-import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.exception.Reason;
 import net.atomichive.core.util.Util;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Command teleport position
  * Teleport to a position in your current world.
  */
 public class CommandTeleportPosition extends BaseCommand {
@@ -27,18 +25,16 @@ public class CommandTeleportPosition extends BaseCommand {
 
 
     /**
-     * Run
+     * Executes this command.
      *
-     * @param sender The object that sent the command.
+     * @param sender Command sender.
      * @param label  The exact command label typed by the user.
-     * @param args   Any command arguments.
-     * @throws CommandException    if an error occurs.
-     * @throws PermissionException if the user doesn't have
-     *                             appropriate permissions.
+     * @param args   Command arguments.
+     * @throws CommandException if a generic error occurs.
      */
     @Override
     public void run (CommandSender sender, String label, String[] args)
-            throws CommandException, PermissionException {
+            throws CommandException {
 
         // Cast to player
         Player player = (Player) sender;
@@ -48,8 +44,12 @@ public class CommandTeleportPosition extends BaseCommand {
         int z;
 
         if (args.length == 2) {
-            if (!Util.isInteger(args[0]))
-                throw new CommandException(Reason.INVALID_INPUT, "Please enter a x coordinate.");
+            if (!Util.isInteger(args[0])) {
+                throw new CommandException(
+                        Reason.INVALID_NUMBER,
+                        "Please enter a x coordinate."
+                );
+            }
 
             x = Integer.parseInt(args[0]);
         }

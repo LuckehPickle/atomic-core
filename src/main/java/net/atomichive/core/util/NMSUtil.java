@@ -35,7 +35,7 @@ public class NMSUtil {
      */
     public static Field getPrivateField (Class clazz, String fieldName) {
 
-        Field field = null;
+        Field field;
 
         try {
             field = clazz.getDeclaredField(fieldName);

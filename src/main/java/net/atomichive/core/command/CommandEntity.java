@@ -3,9 +3,8 @@ package net.atomichive.core.command;
 import com.google.gson.stream.MalformedJsonException;
 import net.atomichive.core.Main;
 import net.atomichive.core.entity.CustomEntity;
-import net.atomichive.core.exception.AtomicEntityException;
 import net.atomichive.core.exception.CommandException;
-import net.atomichive.core.exception.PermissionException;
+import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.exception.Reason;
 import net.atomichive.core.util.PaginatedResult;
 import net.atomichive.core.util.Util;
@@ -17,7 +16,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 /**
- * Command Entity (Atomic Entity)
+ * Used to manage custom entities.
  */
 public class CommandEntity extends BaseCommand {
 
@@ -35,18 +34,16 @@ public class CommandEntity extends BaseCommand {
 
 
     /**
-     * Run
+     * Executes this command.
      *
-     * @param sender The object that sent the command.
+     * @param sender Command sender.
      * @param label  The exact command label typed by the user.
-     * @param args   Any command arguments.
-     * @throws CommandException    if an error occurs.
-     * @throws PermissionException if the user doesn't have
-     *                             appropriate permissions.
+     * @param args   Command arguments.
+     * @throws CommandException if a generic error occurs.
      */
     @Override
     public void run (CommandSender sender, String label, String[] args)
-            throws CommandException, PermissionException {
+            throws CommandException {
 
         String arg = args[0].toLowerCase();
 
@@ -71,15 +68,14 @@ public class CommandEntity extends BaseCommand {
 
 
     /**
-     * Reload entities
      * Reloads all custom entities from entities.json.
      *
-     * @param sender The person or thing that sent the command.
+     * @param sender Command sender.
      */
     private void reloadEntities (CommandSender sender) throws CommandException {
 
         // Reload entities and get count
-        int found = 0;
+        int found;
 
         try {
             found = Main.getInstance().getEntityManager().load();
@@ -109,7 +105,7 @@ public class CommandEntity extends BaseCommand {
 
 
     /**
-     * List entities
+     * Outputs a list of all custom entities.
      *
      * @param sender Command sender.
      * @param args   Any command arguments.
@@ -147,7 +143,8 @@ public class CommandEntity extends BaseCommand {
 
 
     /**
-     * Spawn entity
+     * Spawns a custom entity at the block the player is
+     * looking at.
      *
      * @param sender Command sender.
      * @param args   Any command arguments.
@@ -174,7 +171,7 @@ public class CommandEntity extends BaseCommand {
         Player player = (Player) sender;
         String entity = args[1];
         int count = 1;
-        Location location = null;
+        Location location;
 
 
         // Handle entity count.
@@ -208,7 +205,7 @@ public class CommandEntity extends BaseCommand {
         try {
             Main.getInstance().getEntityManager()
                     .spawnEntity(location, entity, count, player);
-        } catch (AtomicEntityException e) {
+        } catch (CustomObjectException e) {
             player.sendMessage(e.getMessage());
             return;
         }

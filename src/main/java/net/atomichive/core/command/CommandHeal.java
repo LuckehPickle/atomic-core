@@ -1,13 +1,11 @@
 package net.atomichive.core.command;
 
 import net.atomichive.core.exception.CommandException;
-import net.atomichive.core.exception.PermissionException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Command Heal
  * Restores health and hunger.
  */
 public class CommandHeal extends BaseCommand {
@@ -26,18 +24,16 @@ public class CommandHeal extends BaseCommand {
 
 
     /**
-     * Run
+     * Executes this command.
      *
-     * @param sender The object that sent the command.
+     * @param sender Command sender.
      * @param label  The exact command label typed by the user.
-     * @param args   Any command arguments.
-     * @throws CommandException    if an error occurs.
-     * @throws PermissionException if the user doesn't have
-     *                             appropriate permissions.
+     * @param args   Command arguments.
+     * @throws CommandException if a generic error occurs.
      */
     @Override
     public void run (CommandSender sender, String label, String[] args)
-            throws CommandException, PermissionException {
+            throws CommandException {
 
         // Get player
         Player player = (Player) sender;
@@ -48,4 +44,5 @@ public class CommandHeal extends BaseCommand {
         player.sendMessage("You have been " + ChatColor.GREEN + "healed" + ChatColor.RESET + ".");
 
     }
+
 }

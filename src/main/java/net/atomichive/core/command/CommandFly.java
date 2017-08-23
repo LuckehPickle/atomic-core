@@ -1,14 +1,14 @@
 package net.atomichive.core.command;
 
 import net.atomichive.core.exception.CommandException;
-import net.atomichive.core.exception.PermissionException;
+import net.atomichive.core.exception.Reason;
+import net.atomichive.core.exception.UnknownPlayerException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Command Fly
  * Toggles whether a player can fly.
  */
 public class CommandFly extends BaseCommand {
@@ -18,9 +18,6 @@ public class CommandFly extends BaseCommand {
     private final static String FORMAT = "Flight %s.";
 
 
-    /**
-     * Fly command constructor
-     */
     public CommandFly () {
         super(
                 "fly",
@@ -34,23 +31,24 @@ public class CommandFly extends BaseCommand {
 
 
     /**
-     * Run
-     * Toggles a players flight state.
+     * Executes this command.
      *
-     * @param sender The object that sent the command.
+     * @param sender Command sender.
      * @param label  The exact command label typed by the user.
-     * @param args   Any command arguments.
-     * @throws CommandException    if an error occurs.
-     * @throws PermissionException if the user doesn't have
-     *                             appropriate permissions.
+     * @param args   Command arguments.
+     * @throws CommandException if a generic error occurs.
      */
     @Override
     public void run (CommandSender sender, String label, String[] args)
-            throws CommandException, PermissionException {
+            throws CommandException {
 
         // If the sender is not a player, ensure more than one arg is entered.
-        if (args.length == 0 && !(sender instanceof Player))
-            throw new CommandException("Only players can change their own flight status.");
+        if (args.length == 0 && !(sender instanceof Player)) {
+            throw new CommandException(
+                    Reason.INVALID_SENDER,
+                    "Only players can change their own flight status."
+            );
+        }
 
 
         if (args.length == 0) {
@@ -62,15 +60,19 @@ public class CommandFly extends BaseCommand {
         } else if (args.length == 1) {
 
             // Ensure the user has permission
-            if (!sender.hasPermission("atomic-core.fly.others"))
-                throw new PermissionException();
+            if (!sender.hasPermission("atomic-core.fly.others")) {
+                throw new CommandException(
+                        Reason.INSUFFICIENT_PERMISSIONS,
+                        "You do not have permission to toggle another player's flight state."
+                );
+            }
 
             // Retrieve the target player
             Player target = Bukkit.getPlayer(args[0]);
 
             // Ensure target exists
             if (target == null)
-                throw new CommandException("The player " + args[0] + " could not be found.");
+                throw new UnknownPlayerException(args[0]);
 
             toggleFlight(target);
 
@@ -83,7 +85,6 @@ public class CommandFly extends BaseCommand {
 
 
     /**
-     * Toggle flight
      * Toggles the flying status of a particular player.
      *
      * @param player Player whose flight status should be toggled.
@@ -104,7 +105,6 @@ public class CommandFly extends BaseCommand {
 
 
     /**
-     * Get output string
      * Constructs a string which details a user's flight status.
      *
      * @param player Player whose flight status will be printed.

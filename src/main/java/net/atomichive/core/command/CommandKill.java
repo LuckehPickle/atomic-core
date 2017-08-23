@@ -1,14 +1,14 @@
 package net.atomichive.core.command;
 
 import net.atomichive.core.exception.CommandException;
+import net.atomichive.core.exception.UnknownPlayerException;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Command Kill
- * Sucks the life out of a target player.
+ * Kills a target player.
  */
 public class CommandKill extends BaseCommand {
 
@@ -19,7 +19,7 @@ public class CommandKill extends BaseCommand {
     public CommandKill () {
         super(
                 "kill",
-                "Sucks the life out of a target player.",
+                "Kills a target player.",
                 "/kill <player>",
                 "atomic-core.kill",
                 false,
@@ -29,12 +29,12 @@ public class CommandKill extends BaseCommand {
 
 
     /**
-     * Run
-     * The main logic for the command is handled here.
+     * Executes this command.
      *
-     * @param sender The object that sent the command.
+     * @param sender Command sender.
      * @param label  The exact command label typed by the user.
-     * @param args   Any command arguments.
+     * @param args   Command arguments.
+     * @throws CommandException if a generic error occurs.
      */
     @Override
     public void run (CommandSender sender, String label, String[] args)
@@ -43,8 +43,9 @@ public class CommandKill extends BaseCommand {
         Player target = Bukkit.getPlayer(args[0]);
 
         // Ensure target player was found
-        if (target == null)
-            throw new CommandException("Player '" + args[0] + "' could not be found.");
+        if (target == null) {
+            throw new UnknownPlayerException(args[0]);
+        }
 
         // Alert recipient
         if (sender instanceof Player) {

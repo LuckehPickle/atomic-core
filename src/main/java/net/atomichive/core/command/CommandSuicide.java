@@ -4,7 +4,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Command Suicide
  * Causes the player to spontaneously combust.
  * TODO Change death message.
  */
@@ -22,13 +21,13 @@ public class CommandSuicide extends BaseCommand {
         );
     }
 
+
     /**
-     * Run
-     * The main logic for the command is handled here.
+     * Executes this command.
      *
-     * @param sender The object that sent the command.
+     * @param sender Command sender.
      * @param label  The exact command label typed by the user.
-     * @param args   Any command arguments.
+     * @param args   Command arguments.
      */
     @Override
     public void run (CommandSender sender, String label, String[] args) {
@@ -36,4 +35,5 @@ public class CommandSuicide extends BaseCommand {
         player.setFireTicks(100);
         player.setHealth(0);
     }
+
 }

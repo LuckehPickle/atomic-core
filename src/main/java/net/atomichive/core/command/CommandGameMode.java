@@ -1,8 +1,9 @@
 package net.atomichive.core.command;
 
 import net.atomichive.core.exception.CommandException;
-import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.exception.Reason;
+import net.atomichive.core.exception.UnknownPlayerException;
+import net.atomichive.core.util.Util;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -10,10 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Command game mode
- * Allows users to change their game mode.
- * TODO Deal with /creative, /survival etc.
- * TODO Rewrite this command
+ * Sets a users game mode.
  */
 public class CommandGameMode extends BaseCommand {
 
@@ -22,101 +20,139 @@ public class CommandGameMode extends BaseCommand {
         super(
                 "gamemode",
                 "Sets a users game mode.",
-                "/gamemode [player] <mode>",
+                "/gamemode <mode> [player]",
                 "atomic-core.gamemode",
                 false,
-                0
+                1
         );
     }
 
 
     /**
-     * Run
-     * The main logic for the command is handled here.
+     * Executes this command.
      *
-     * @param sender The object that sent the command.
+     * @param sender Command sender.
      * @param label  The exact command label typed by the user.
-     * @param args   Any command arguments.
+     * @param args   Command arguments.
+     * @throws CommandException if a generic error occurs.
      */
     @Override
-    public void run (CommandSender sender, String label, String[] args) throws CommandException, PermissionException {
+    public void run (CommandSender sender, String label, String[] args)
+            throws CommandException {
 
-        // If the sender is not a player, ensure more than one arg is entered.
-        if (args.length < 2 && !(sender instanceof Player))
-            throw new CommandException("Only players can set their own gamemode.");
+        // Attempt to retrieve specified game mode
+        GameMode gamemode = getGameModeFromString(sender, args[0]);
 
-
-        GameMode gameMode;
-
-        if (args.length == 0)
-            throw new CommandException(Reason.INVALID_USAGE, this.getUsage());
-
-        try {
-            gameMode = getGameModeFromString(sender, args[0]);
-        } catch (PermissionException exception) {
-            sender.sendMessage(ChatColor.RED + exception.getMessage());
-            return;
-        }
-
-        // Ensure game mode exists
-        if (gameMode == null)
-            throw new CommandException("Unknown game mode: " + args[0]);
-
-        if (args.length == 1) {
-
-            // User wants to alter their own game mode
-            Player player = (Player) sender;
-
-            player.setGameMode(gameMode);
-            player.sendMessage("Your game mode has been set to " + ChatColor.GREEN + gameMode.name() + ChatColor.RESET + ".");
-
-        } else if (args.length == 2) {
-
-            // User wants to alter another users game mode.
-
-            // Ensure the user has permission
-            if (!sender.hasPermission("atomic-core.gamemode.others"))
-                throw new PermissionException("You do not have permission to change another player's game mode.");
-
-
-            Player target = Bukkit.getPlayer(args[1]);
-
-            // Ensure the player exists
-            if (target == null)
-                throw new CommandException("The player " + args[0] + " could not be found.");
-
-            // Set the game mode and update both players.
-            target.setGameMode(gameMode);
-            target.sendMessage("Your game mode has been set to " + ChatColor.GREEN + gameMode.name() + ChatColor.RESET + ".");
-            sender.sendMessage("You've set " + ChatColor.YELLOW + target.getDisplayName() + ChatColor.RESET + "'s game mode to " + ChatColor.GREEN + gameMode.name() + ChatColor.RESET + ".");
-
+        switch (args.length) {
+            case 1:
+                setGamemode(sender, gamemode);
+                break;
+            default:
+                setGamemode(sender, gamemode, args[1]);
+                break;
         }
 
     }
 
 
     /**
-     * Get game mode from string
+     * Sets a player's own game mode.
+     *
+     * @param sender Player who executed the command.
+     * @param mode   Desired game mode.
+     */
+    private void setGamemode (CommandSender sender, GameMode mode) throws CommandException {
+
+        // Ensure sender is a player
+        if (!(sender instanceof Player)) {
+            throw new CommandException(
+                    Reason.INVALID_SENDER,
+                    "Only players can set their own game mode."
+            );
+        }
+
+        // Set game mode
+        ((Player) sender).setGameMode(mode);
+
+        // Alert sender
+        sender.sendMessage(String.format(
+                "You're game mode is now %s.",
+                ChatColor.GREEN + Util.toTitleCase(mode.name()) + ChatColor.RESET
+        ));
+
+    }
+
+
+    /**
+     * Sets another player's game mode.
+     *
+     * @param sender Command sender.
+     * @param mode   Desired game mode.
+     * @param target Target player's name.
+     */
+    private void setGamemode (CommandSender sender, GameMode mode, String target)
+            throws CommandException {
+
+        // Ensure sender has permission
+        if (!sender.hasPermission("atomic-core.gamemode.others")) {
+            throw new CommandException(
+                    Reason.INSUFFICIENT_PERMISSIONS,
+                    "You do not have permission to set other player's game modes."
+            );
+        }
+
+        // Get target player
+        Player player = Bukkit.getPlayer(target);
+        String name = "Console";
+
+        if (sender instanceof Player)
+            name = ((Player) sender).getDisplayName();
+
+        // Ensure player exists
+        if (player == null) {
+            throw new UnknownPlayerException(target);
+        }
+
+        player.setGameMode(mode);
+
+        sender.sendMessage(String.format(
+                "%s's game mode is now %s.",
+                ChatColor.YELLOW + player.getDisplayName() + ChatColor.RESET,
+                ChatColor.GREEN + mode.name().toLowerCase() + ChatColor.RESET
+        ));
+
+        player.sendMessage(String.format(
+                "%s has set you're game mode to %s.",
+                ChatColor.YELLOW + name + ChatColor.RESET,
+                ChatColor.GREEN + mode.name().toLowerCase() + ChatColor.RESET
+        ));
+
+    }
+
+
+    /**
      * Returns a game mode which matches the entered string.
      *
      * @param mode Game mode as string.
-     * @return Corresponding game mode object, or null.
-     * @throws PermissionException if the sender does
-     *                             not permission to set specified game mode.
+     * @return Corresponding game mode object.
      */
+    @SuppressWarnings("SpellCheckingInspection")
     private GameMode getGameModeFromString (CommandSender sender, String mode)
-            throws PermissionException {
+            throws CommandException {
 
         mode = mode.toLowerCase();
 
         switch (mode) {
+
             case "adventure":
             case "adv":
             case "a":
             case "2":
 
+                // Ensure sender has permission
                 if (!sender.hasPermission("atomic-core.gamemode.adventure")) {
-                    throw new PermissionException(
+                    throw new CommandException (
+                            Reason.INSUFFICIENT_PERMISSIONS,
                             "You do not have permission to set adventure mode."
                     );
                 }
@@ -128,7 +164,8 @@ public class CommandGameMode extends BaseCommand {
             case "0":
 
                 if (!sender.hasPermission("atomic-core.gamemode.survival")) {
-                    throw new PermissionException(
+                    throw new CommandException (
+                            Reason.INSUFFICIENT_PERMISSIONS,
                             "You do not have permission to set survival mode."
                     );
                 }
@@ -140,7 +177,8 @@ public class CommandGameMode extends BaseCommand {
             case "1":
 
                 if (!sender.hasPermission("atomic-core.gamemode.creative")) {
-                    throw new PermissionException(
+                    throw new CommandException (
+                            Reason.INSUFFICIENT_PERMISSIONS,
                             "You do not have permission to set creative mode."
                     );
                 }
@@ -152,14 +190,19 @@ public class CommandGameMode extends BaseCommand {
             case "3":
 
                 if (!sender.hasPermission("atomic-core.gamemode.spectator")) {
-                    throw new PermissionException(
+                    throw new CommandException (
+                            Reason.INSUFFICIENT_PERMISSIONS,
                             "You do not have permission to set spectator mode."
                     );
                 }
                 return GameMode.SPECTATOR;
 
             default:
-                return null;
+                throw new CommandException(
+                        Reason.UNKNOWN_GAMEMODE,
+                        mode
+                );
+
         }
     }
 

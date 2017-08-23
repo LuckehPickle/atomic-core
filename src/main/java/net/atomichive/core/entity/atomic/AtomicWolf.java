@@ -74,6 +74,8 @@ public class AtomicWolf extends AtomicAgeable {
                 wolf.setCollarColor(color);
         }
 
+        wolf.setAngry(this.isAngry);
+
         return super.applyAttributes(wolf);
 
     }

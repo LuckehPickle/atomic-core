@@ -4,7 +4,7 @@ import net.atomichive.core.Main;
 import net.atomichive.core.entity.abilities.*;
 import net.atomichive.core.entity.pathfinding.PathfinderGoalFollowEntity;
 import net.atomichive.core.exception.AbilityException;
-import net.atomichive.core.exception.AtomicEntityException;
+import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.util.NMSUtil;
 import net.atomichive.core.util.SmartMap;
 import net.atomichive.core.util.Util;
@@ -88,7 +88,7 @@ public class ActiveEntity {
             if (pathfinding.containsKey("targets"))
                 handleTargets(entity, pathfinding.get("targets"));
 
-        } catch (AtomicEntityException e) {
+        } catch (CustomObjectException e) {
             Main.getInstance().log(Level.SEVERE, e.getMessage());
         }
 
@@ -96,19 +96,18 @@ public class ActiveEntity {
 
 
     /**
-     * Handle goals
      * Parses and applies pathfinding goals.
      *
      * @param entity Entity to apply goals to.
      * @param goals  List of goals.
-     * @throws AtomicEntityException if an exception occurs.
      */
     private void handleGoals (EntityInsentient entity, Object goals)
-            throws AtomicEntityException {
+            throws CustomObjectException {
 
         // Ensure goals is a list
-        if (!List.class.isInstance(goals))
-            throw new AtomicEntityException("Pathfinding goals could not be parsed as list.");
+        if (!List.class.isInstance(goals)) {
+            throw new CustomObjectException("Pathfinding goals could not be parsed as list.");
+        }
 
         // Iterate over goals
         for (Object obj : (List) goals) {
@@ -125,7 +124,7 @@ public class ActiveEntity {
             // Attempt to handle goal
             try {
                 handleGoal(entity, (String) obj);
-            } catch (AtomicEntityException e) {
+            } catch (CustomObjectException e) {
                 Main.getInstance().log(Level.WARNING, e.getMessage());
             }
 
@@ -135,14 +134,13 @@ public class ActiveEntity {
 
 
     /**
-     * Handle goal
      * Parses and applies a pathfinding goal.
      *
      * @param g      Pathfinding goal as a string.
      * @param entity Entity to apply goal to.
      */
     private void handleGoal (EntityInsentient entity, String g)
-            throws AtomicEntityException {
+            throws CustomObjectException {
 
         // Split at spaces
         String[] parts = g.split(" ");
@@ -168,7 +166,7 @@ public class ActiveEntity {
                     this.goals.a(priority, new PathfinderGoalRandomStroll((EntityCreature) entity, 1.0d));
                     break;
                 }
-                throw new AtomicEntityException("Only creatures can be assigned with the goal 'random_stroll'.");
+                throw new CustomObjectException("Only creatures can be assigned with the goal 'random_stroll'.");
             case "look_at_player":
                 this.goals.a(priority, new PathfinderGoalLookAtPlayer(entity, EntityHuman.class, 8.0f));
                 break;
@@ -177,37 +175,38 @@ public class ActiveEntity {
                     this.goals.a(priority, new PathfinderGoalFollowEntity(entity, this.getOwner(), 1.0d, 2.5f, 30.0f));
                     break;
                 }
-                throw new AtomicEntityException("Cannot follow owner; no owner assigned.");
+                throw new CustomObjectException("Cannot follow owner; no owner assigned.");
             case "melee_attack":
                 if (entity instanceof EntityCreature) {
                     this.goals.a(priority, new PathfinderGoalMeleeAttack((EntityCreature) entity, 1.0d, true));
                     break;
                 }
-                throw new AtomicEntityException("Only creatures can be assigned with the goal 'melee_attack'.");
+                throw new CustomObjectException("Only creatures can be assigned with the goal 'melee_attack'.");
             case "flee_player":
                 if (entity instanceof EntityCreature) {
                     this.goals.a(priority, new PathfinderGoalAvoidTarget((EntityCreature) entity, EntityHuman.class, 5.0f, 1.0d, 1.2d));
                     break;
                 }
-                throw new AtomicEntityException("Only creatures can be assigned with the goal 'flee_player'");
+                throw new CustomObjectException("Only creatures can be assigned with the goal 'flee_player'");
             default:
-                throw new AtomicEntityException("Unknown goal: " + goal);
+                throw new CustomObjectException("Unknown goal: " + goal);
         }
 
     }
 
 
     /**
-     * Handle targets
      * Parses and applies pathfinding targets.
      *
      * @param targets List of targets.
      */
-    private void handleTargets (EntityInsentient entity, Object targets) throws AtomicEntityException {
+    private void handleTargets (EntityInsentient entity, Object targets)
+            throws CustomObjectException {
 
         // Ensure goals is a list
-        if (!List.class.isInstance(targets))
-            throw new AtomicEntityException("Pathfinding targets could not be parsed as list.");
+        if (!List.class.isInstance(targets)) {
+            throw new CustomObjectException("Pathfinding targets could not be parsed as list.");
+        }
 
         // Iterate over goals
         for (Object obj : (List) targets) {
@@ -224,7 +223,7 @@ public class ActiveEntity {
             // Attempt to handle target
             try {
                 handleTarget(entity, (String) obj);
-            } catch (AtomicEntityException e) {
+            } catch (CustomObjectException e) {
                 Main.getInstance().log(Level.WARNING, e.getMessage());
             }
 
@@ -234,14 +233,13 @@ public class ActiveEntity {
 
 
     /**
-     * Handle target
+     * Deconstructs a target definition string.
      *
      * @param entity Entity to give pathfinding target.
      * @param t      Pathfinding target as string.
-     * @throws AtomicEntityException if an exception is encountered.
      */
     private void handleTarget (EntityInsentient entity, String t)
-            throws AtomicEntityException {
+            throws CustomObjectException {
 
         // Split at spaces
         String[] parts = t.split(" ");
@@ -261,38 +259,39 @@ public class ActiveEntity {
                     this.targets.a(priority, new PathfinderGoalHurtByTarget((EntityCreature) entity, false, new Class[0]));
                     break;
                 }
-                throw new AtomicEntityException("Only creatures can be assigned with the target 'attacker'.");
+                throw new CustomObjectException("Only creatures can be assigned with the target 'attacker'.");
             case "players":
                 if (entity instanceof EntityCreature) {
                     this.targets.a(priority, new PathfinderGoalNearestAttackableTarget((EntityCreature) entity, EntityHuman.class, true));
                     break;
                 }
-                throw new AtomicEntityException("Only creatures can be assigned with the target 'players'.");
+                throw new CustomObjectException("Only creatures can be assigned with the target 'players'.");
             default:
-                throw new AtomicEntityException("Unknown target: " + target);
+                throw new CustomObjectException("Unknown target: " + target);
         }
 
     }
 
 
     /**
-     * Parse priority
+     * Parses a priority string.
      *
      * @param str Priority as a string.
      * @return Parsed priority.
-     * @throws AtomicEntityException if priority cannot be parsed.
      */
-    private int parsePriority (String str) throws AtomicEntityException {
+    private int parsePriority (String str) throws CustomObjectException {
 
         // Ensure str is an integer
-        if (!Util.isInteger(str))
-            throw new AtomicEntityException("Pathfinding priority could not be parsed as an integer.");
+        if (!Util.isInteger(str)) {
+            throw new CustomObjectException("Pathfinding priority could not be parsed as an integer.");
+        }
 
         int priority = Integer.parseInt(str);
 
         // Ensure priority is positive
-        if (priority < 0)
-            throw new AtomicEntityException("Pathfinding priority cannot be negative.");
+        if (priority < 0) {
+            throw new CustomObjectException("Pathfinding priority cannot be negative.");
+        }
 
         return priority;
 

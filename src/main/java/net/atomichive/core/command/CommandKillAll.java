@@ -3,7 +3,6 @@ package net.atomichive.core.command;
 import net.atomichive.core.Main;
 import net.atomichive.core.entity.EntityManager;
 import net.atomichive.core.exception.CommandException;
-import net.atomichive.core.exception.PermissionException;
 import net.atomichive.core.exception.Reason;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -15,9 +14,9 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Command Kill All
  * Kills all entities.
  */
+@SuppressWarnings("SpellCheckingInspection")
 public class CommandKillAll extends BaseCommand {
 
 
@@ -34,18 +33,16 @@ public class CommandKillAll extends BaseCommand {
 
 
     /**
-     * Run
+     * Executes this command.
      *
-     * @param sender The object that sent the command.
+     * @param sender Command sender.
      * @param label  The exact command label typed by the user.
-     * @param args   Any command arguments.
-     * @throws CommandException    if an error occurs.
-     * @throws PermissionException if the user doesn't have
-     *                             appropriate permissions.
+     * @param args   Command arguments.
+     * @throws CommandException if a generic error occurs.
      */
     @Override
     public void run (CommandSender sender, String label, String[] args)
-            throws CommandException, PermissionException {
+            throws CommandException {
 
         // Get player
         Player player = (Player) sender;
@@ -53,15 +50,19 @@ public class CommandKillAll extends BaseCommand {
         if (args.length == 0) {
 
             // Ensure player has permission
-            if (!player.hasPermission("atomic-core.killall.world"))
-                throw new PermissionException("You do not have permission to kill all entities in a world. Please specify a radius.");
+            if (!player.hasPermission("atomic-core.killall.world")) {
+                throw new CommandException(
+                        Reason.INSUFFICIENT_PERMISSIONS,
+                        "You do not have permission to kill all entities in a world. Please specify a radius."
+                );
+            }
 
             // Kill and output
             out(player, remove(player.getWorld().getEntities()));
 
         } else {
 
-            int radius = 10;
+            int radius;
             int maxRadius = Main.getInstance().getBukkitConfig().getInt("max_kill_radius", 100);
 
             // Attempt to get radius from args
@@ -73,7 +74,7 @@ public class CommandKillAll extends BaseCommand {
 
             } catch (NumberFormatException e) {
                 throw new CommandException(
-                        Reason.INVALID_INPUT,
+                        Reason.GENERIC_ERROR,
                         "Please enter a valid number."
                 );
             }
@@ -92,7 +93,6 @@ public class CommandKillAll extends BaseCommand {
 
 
     /**
-     * Remove
      * Removes all non-player entities in a collection.
      *
      * @param entities Collection of entities to remove.
@@ -104,7 +104,6 @@ public class CommandKillAll extends BaseCommand {
 
 
     /**
-     * Remove
      * Removes all non-player entities in a list.
      *
      * @param entities List of entities to remove.
@@ -131,7 +130,6 @@ public class CommandKillAll extends BaseCommand {
 
 
     /**
-     * Out
      * Formats and outputs a kill count to the player.
      *
      * @param player Player who initiated the command

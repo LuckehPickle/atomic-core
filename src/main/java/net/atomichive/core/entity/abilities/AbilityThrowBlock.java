@@ -43,7 +43,7 @@ public class AbilityThrowBlock implements Ability {
         // Get block beneath player's feet
         if (material == null || !material.isBlock() || material == Material.AIR) {
 
-            Block block = null;
+            Block block;
             Location temp = location.clone();
 
             do {

@@ -2,8 +2,7 @@ package net.atomichive.core.entity;
 
 import com.google.gson.annotations.SerializedName;
 import net.atomichive.core.entity.atomic.AtomicEntity;
-import net.atomichive.core.exception.AtomicEntityException;
-import net.atomichive.core.exception.Reason;
+import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.util.SmartMap;
 import net.atomichive.core.util.Util;
 import org.bukkit.Location;
@@ -73,28 +72,26 @@ public class CustomEntity {
 
 
     /**
-     * Spawn
      * Creates a new active entity.
      *
      * @param location Location to spawn entity.
      * @return Active Entity.
      */
-    public ActiveEntity spawn (Location location) throws AtomicEntityException {
+    public ActiveEntity spawn (Location location) throws CustomObjectException {
         return spawn(location, null);
     }
 
 
     /**
-     * Spawn
      * Creates a new active entity.
      *
      * @param location Location to spawn entity.
      * @return Active Entity.
      */
-    public ActiveEntity spawn (Location location, Entity owner) throws AtomicEntityException {
+    public ActiveEntity spawn (Location location, Entity owner) throws CustomObjectException {
 
         Class entityClass;
-        AtomicEntity entity = null;
+        AtomicEntity entity;
 
         // Attempt to get class
         try {
@@ -102,10 +99,11 @@ public class CustomEntity {
             entityClass = Class.forName("net.atomichive.core.entity.atomic.Atomic" +
                     Util.toCamelCase(true, atomicClass));
         } catch (ClassNotFoundException e) {
-            throw new AtomicEntityException(
-                    Reason.UNKNOWN_CLASS,
-                    "Unknown entity class '" + atomicClass + "' in custom entity '" + name + "'."
-            );
+            throw new CustomObjectException(String.format(
+                    "Unknown entity class '%s' in custom entity '%s'.",
+                    atomicClass,
+                    name
+            ));
         }
 
         // Construct instance

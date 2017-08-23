@@ -2,10 +2,10 @@ package net.atomichive.core.entity;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.stream.MalformedJsonException;
 import net.atomichive.core.JsonManager;
-import net.atomichive.core.exception.AtomicEntityException;
+import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.exception.ElementAlreadyExistsException;
-import net.atomichive.core.exception.Reason;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
@@ -112,6 +112,19 @@ public class EntityManager extends JsonManager {
 
 
     /**
+     * Load
+     * Attempts to reload entities from entities.json.
+     *
+     * @return Number of elements loaded.
+     */
+    @Override
+    public int load () throws MalformedJsonException {
+        customEntities.clear();
+        return super.load();
+    }
+
+
+    /**
      * Load element
      * Loads a particular element as defined
      * by the extending class.
@@ -140,33 +153,15 @@ public class EntityManager extends JsonManager {
 
 
     /**
-     * Spawn entity
-     * Spawns a new custom entity
-     *
-     * @param location   Desired spawn location.
-     * @param entityName Name of custom entity to spawn.
-     * @param count      Number of entities to spawn.
-     * @throws AtomicEntityException if an exception is encountered. These
-     *                               are safe to relay to players.
-     */
-    public void spawnEntity (Location location, String entityName, int count)
-            throws AtomicEntityException {
-        spawnEntity(location, entityName, count, null);
-    }
-
-    /**
-     * Spawn entity
      * Spawns a new custom entity
      *
      * @param location   Desired spawn location.
      * @param entityName Name of custom entity to spawn.
      * @param count      Number of entities to spawn.
      * @param owner      Owner of spawned entities. Can be null.
-     * @throws AtomicEntityException if an exception is encountered. These
-     *                               are safe to relay to players.
      */
     public void spawnEntity (Location location, String entityName, int count, Entity owner)
-            throws AtomicEntityException {
+            throws CustomObjectException {
 
         CustomEntity customEntity = null;
 
@@ -180,14 +175,15 @@ public class EntityManager extends JsonManager {
 
         // Ensure entity was found
         if (customEntity == null) {
-            throw new AtomicEntityException(
-                    Reason.ENTITY_ERROR,
-                    "Entity '" + entityName + "' could not be found."
-            );
+            throw new CustomObjectException(String.format(
+                    "Entity '%s' could not be found.",
+                    entityName
+            ));
         }
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < count; i++) {
             add(customEntity.spawn(location, owner));
+        }
 
     }
 

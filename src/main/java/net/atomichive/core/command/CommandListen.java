@@ -2,7 +2,7 @@ package net.atomichive.core.command;
 
 import net.atomichive.core.Main;
 import net.atomichive.core.exception.CommandException;
-import net.atomichive.core.exception.PermissionException;
+import net.atomichive.core.exception.InvalidNumberException;
 import net.atomichive.core.exception.Reason;
 import net.atomichive.core.player.AtomicPlayer;
 import net.atomichive.core.util.Util;
@@ -11,7 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Command Listen
  * Change command listening levels.
  */
 public class CommandListen extends BaseCommand {
@@ -30,18 +29,16 @@ public class CommandListen extends BaseCommand {
 
 
     /**
-     * Run
+     * Executes this command.
      *
-     * @param sender The object that sent the command.
+     * @param sender Command sender.
      * @param label  The exact command label typed by the user.
-     * @param args   Any command arguments.
-     * @throws CommandException    if an error occurs.
-     * @throws PermissionException if the user doesn't have
-     *                             appropriate permissions.
+     * @param args   Command arguments.
+     * @throws CommandException if a generic error occurs.
      */
     @Override
     public void run (CommandSender sender, String label, String[] args)
-            throws CommandException, PermissionException {
+            throws CommandException {
 
         // Get player
         AtomicPlayer player = Main.getInstance().getPlayerManager().get((Player) sender);
@@ -58,16 +55,17 @@ public class CommandListen extends BaseCommand {
 
         // Ensure input is a valid int
         if (!Util.isInteger(args[0]))
-            throw new CommandException(
-                    Reason.INVALID_INPUT,
-                    "Please enter a valid number."
-            );
+            throw new InvalidNumberException();
 
         verbosity = Integer.parseInt(args[0]);
 
         // Ensure verbosity is within range
-        if (verbosity < 0 || verbosity > 2)
-            throw new CommandException("Please enter a valid verbosity level. (From 0 to 2)");
+        if (verbosity < 0 || verbosity > 2) {
+            throw new CommandException(
+                    Reason.INVALID_NUMBER,
+                    "Please enter a valid verbosity level. (From 0 to 2)"
+            );
+        }
 
         // Update verbosity
         player.setVerbosity((short) verbosity);

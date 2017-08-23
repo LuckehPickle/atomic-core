@@ -1,15 +1,16 @@
 package net.atomichive.core.command;
 
 import net.atomichive.core.exception.CommandException;
+import net.atomichive.core.exception.InvalidNumberException;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Command Speed
  * Change your flying or walking speeds.
  */
 public class CommandSpeed extends BaseCommand {
+
 
     public CommandSpeed () {
         super(
@@ -23,8 +24,17 @@ public class CommandSpeed extends BaseCommand {
     }
 
 
+    /**
+     * Executes this command.
+     *
+     * @param sender Command sender.
+     * @param label  The exact command label typed by the user.
+     * @param args   Command arguments.
+     * @throws CommandException if a generic error occurs.
+     */
     @Override
-    public void run (CommandSender sender, String label, String[] args) throws CommandException {
+    public void run (CommandSender sender, String label, String[] args)
+            throws CommandException {
 
         // Get player
         Player player = (Player) sender;
@@ -51,7 +61,7 @@ public class CommandSpeed extends BaseCommand {
             internalSpeed = speed / 100.0f;
 
         } catch (NumberFormatException e) {
-            throw new CommandException("Please enter a valid number.");
+            throw new InvalidNumberException();
         }
 
         if (player.isFlying()) {

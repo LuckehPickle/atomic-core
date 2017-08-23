@@ -4,6 +4,7 @@ import net.atomichive.core.Main;
 import net.atomichive.core.entity.ActiveEntity;
 import net.atomichive.core.entity.EntityManager;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Firework;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -51,12 +52,16 @@ public class EntityDamageListener extends BaseListener implements Listener {
         Entity entity = event.getDamager();
         ActiveEntity activeEntity = manager.getActiveEntity(entity);
 
+        if (entity instanceof Firework) {
+            event.setCancelled(true);
+            return;
+        }
+
         // Check if entity is active entity
         if (activeEntity != null) {
             // Run on attack abilities
             activeEntity.runOnAttack(entity, event.getEntity());
         }
-
 
         // Handle damagee
         entity = event.getEntity();

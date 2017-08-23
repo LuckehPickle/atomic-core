@@ -14,10 +14,8 @@ import java.io.FileReader;
 import java.util.logging.Level;
 
 /**
- * Json Manager
- * A class which includes some common
- * functions for dealing with JSON files in
- * management classes.
+ * A class which includes some common functions for
+ * dealing with JSON files.
  */
 public abstract class JsonManager {
 
@@ -69,7 +67,8 @@ public abstract class JsonManager {
 
 
     /**
-     * Load
+     * Loads custom elements from the JSON file. You
+     * can call this at any time to reload.
      *
      * @return Number of elements loaded.
      */
@@ -87,7 +86,7 @@ public abstract class JsonManager {
             // Iterate over elements
             for (int i = 0; i < array.size(); i++) {
 
-                String element = null;
+                String element;
 
                 try {
                     element = loadElement(array.get(i));
@@ -132,7 +131,6 @@ public abstract class JsonManager {
 
 
     /**
-     * Load element
      * Loads a particular element as defined
      * by the extending class.
      *
