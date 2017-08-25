@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -118,6 +119,19 @@ public class Util {
 
     }
 
+
+    /**
+     * To camel case
+     * Converts an underscored string to camel case.
+     * E.g. custom_zombie -> CustomZombie.
+     *
+     * @param str Underscored string to convert.
+     * @return Camel case version of string.
+     */
+    @SuppressWarnings("SameParameterValue")
+    public static String toCamelCase (String str) {
+        return toCamelCase(true, str);
+    }
 
     /**
      * To camel case
@@ -391,6 +405,31 @@ public class Util {
         }
 
         return ROMAN_NUMERALS.get(i) + toRomanNumeral(arabic - 1);
+
+    }
+
+
+    /**
+     * Retrieves a private field.
+     *
+     * @param clazz     Class to get field from.
+     * @param fieldName Name of private field to retrieve.
+     * @return Private field, set as accessible.
+     */
+    public static Field getPrivateField (Class clazz, String fieldName) {
+
+        Field field;
+
+        try {
+            field = clazz.getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        field.setAccessible(true);
+
+        return field;
 
     }
 

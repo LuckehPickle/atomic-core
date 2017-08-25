@@ -1,6 +1,6 @@
-package net.atomichive.core.entity.pathfinding;
+package net.atomichive.core.nms.pathfinding;
 
-import net.atomichive.core.util.NMSUtil;
+import net.atomichive.core.nms.NMSUtil;
 import net.minecraft.server.v1_12_R1.ControllerLook;
 import net.minecraft.server.v1_12_R1.EntityInsentient;
 import net.minecraft.server.v1_12_R1.NavigationAbstract;
@@ -9,9 +9,7 @@ import net.minecraft.server.v1_12_R1.PathfinderGoal;
 import org.bukkit.entity.Entity;
 
 /**
- * Pathfinder Goal Follow Entity
- * Follows an entity. Useful for pets or escort
- * missions.
+ * Follows an entity. Useful for pets or escort missions.
  */
 public class PathfinderGoalFollowEntity extends PathfinderGoal {
 
@@ -27,7 +25,7 @@ public class PathfinderGoalFollowEntity extends PathfinderGoal {
 
 
     /**
-     * Pathfinder goal follow entity
+     * Constructor
      *
      * @param entity      Entity that is following.
      * @param follow      Entity to be followed.
@@ -44,7 +42,6 @@ public class PathfinderGoalFollowEntity extends PathfinderGoal {
 
 
     /**
-     * a
      * Validates goal. If false, then entity will ignore this goal.
      *
      * @return Whether the goal is valid.
@@ -76,7 +73,6 @@ public class PathfinderGoalFollowEntity extends PathfinderGoal {
 
 
     /**
-     * e
      * Executes goal.
      */
     public void e () {

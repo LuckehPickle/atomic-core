@@ -2,130 +2,120 @@ package net.atomichive.core.entity;
 
 import net.atomichive.core.Main;
 import net.atomichive.core.entity.abilities.*;
-import net.atomichive.core.entity.pathfinding.PathfinderGoalFollowEntity;
-import net.atomichive.core.exception.AbilityException;
 import net.atomichive.core.exception.CustomObjectException;
-import net.atomichive.core.util.NMSUtil;
+import net.atomichive.core.nms.NMSUtil;
+import net.atomichive.core.nms.VolatileGoalSelector;
+import net.atomichive.core.nms.goals.*;
 import net.atomichive.core.util.SmartMap;
 import net.atomichive.core.util.Util;
-import net.minecraft.server.v1_12_R1.*;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Entity;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 /**
  * Represents an entity who is active in the world.
- * This class is currently volatile.
- * TODO Entities need a desperate overhaul
  */
-@SuppressWarnings("WeakerAccess")
 public class ActiveEntity {
 
-
-    // Attributes
-    private Entity entity;
-    private PathfinderGoalSelector goals;
-    private PathfinderGoalSelector targets;
-    private Entity owner;
+    private Entity entity;                // The corresponding Bukkit entity
+    private VolatileGoalSelector goals;   // Pathfinding goals
+    private VolatileGoalSelector targets; // Pathfinding targets
+    private Entity owner;                 // Owning entity, if one exists
 
     // Abilities
-    private List<Ability> abilities = new ArrayList<>();
     private List<GenericAbilityHandler> onAttack = new ArrayList<>();
     private List<GenericAbilityHandler> onDamage = new ArrayList<>();
     private List<TimedAbilityHandler> onTimer = new ArrayList<>();
 
 
     /**
-     * Active Entity
+     * Constructor
      *
      * @param entity Bukkit entity.
      */
+    @SuppressWarnings("WeakerAccess")
     public ActiveEntity (Entity entity) {
         this.entity = entity;
     }
 
 
     /**
-     * Apply pathfinding
      * Handles pathfinding map from entities.json, and applies
      * custom pathfinding to the entity as necessary.
      *
      * @param pathfinding Pathfinding map.
      */
-    public void applyPathfinding (Map pathfinding) {
+    void applyPathfinding (Map pathfinding) throws CustomObjectException {
 
         // Ensure pathfinding map has been defined.
-        if (pathfinding == null)
-            return;
+        if (pathfinding == null) return;
 
-        // Init
-        EntityInsentient entity = (EntityInsentient) ((CraftLivingEntity) this.entity).getHandle();
-        Field goalsField = NMSUtil.getPrivateField(EntityInsentient.class, "goalSelector");
-        Field targetsField = NMSUtil.getPrivateField(EntityInsentient.class, "targetSelector");
+        this.goals   = NMSUtil.getGoalSelector(this.entity, VolatileGoalSelector.Type.GOAL);
+        this.targets = NMSUtil.getGoalSelector(this.entity, VolatileGoalSelector.Type.TARGET);
 
-        // Attempt to retrieve goal selectors
-        try {
-            this.goals = (PathfinderGoalSelector) goalsField.get(entity);
-            this.targets = (PathfinderGoalSelector) targetsField.get(entity);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            return;
+        if (pathfinding.containsKey("goals")) {
+            handlePathfindingList(
+                    pathfinding.get("goals"),
+                    VolatileGoalSelector.Type.GOAL
+            );
         }
 
-
-        // Handle pathfinding goals
-        try {
-
-            if (pathfinding.containsKey("goals"))
-                handleGoals(entity, pathfinding.get("goals"));
-
-            if (pathfinding.containsKey("targets"))
-                handleTargets(entity, pathfinding.get("targets"));
-
-        } catch (CustomObjectException e) {
-            Main.getInstance().log(Level.SEVERE, e.getMessage());
+        if (pathfinding.containsKey("targets")) {
+            handlePathfindingList(
+                    pathfinding.get("targets"),
+                    VolatileGoalSelector.Type.TARGET
+            );
         }
 
     }
 
 
     /**
-     * Parses and applies pathfinding goals.
+     * Handles a list of pathfinding goals or targets.
      *
-     * @param entity Entity to apply goals to.
-     * @param goals  List of goals.
+     * @param list List of pathfinding goals to parse.
+     * @param type Whether to handle goals of targets.
      */
-    private void handleGoals (EntityInsentient entity, Object goals)
+    private void handlePathfindingList (Object list, VolatileGoalSelector.Type type)
             throws CustomObjectException {
 
-        // Ensure goals is a list
-        if (!List.class.isInstance(goals)) {
-            throw new CustomObjectException("Pathfinding goals could not be parsed as list.");
+        // Ensure object can be parsed as list
+        if (!(list instanceof List)) {
+            throw new CustomObjectException(String.format(
+                    "Pathfinding %ss could not be parsed as a list.",
+                    type.name().toLowerCase()
+            ));
         }
 
-        // Iterate over goals
-        for (Object obj : (List) goals) {
+        // Iterate over items in list
+        for (Object selector : (List) list) {
 
-            // Ensure obj is a string
-            if (!String.class.isInstance(obj)) {
-                Main.getInstance().log(
-                        Level.WARNING,
-                        "A pathfinding goal could not be parsed as a string."
-                );
-                continue;
+            // Ensure selector is a string
+            if (!(selector instanceof String)) {
+                throw new CustomObjectException("Pathfinding selectors must be strings.");
             }
 
-            // Attempt to handle goal
-            try {
-                handleGoal(entity, (String) obj);
-            } catch (CustomObjectException e) {
-                Main.getInstance().log(Level.WARNING, e.getMessage());
+            // Split at first string
+            String[] components = ((String) selector).split(" ", 2);
+
+            if (components.length == 0) continue;
+
+            String goal  = components[0].toLowerCase();
+            int priority = 0;
+
+            if (components.length == 2)
+                priority = parsePriority(components[1]);
+
+            switch (type) {
+                case GOAL:
+                    parseGoalSelector(goal, priority);
+                    break;
+                case TARGET:
+                    parseTargetSelector(goal, priority);
+                    break;
             }
 
         }
@@ -134,141 +124,80 @@ public class ActiveEntity {
 
 
     /**
-     * Parses and applies a pathfinding goal.
+     * Parses and applies a goal selector.
      *
-     * @param g      Pathfinding goal as a string.
-     * @param entity Entity to apply goal to.
+     * @param goal Goal selector.
+     * @param priority Priority of this selector.
      */
-    private void handleGoal (EntityInsentient entity, String g)
-            throws CustomObjectException {
+    private void parseGoalSelector (String goal, int priority) throws CustomObjectException {
 
-        // Split at spaces
-        String[] parts = g.split(" ");
-        int priority;
-        String goal;
-
-        // Parse
-        priority = parsePriority(parts[0]);
-        goal = parts[1].toLowerCase();
+        VolatileGoal volatileGoal;
 
         switch (goal) {
             case "clear":
-                clear(this.goals);
-                break;
+                this.goals.clear();
+                return;
             case "swim":
-                this.goals.a(priority, new PathfinderGoalFloat(entity));
+                volatileGoal = new VolatileGoalFloat(entity);
                 break;
             case "look_around":
-                this.goals.a(priority, new PathfinderGoalRandomLookaround(entity));
+                volatileGoal = new VolatileGoalLookAround(entity);
                 break;
             case "random_stroll":
-                if (entity instanceof EntityCreature) {
-                    this.goals.a(priority, new PathfinderGoalRandomStroll((EntityCreature) entity, 1.0d));
-                    break;
-                }
-                throw new CustomObjectException("Only creatures can be assigned with the goal 'random_stroll'.");
+                volatileGoal = new VolatileGoalRandomStroll(entity);
+                break;
             case "look_at_player":
-                this.goals.a(priority, new PathfinderGoalLookAtPlayer(entity, EntityHuman.class, 8.0f));
+                volatileGoal = new VolatileGoalLookAtPlayer(entity);
                 break;
             case "follow_owner":
-                if (this.getOwner() != null) {
-                    this.goals.a(priority, new PathfinderGoalFollowEntity(entity, this.getOwner(), 1.0d, 2.5f, 30.0f));
-                    break;
-                }
-                throw new CustomObjectException("Cannot follow owner; no owner assigned.");
+                volatileGoal = new VolatileGoalFollowEntity(entity, this.getOwner());
+                break;
             case "melee_attack":
-                if (entity instanceof EntityCreature) {
-                    this.goals.a(priority, new PathfinderGoalMeleeAttack((EntityCreature) entity, 1.0d, true));
-                    break;
-                }
-                throw new CustomObjectException("Only creatures can be assigned with the goal 'melee_attack'.");
+                volatileGoal = new VolatileGoalMelee(entity);
+                break;
             case "flee_player":
-                if (entity instanceof EntityCreature) {
-                    this.goals.a(priority, new PathfinderGoalAvoidTarget((EntityCreature) entity, EntityHuman.class, 5.0f, 1.0d, 1.2d));
-                    break;
-                }
-                throw new CustomObjectException("Only creatures can be assigned with the goal 'flee_player'");
+                volatileGoal = new VolatileGoalFleePlayer(entity);
+                break;
             default:
-                throw new CustomObjectException("Unknown goal: " + goal);
+                throw new CustomObjectException(String.format(
+                        "Unknown goal selector: '%s'.",
+                        goal
+                ));
         }
+
+        this.goals.add(priority, volatileGoal);
 
     }
 
 
     /**
-     * Parses and applies pathfinding targets.
+     * Parses and applies a target selector.
      *
-     * @param targets List of targets.
+     * @param target Target selector.
+     * @param priority Priority of this selector.
      */
-    private void handleTargets (EntityInsentient entity, Object targets)
-            throws CustomObjectException {
+    private void parseTargetSelector (String target, int priority) throws CustomObjectException {
 
-        // Ensure goals is a list
-        if (!List.class.isInstance(targets)) {
-            throw new CustomObjectException("Pathfinding targets could not be parsed as list.");
-        }
-
-        // Iterate over goals
-        for (Object obj : (List) targets) {
-
-            // Ensure obj is a string
-            if (!String.class.isInstance(obj)) {
-                Main.getInstance().log(
-                        Level.WARNING,
-                        "A pathfinding target could not be parsed as a string."
-                );
-                continue;
-            }
-
-            // Attempt to handle target
-            try {
-                handleTarget(entity, (String) obj);
-            } catch (CustomObjectException e) {
-                Main.getInstance().log(Level.WARNING, e.getMessage());
-            }
-
-        }
-
-    }
-
-
-    /**
-     * Deconstructs a target definition string.
-     *
-     * @param entity Entity to give pathfinding target.
-     * @param t      Pathfinding target as string.
-     */
-    private void handleTarget (EntityInsentient entity, String t)
-            throws CustomObjectException {
-
-        // Split at spaces
-        String[] parts = t.split(" ");
-        int priority;
-        String target;
-
-        // Parse
-        priority = parsePriority(parts[0]);
-        target = parts[1].toLowerCase();
+        VolatileGoal volatileTargets;
 
         switch (target) {
             case "clear":
-                clear(this.targets);
-                break;
+                this.targets.clear();
+                return;
             case "attacker":
-                if (entity instanceof EntityCreature) {
-                    this.targets.a(priority, new PathfinderGoalHurtByTarget((EntityCreature) entity, false, new Class[0]));
-                    break;
-                }
-                throw new CustomObjectException("Only creatures can be assigned with the target 'attacker'.");
+                volatileTargets = new VolatileTargetAttacker(entity);
+                break;
             case "players":
-                if (entity instanceof EntityCreature) {
-                    this.targets.a(priority, new PathfinderGoalNearestAttackableTarget((EntityCreature) entity, EntityHuman.class, true));
-                    break;
-                }
-                throw new CustomObjectException("Only creatures can be assigned with the target 'players'.");
+                volatileTargets = new VolatileTargetPlayer(entity);
+                break;
             default:
-                throw new CustomObjectException("Unknown target: " + target);
+                throw new CustomObjectException(String.format(
+                        "Unknown target selector: '%s'.",
+                        target
+                ));
         }
+
+        this.targets.add(priority, volatileTargets);
 
     }
 
@@ -299,112 +228,101 @@ public class ActiveEntity {
 
 
     /**
-     * Clear
-     * Uses reflection to clear pathfinder goal selectors.
+     * Parses and applies abilities.
      *
-     * @param selector Goal select to clear.
+     * @param abilities Map array of abilities. Where
+     *                  each map is an ability.
      */
-    @SuppressWarnings("ConstantConditions")
-    private void clear (PathfinderGoalSelector selector) {
+    void applyAbilities (Map[] abilities) {
 
-        Field fieldB = NMSUtil.getPrivateField(PathfinderGoalSelector.class, "b");
-        Field fieldC = NMSUtil.getPrivateField(PathfinderGoalSelector.class, "c");
-
-        try {
-            ((Set) fieldB.get(selector)).clear();
-            ((Set) fieldC.get(selector)).clear();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
-    /**
-     * Parses and applies abilities to this entity.
-     *
-     * @param abilities A list of abilities strings.
-     */
-    public void applyAbilities (List abilities) {
-
-        try {
-
-            // Iterate over define abilities
-            for (Object obj : abilities) {
-
-                if (!(obj instanceof Map))
-                    throw new AbilityException("Could not parse ability.");
-
-                // Get attributes map
-                SmartMap attributes = new SmartMap((Map) obj);
-                Ability ability = getBaseAbility(attributes);
-
-
-                // Get trigger and add ability
-                String trigger = attributes.get(String.class, "trigger");
-                String target  = attributes.get(String.class, "target");
-                int radius = attributes.getInteger("radius", 30);
-                int ticks = attributes.getInteger("ticks", 10);
-
-                Ability.Target abilityTarget = Ability.Target.CLOSEST_ENTITY;
-
-                // Attempt to get target
-                if (target != null) {
-                    try {
-                        abilityTarget = Ability.Target.valueOf(target);
-                    } catch (IllegalArgumentException e) {
-                        throw new AbilityException(String.format(
-                                "Unknown ability target: '%s'.",
-                                target
-                        ));
-                    }
-                }
-
-                // Handle null trigger
-                if (trigger == null) {
-                    this.abilities.add(ability);
-                }
-
-                switch (trigger) {
-                    case "on_attack":
-                        this.onAttack.add(new GenericAbilityHandler(ability, abilityTarget, radius));
-                        break;
-                    case "on_damage":
-                        this.onDamage.add(new GenericAbilityHandler(ability, abilityTarget, radius));
-                        break;
-                    case "on_timer":
-                        this.onTimer.add(new TimedAbilityHandler(ability, abilityTarget, radius, ticks));
-                        break;
-                    default:
-                        this.abilities.add(ability);
-                }
-
+        // Iterate over each map
+        for (Map ability : abilities) {
+            // Note: By catching here we can continue if a problem occurs.
+            try {
+                parseAbility(ability);
+            } catch (CustomObjectException e) {
+                Main.getInstance().log(Level.SEVERE, e.getMessage());
             }
-
-        } catch (AbilityException e) {
-            Main.getInstance().log(Level.SEVERE, e.getMessage());
         }
 
     }
 
 
     /**
-     * Get base ability
-     * Returns a base ability constructed from
-     * an ability attributes map.
+     * Parse and applies an ability.
      *
-     * @param attributes Ability attributes map.
-     * @return Base ability
-     * @throws AbilityException if no base ability is defined.
+     * @param map An ability map.
      */
-    private Ability getBaseAbility (SmartMap attributes) throws AbilityException {
+    private void parseAbility (Map map) throws CustomObjectException {
+
+        SmartMap attributes = new SmartMap(map);
+        Ability ability = getBaseAbility(attributes);
+
+
+        // Determine trigger and target
+        String trigger = attributes.get(String.class, "trigger");
+        String target  = attributes.get(String.class, "target");
+
+        // Ensure a trigger was defined.
+        if (trigger == null) {
+            throw new CustomObjectException("Ability has no trigger defined.");
+        }
+
+
+        int radius = attributes.getInteger("radius", 30);
+        int ticks  = attributes.getInteger("ticks",  10);
+
+        Ability.Target abilityTarget = Ability.Target.CLOSEST_ENTITY;
+
+        // Attempt to get target
+        if (target != null) {
+            try {
+                abilityTarget = Ability.Target.valueOf(target);
+            } catch (IllegalArgumentException e) {
+                throw new CustomObjectException(String.format(
+                        "Unknown ability target: '%s'.",
+                        target
+                ));
+            }
+        }
+
+
+        // Add ability
+        switch (trigger) {
+            case "on_attack":
+                this.onAttack.add(new GenericAbilityHandler(ability, abilityTarget, radius));
+                break;
+            case "on_damage":
+                this.onDamage.add(new GenericAbilityHandler(ability, abilityTarget, radius));
+                break;
+            case "on_timer":
+                this.onTimer.add(new TimedAbilityHandler(ability, abilityTarget, radius, ticks));
+                break;
+            default:
+                throw new CustomObjectException(String.format(
+                        "Unknown ability trigger: '%s'.",
+                        trigger
+                ));
+        }
+
+    }
+
+
+    /**
+     * Returns a base ability as defined in a smart map.
+     *
+     * @param attributes Ability smart map.
+     * @return Base ability
+     */
+    private Ability getBaseAbility (SmartMap attributes) throws CustomObjectException {
 
         // Get base as string
         String base = attributes.get(String.class, "base");
 
         // Ensure base was defined
-        if (base == null)
-            throw new AbilityException("No base ability defined.");
+        if (base == null) {
+            throw new CustomObjectException("An ability was created but no base ability was defined.");
+        }
 
         switch (base.toLowerCase()) {
             case "effect":
@@ -428,14 +346,17 @@ public class ActiveEntity {
             case "throw_block":
                 return new AbilityThrowBlock(attributes);
             default:
-                throw new AbilityException("Unknown base ability: '" + base + "'.");
+                throw new CustomObjectException(String.format(
+                        "Failed to add ability. Unknown base '%s'.",
+                        base
+                ));
         }
 
     }
 
 
     /**
-     * Run on attack
+     * Runs all abilities that are triggered by an attack.
      *
      * @param source Entity who attacked.
      * @param target Entity being attacked.
@@ -451,7 +372,7 @@ public class ActiveEntity {
 
 
     /**
-     * Run on damage
+     * Runs all abilities that are triggered by damage.
      *
      * @param source Entity who attacked.
      * @param target Entity being attacked.
@@ -467,15 +388,16 @@ public class ActiveEntity {
 
 
     /**
-     * Is
+     * Determines whether this active entity is the same
+     * as the given bukkit entity.
      *
      * @param entity Bukkit entity.
-     * @return Whether this active entity represents the given
-     * Bukkit entity.
+     * @return Whether the entities are the same.
      */
     public boolean is (Entity entity) {
         return this.entity.equals(entity);
     }
+
 
     /*
         Getters and setters.

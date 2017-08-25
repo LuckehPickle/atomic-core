@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.stream.MalformedJsonException;
 import net.atomichive.core.JsonManager;
-import net.atomichive.core.exception.ElementAlreadyExistsException;
+import net.atomichive.core.exception.CustomObjectException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,6 @@ import java.util.List;
  * A class which tracks all custom item definitions.
  */
 public class ItemManager extends JsonManager {
-
 
     private List<CustomItem> customItems = new ArrayList<>();
 
@@ -29,7 +28,7 @@ public class ItemManager extends JsonManager {
 
 
     /**
-     * Attempts to reload items from items.json
+     * Attempts to reload items from items.json.
      *
      * @return Number of elements loaded.
      */
@@ -48,15 +47,19 @@ public class ItemManager extends JsonManager {
      */
     @Override
     protected String loadElement (JsonElement element)
-            throws ElementAlreadyExistsException {
+            throws CustomObjectException {
 
         // Get entity from json
         Gson gson = new Gson();
         CustomItem item = gson.fromJson(element, CustomItem.class);
 
         // Ensure item has not already been defined
-        if (contains(item))
-            throw new ElementAlreadyExistsException(item.getName());
+        if (contains(item)) {
+            throw new CustomObjectException(String.format(
+                    "An item named '%s' already exists.",
+                    item.getName()
+            ));
+        }
 
         customItems.add(item);
 

@@ -10,12 +10,11 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Base Ability
+ * A basic ability interface.
  */
 public interface Ability {
 
     /**
-     * Target enum
      * Targeting types.
      */
     enum Target {
@@ -28,7 +27,6 @@ public interface Ability {
 
 
         /**
-         * Get targets
          * Retrieves all matching targets.
          *
          * @param source Source entity.
@@ -64,7 +62,6 @@ public interface Ability {
 
 
         /**
-         * Get nearby
          * Returns a collection of all nearby entities.
          *
          * @param source Source entity.
@@ -82,7 +79,7 @@ public interface Ability {
 
 
     /**
-     * Execute
+     * Executes the ability.
      *
      * @param source Entity who executed the ability.
      * @param target Entity being targeted by the ability.

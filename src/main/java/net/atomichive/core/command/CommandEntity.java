@@ -123,7 +123,7 @@ public class CommandEntity extends BaseCommand {
         }
 
         // Get all warps
-        List<CustomEntity> entities = Main.getInstance().getEntityManager().getAll();
+        List<CustomEntity> entities = Main.getInstance().getEntityManager().getCustomEntities();
 
         // Create a new paginated result
         new PaginatedResult<CustomEntity>("Custom entities") {
@@ -133,7 +133,7 @@ public class CommandEntity extends BaseCommand {
                 return String.format(
                         "%s [%s]",
                         entity.getName() + ChatColor.GRAY,
-                        entity.getAtomicClass()
+                        entity.getEntityClass()
                 );
             }
 

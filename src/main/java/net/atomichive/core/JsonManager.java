@@ -5,7 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.MalformedJsonException;
-import net.atomichive.core.exception.ElementAlreadyExistsException;
+import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.util.Util;
 
 import java.io.File;
@@ -90,11 +90,8 @@ public abstract class JsonManager {
 
                 try {
                     element = loadElement(array.get(i));
-                } catch (ElementAlreadyExistsException e) {
-                    Main.getInstance().log(Level.SEVERE, String.format(
-                            "A/an %s named '%s' has already been defined. Ignoring.",
-                            this.name, e.getName()
-                    ));
+                } catch (CustomObjectException e) {
+                    Main.getInstance().log(Level.SEVERE, e.getMessage());
                     continue;
                 }
 
@@ -137,6 +134,6 @@ public abstract class JsonManager {
      * @param element A JsonElement.
      * @return A string representation of the element.
      */
-    protected abstract String loadElement (JsonElement element) throws ElementAlreadyExistsException;
+    protected abstract String loadElement (JsonElement element) throws CustomObjectException;
 
 }

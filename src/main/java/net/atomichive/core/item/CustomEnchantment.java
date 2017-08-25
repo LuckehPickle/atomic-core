@@ -3,9 +3,9 @@ package net.atomichive.core.item;
 /**
  * An enum of all possible custom item enchantments.
  */
-public enum Enchantment {
+public enum CustomEnchantment {
 
-    XP_BOOST      ("XP Boost",        2), // Increases amount of xp earned
+    XP_BOOST      ("XP boost",        2), // Increases amount of xp earned
     FIRE_ASPECT   ("Fire aspect",     2), // Causes targets to be ignited on hit
     CRIT_CHANCE   ("Critical chance", 3), // Increase the chance of a critical hit
     POWER         ("Power",           5), // Increases the distance/speed of arrows
@@ -17,7 +17,7 @@ public enum Enchantment {
     private int maxLevel;
 
 
-    Enchantment (String display, int maxLevel) {
+    CustomEnchantment (String display, int maxLevel) {
         this.display  = display;
         this.maxLevel = maxLevel;
     }
@@ -29,10 +29,10 @@ public enum Enchantment {
      * @param display Display name of enchantment.
      * @return Enchantment with matching display name, or null.
      */
-    public static Enchantment getByDisplayName (String display) {
+    public static CustomEnchantment getByDisplayName (String display) {
 
         // Iterate over each enchantment
-        for (Enchantment enchantment : Enchantment.values()) {
+        for (CustomEnchantment enchantment : CustomEnchantment.values()) {
             if (enchantment.getDisplay().equalsIgnoreCase(display))
                 return enchantment;
         }

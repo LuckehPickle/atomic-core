@@ -1,7 +1,7 @@
 package net.atomichive.core.exception;
 
 /**
- * An exception related to entity abilities.
+ * An exception that is thrown from abilities.
  */
 public class AbilityException extends Throwable {
 

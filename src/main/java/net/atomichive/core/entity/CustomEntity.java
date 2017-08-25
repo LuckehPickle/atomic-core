@@ -1,6 +1,7 @@
 package net.atomichive.core.entity;
 
 import com.google.gson.annotations.SerializedName;
+import net.atomichive.core.Main;
 import net.atomichive.core.entity.atomic.AtomicEntity;
 import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.util.SmartMap;
@@ -9,66 +10,54 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
- * Custom Entity
- * A user defined custom entity.
+ * Contains all the information needed to construct
+ * a custom entity. Attributes here are loaded through
+ * with Gson.
  */
-@SuppressWarnings({"WeakerAccess", "FieldCanBeLocal"})
+@SuppressWarnings({"FieldCanBeLocal", "unused"})
 public class CustomEntity {
 
-    private String name;
+    private static final transient String ATOMIC_STUB = "net.atomichive.core.entity.atomic.Atomic";
 
-    @SerializedName("class")
-    private String atomicClass;
+    private String name;                // Unique name of this entity
+    private boolean despawn = true;     // Whether the entity despawns
+    private int level = 1;              // Entities level
+    private Map pathfinding = null;     // Pathfinding configuration
+    private Map[] abilities = null;     // Entity abilities
 
-    @SerializedName("globals")
-    private Map<String, Object> globalAttributes;
+    @SerializedName("class")            // Atomic entity class
+    private String entityClass;
 
-    @SerializedName("locals")
-    private Map<String, Object> localAttributes;
+    @SerializedName("display_name")     // Exact text to include in name tag
+    private String displayName = null;
 
-    // Transient global attributes
-    private transient boolean isNameVisible;
+    @SerializedName("is_name_visible")  // Whether this entities name tag should be visible
+    private boolean isNameVisible = true;
 
+    @SerializedName("is_invulnerable")  // Prevents this entity from taking any damage
+    private boolean isInvulnerable = false;
 
-    private transient boolean despawn;
-    private transient boolean isInvulnerable;
-    private transient boolean isGlowing;
-    private transient boolean respectsGravity;
-    private transient boolean isSilent;
-    private transient boolean isCollidable;
-    private transient boolean preventItemPickup;
-    private transient String displayName;
-    private transient Map pathfinding;
-    private transient List abilities;
+    @SerializedName("is_glowing")       // Causes the entity to glow
+    private boolean isGlowing = false;
 
+    @SerializedName("respects_gravity") // Whether the entity should be affected by gravity
+    private boolean respectsGravity = true;
 
-    /**
-     * Init
-     * Retrieves all global attributes and sets them.
-     */
-    public void init () {
+    @SerializedName("is_silent")        // Prevents the entity from making noise
+    private boolean isSilent = false;
 
-        // Create new attributes object from global attributes
-        SmartMap attributes = new SmartMap(globalAttributes);
+    @SerializedName("is_collidable")    // Whether the tntity should collide with other entities
+    private boolean isCollidable = true;
 
-        // Apply global attributes
-        isNameVisible = attributes.get(Boolean.class, "is_name_visible", true);
-        despawn = attributes.get(Boolean.class, "despawn", true);
-        isInvulnerable = attributes.get(Boolean.class, "is_invulnerable", false);
-        isGlowing = attributes.get(Boolean.class, "is_glowing", false);
-        respectsGravity = attributes.get(Boolean.class, "respects_gravity", true);
-        isSilent = attributes.get(Boolean.class, "is_silent", false);
-        isCollidable = attributes.get(Boolean.class, "is_collidable", true);
-        preventItemPickup = attributes.get(Boolean.class, "prevent_item_pickup", false);
-        displayName = attributes.get(String.class, "display_name", null);
-        pathfinding = attributes.get(Map.class, "pathfinding", null);
-        abilities = attributes.get(List.class, "abilities", null);
+    @SerializedName("prevent_item_pickup") // Whether the entity can pick items up or not.
+    private boolean preventItemPickup = false;
 
-    }
+    @SerializedName("class_attributes")           // Local attributes, specific to entity class
+    private Map<String, Object> classAttributes;
 
 
     /**
@@ -96,12 +85,11 @@ public class CustomEntity {
         // Attempt to get class
         try {
             // Get class by name
-            entityClass = Class.forName("net.atomichive.core.entity.atomic.Atomic" +
-                    Util.toCamelCase(true, atomicClass));
+            entityClass = Class.forName(ATOMIC_STUB + Util.toCamelCase(this.entityClass));
         } catch (ClassNotFoundException e) {
             throw new CustomObjectException(String.format(
                     "Unknown entity class '%s' in custom entity '%s'.",
-                    atomicClass,
+                    this.entityClass,
                     name
             ));
         }
@@ -114,8 +102,8 @@ public class CustomEntity {
             return null;
         }
 
-        // Init AtomicEntity
-        entity.init(new SmartMap(localAttributes));
+        // Calling init will apply class attributes
+        entity.init(new SmartMap(classAttributes));
 
         ActiveEntity activeEntity = new ActiveEntity(entity.spawn(location));
         activeEntity.setOwner(owner);
@@ -126,8 +114,7 @@ public class CustomEntity {
 
 
     /**
-     * Apply local attributes
-     * Apply local attributes to the active entity
+     * Apply attributes to the active entity.
      *
      * @param activeEntity Active entity to modify.
      * @return Modified active entity.
@@ -145,7 +132,11 @@ public class CustomEntity {
             customName = this.displayName;
         }
 
-        entity.setCustomName("%s" + customName + " [%d]");
+        entity.setCustomName(String.format(
+                "<COLOR>%s [%d]",
+                customName,
+                this.level
+        ));
 
         // Apply misc. attributes
         entity.setCustomNameVisible(this.isNameVisible);
@@ -155,13 +146,10 @@ public class CustomEntity {
         entity.setSilent(this.isSilent);
 
 
-        // Apply living attributes.
         if (!entity.isDead()) {
 
-            // Cast to living entity
+            // Apply living attributes.
             LivingEntity living = (LivingEntity) entity;
-
-            // Apply
             living.setRemoveWhenFarAway(this.despawn);
             living.setCollidable(this.isCollidable);
             living.setCanPickupItems(!this.preventItemPickup);
@@ -169,13 +157,21 @@ public class CustomEntity {
         }
 
 
-        // Attempt to apply pathfinding.
-        if (this.pathfinding != null)
-            activeEntity.applyPathfinding(pathfinding);
+        try {
+            if (this.pathfinding != null) {
+                activeEntity.applyPathfinding(pathfinding);
+            }
+        } catch (CustomObjectException e) {
+            Main.getInstance().log(Level.SEVERE, String.format(
+                    "Failed to apply pathfinding to custom entity '%s': %s",
+                    this.name,
+                    e.getMessage()
+            ));
+        }
 
-        // Attempt to apply abilities.
-        if (this.abilities != null)
+        if (this.abilities != null) {
             activeEntity.applyAbilities(abilities);
+        }
 
         return activeEntity;
 
@@ -184,7 +180,7 @@ public class CustomEntity {
 
     @Override
     public String toString () {
-        return String.format("%s [%s]", this.name, this.atomicClass);
+        return String.format("%s [%s]", this.name, this.entityClass);
     }
 
 
@@ -196,8 +192,56 @@ public class CustomEntity {
         return name;
     }
 
-    public String getAtomicClass () {
-        return atomicClass;
+    public boolean isDespawn () {
+        return despawn;
+    }
+
+    public int getLevel () {
+        return level;
+    }
+
+    public Map getPathfinding () {
+        return pathfinding;
+    }
+
+    public Map[] getAbilities () {
+        return abilities;
+    }
+
+    public String getEntityClass () {
+        return entityClass;
+    }
+
+    public String getDisplayName () {
+        return displayName;
+    }
+
+    public boolean isNameVisible () {
+        return isNameVisible;
+    }
+
+    public boolean isInvulnerable () {
+        return isInvulnerable;
+    }
+
+    public boolean isGlowing () {
+        return isGlowing;
+    }
+
+    public boolean isRespectsGravity () {
+        return respectsGravity;
+    }
+
+    public boolean isSilent () {
+        return isSilent;
+    }
+
+    public boolean isCollidable () {
+        return isCollidable;
+    }
+
+    public boolean isPreventItemPickup () {
+        return preventItemPickup;
     }
 
 }

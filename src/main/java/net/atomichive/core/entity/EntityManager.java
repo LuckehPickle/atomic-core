@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.stream.MalformedJsonException;
 import net.atomichive.core.JsonManager;
 import net.atomichive.core.exception.CustomObjectException;
-import net.atomichive.core.exception.ElementAlreadyExistsException;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
@@ -13,22 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Entity Manager
  * A class which tracks all custom entities, as well as
  * currently active entities.
  */
 public class EntityManager extends JsonManager {
 
-
-    // All custom entity definitions
     private List<CustomEntity> customEntities = new ArrayList<>();
-
-    // All currently active custom entities
-    private List<ActiveEntity> livingEntities = new ArrayList<>();
+    private List<ActiveEntity> activeEntities = new ArrayList<>();
 
 
     /**
-     * Entity Manager
+     * Constructor
      *
      * @param resource Path to JSON file.
      */
@@ -38,18 +32,57 @@ public class EntityManager extends JsonManager {
 
 
     /**
-     * Add
+     * Attempts to reload entities from entities.json.
+     *
+     * @return Number of elements loaded.
+     */
+    @Override
+    public int load () throws MalformedJsonException {
+        customEntities.clear();
+        return super.load();
+    }
+
+
+    /**
+     * Converts a JsonElement to a custom entity.
+     *
+     * @param element A JsonElement.
+     * @return A string representation of the element.
+     */
+    @Override
+    protected String loadElement (JsonElement element)
+            throws CustomObjectException {
+
+        // Get entity from json
+        Gson gson = new Gson();
+        CustomEntity entity = gson.fromJson(element, CustomEntity.class);
+
+        // Ensure entity has not already been defined.
+        if (contains(entity)) {
+            throw new CustomObjectException(String.format(
+                    "An entity named '%s' already exists.",
+                    entity.getName()
+            ));
+        }
+
+        customEntities.add(entity);
+
+        return entity.toString();
+
+    }
+
+
+    /**
      * Adds an active entity to the living entities array.
      *
      * @param entity Active entity to add.
      */
     public void add (ActiveEntity entity) {
-        livingEntities.add(entity);
+        activeEntities.add(entity);
     }
 
 
     /**
-     * Remove
      * Removes a Bukkit entity from the living entities array.
      *
      * @param entity Bukkit entity to remove.
@@ -60,18 +93,16 @@ public class EntityManager extends JsonManager {
 
 
     /**
-     * Remove
      * Removes an active entity from the living entities array.
      *
      * @param entity Active entity to remove.
      */
     public void remove (ActiveEntity entity) {
-        livingEntities.remove(entity);
+        activeEntities.remove(entity);
     }
 
 
     /**
-     * Contains
      * A simple search through existing custom entities
      * which compares the unique names.
      *
@@ -92,7 +123,6 @@ public class EntityManager extends JsonManager {
 
 
     /**
-     * Get active entity
      * Attempts to find a corresponding active entity.
      *
      * @param entity Bukkit entity.
@@ -101,53 +131,12 @@ public class EntityManager extends JsonManager {
     public ActiveEntity getActiveEntity (Entity entity) {
 
         // Iterate over active entities
-        for (ActiveEntity active : livingEntities) {
+        for (ActiveEntity active : activeEntities) {
             if (active.is(entity))
                 return active;
         }
 
         return null;
-
-    }
-
-
-    /**
-     * Load
-     * Attempts to reload entities from entities.json.
-     *
-     * @return Number of elements loaded.
-     */
-    @Override
-    public int load () throws MalformedJsonException {
-        customEntities.clear();
-        return super.load();
-    }
-
-
-    /**
-     * Load element
-     * Loads a particular element as defined
-     * by the extending class.
-     *
-     * @param element A JsonElement.
-     * @return A string representation of the element.
-     */
-    @Override
-    protected String loadElement (JsonElement element)
-            throws ElementAlreadyExistsException {
-
-        // Get entity from json
-        Gson gson = new Gson();
-        CustomEntity entity = gson.fromJson(element, CustomEntity.class);
-        entity.init();
-
-        // Ensure entity has not already been defined.
-        if (contains(entity))
-            throw new ElementAlreadyExistsException(entity.getName());
-
-        customEntities.add(entity);
-
-        return entity.toString();
 
     }
 
@@ -192,12 +181,12 @@ public class EntityManager extends JsonManager {
         Getters and setters.
      */
 
-    public List<CustomEntity> getAll () {
+    public List<CustomEntity> getCustomEntities () {
         return customEntities;
     }
 
     public List<ActiveEntity> getActiveEntities () {
-        return livingEntities;
+        return activeEntities;
     }
 
 }

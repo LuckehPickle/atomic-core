@@ -6,6 +6,7 @@ import net.atomichive.core.util.Util;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -16,19 +17,18 @@ import java.util.List;
 
 /**
  * Contains all the information needed to construct
- * a custom item stack.
- * This should be loaded through JSON.
+ * a custom item stack. Attributes here are loaded through
+ * with Gson.
  */
 @SuppressWarnings({"unused", "MismatchedReadAndWriteOfArray"})
 public class CustomItem {
-
 
     private String name;
     private String lore;
     private String material;
     private Rarity rarity = Rarity.COMMON;
     private int level = -1;
-    private String[] enchantments = new String[]{};
+    private String[] enchantments = new String[0];
 
     @SerializedName("display_name")
     private String displayName;
@@ -46,7 +46,7 @@ public class CustomItem {
 
         // Attempt to get material
         try {
-            material = Material.valueOf(this.material);
+            material = Material.valueOf(this.material.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new CustomObjectException(String.format(
                     "Unknown material '%s' in custom item '%s'.",
@@ -120,6 +120,7 @@ public class CustomItem {
 
     /**
      * Adds any custom enchantments to the item stack.
+     * This involves several validation steps.
      *
      * @param stack Item stack to add enchantments to.
      */
@@ -128,19 +129,19 @@ public class CustomItem {
         // Ensure there is at least one enchantment defined.
         if (this.enchantments.length == 0) return;
 
-        HashMap<Enchantment, Integer> enchantments = new HashMap<>();
+        HashMap<CustomEnchantment, Integer> enchantments = new HashMap<>();
 
         // Iterate over enchants
         for (String string : this.enchantments) {
 
             // Split at first space
             String[] components = string.split(" ", 2);
-            Enchantment enchantment;
+            CustomEnchantment enchantment;
             int level = 1;
 
             // Retrieve desired enchantment
             try {
-                enchantment = Enchantment.valueOf(components[0].toUpperCase());
+                enchantment = CustomEnchantment.valueOf(components[0].toUpperCase());
             } catch (IllegalArgumentException e) {
                 throw new CustomObjectException(String.format(
                         "Unknown enchantment '%s' for custom item '%s'.",
@@ -192,28 +193,44 @@ public class CustomItem {
 
 
         if (!enchantments.isEmpty()) {
-
-            // Add glowing effect
-            stack.addEnchantment(org.bukkit.enchantments.Enchantment.ARROW_INFINITE, 1);
-
-            // Add to lore
-            ItemMeta meta = stack.getItemMeta();
-            List<String> lore = meta.getLore();
-
-            // Iterate over enchantments to add
-            for (Enchantment enchantment : enchantments.keySet()) {
-                lore.add(String.format(
-                        "%s - %s %s",
-                        ChatColor.GRAY,
-                        enchantment.getDisplay(),
-                        Util.toRomanNumeral(enchantments.get(enchantment))
-                ));
-            }
-
-            meta.setLore(lore);
-            stack.setItemMeta(meta);
-
+            addEnchantments(stack, enchantments);
         }
+
+    }
+
+
+    /**
+     * Applies enchantments to a particular item stack. Note that
+     * no validation is done here.
+     *
+     * @param stack Item stack to receive enchantments.
+     * @param enchantments Hash map of enchantments to add.
+     */
+    private void addEnchantments (ItemStack stack, HashMap<CustomEnchantment, Integer> enchantments) {
+
+        // Add glowing effect
+        if (!stack.containsEnchantment(Enchantment.ARROW_INFINITE)) {
+            stack.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
+        }
+
+        // Add to lore
+        ItemMeta meta = stack.getItemMeta();
+        List<String> lore = meta.getLore();
+
+        lore.add("");
+
+        // Iterate over enchantments to add
+        for (CustomEnchantment enchantment : enchantments.keySet()) {
+            lore.add(String.format(
+                    "%s%s %s",
+                    ChatColor.GRAY,
+                    enchantment.getDisplay(),
+                    Util.toRomanNumeral(enchantments.get(enchantment))
+            ));
+        }
+
+        meta.setLore(lore);
+        stack.setItemMeta(meta);
 
     }
 

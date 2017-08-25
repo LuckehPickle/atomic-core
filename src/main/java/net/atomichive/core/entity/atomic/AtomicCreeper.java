@@ -1,7 +1,7 @@
 package net.atomichive.core.entity.atomic;
 
 import net.atomichive.core.exception.CustomObjectException;
-import net.atomichive.core.util.NMSUtil;
+import net.atomichive.core.nms.NMSUtil;
 import net.atomichive.core.util.SmartMap;
 import org.bukkit.Location;
 import org.bukkit.entity.Creeper;
