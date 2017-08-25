@@ -1,11 +1,12 @@
 package net.atomichive.core.entity.atomic;
 
+import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.util.SmartMap;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Entity;
 
 /**
- * Atomic Ageable
+ * Any custom ageable entity.
  */
 public abstract class AtomicAgeable extends AtomicEntity {
 
@@ -15,7 +16,6 @@ public abstract class AtomicAgeable extends AtomicEntity {
 
 
     /**
-     * Init
      * Set config values.
      *
      * @param attributes Entity Config from entities.json.
@@ -32,14 +32,13 @@ public abstract class AtomicAgeable extends AtomicEntity {
 
 
     /**
-     * Apply attributes
      * Applies everything defined in config to the entity.
      *
      * @param entity Entity to edit.
      * @return Modified entity.
      */
     @Override
-    public Entity applyAttributes (Entity entity) {
+    public Entity applyAttributes (Entity entity) throws CustomObjectException {
 
         // Cast
         Ageable ageable = (Ageable) entity;
@@ -49,7 +48,7 @@ public abstract class AtomicAgeable extends AtomicEntity {
 
         ageable.setAgeLock(this.ageLock);
 
-        return ageable;
+        return super.applyAttributes(ageable);
 
     }
 

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Item Manager
  * A class which tracks all custom item definitions.
  */
 public class ItemManager extends JsonManager {
@@ -20,7 +19,7 @@ public class ItemManager extends JsonManager {
 
 
     /**
-     * Item Manager
+     * Constructor
      *
      * @param resource Path to JSON file.
      */
@@ -30,7 +29,6 @@ public class ItemManager extends JsonManager {
 
 
     /**
-     * Load
      * Attempts to reload items from items.json
      *
      * @return Number of elements loaded.
@@ -43,9 +41,7 @@ public class ItemManager extends JsonManager {
 
 
     /**
-     * Load element
-     * Loads a particular element as defined
-     * by the extending class.
+     * Converts a JsonElement to a Custom Item.
      *
      * @param element A JsonElement.
      * @return A string representation of the element.
@@ -70,7 +66,6 @@ public class ItemManager extends JsonManager {
 
 
     /**
-     * Contains
      * A simple search through existing custom items
      * which compares the unique names.
      *
@@ -91,7 +86,7 @@ public class ItemManager extends JsonManager {
 
 
     /**
-     * Get item by name
+     * Retrieves an item by its unique name.
      *
      * @param name Name of item to retrieve.
      * @return CustomItem with matching name or null.
@@ -107,6 +102,11 @@ public class ItemManager extends JsonManager {
         return null;
 
     }
+
+
+    /*
+        Getters and setters.
+     */
 
     public List<CustomItem> getCustomItems () {
         return customItems;

@@ -20,9 +20,9 @@ import java.util.Set;
 import java.util.logging.Level;
 
 /**
- * Active Entity
  * Represents an entity who is active in the world.
  * This class is currently volatile.
+ * TODO Entities need a desperate overhaul
  */
 @SuppressWarnings("WeakerAccess")
 public class ActiveEntity {
@@ -321,7 +321,6 @@ public class ActiveEntity {
 
 
     /**
-     * Apply abilities
      * Parses and applies abilities to this entity.
      *
      * @param abilities A list of abilities strings.
@@ -343,14 +342,23 @@ public class ActiveEntity {
 
                 // Get trigger and add ability
                 String trigger = attributes.get(String.class, "trigger");
+                String target  = attributes.get(String.class, "target");
                 int radius = attributes.getInteger("radius", 30);
                 int ticks = attributes.getInteger("ticks", 10);
 
-                Ability.Target target = Util.getEnumValue(
-                        Ability.Target.class,
-                        attributes.get(String.class, "target")
-                );
+                Ability.Target abilityTarget = Ability.Target.CLOSEST_ENTITY;
 
+                // Attempt to get target
+                if (target != null) {
+                    try {
+                        abilityTarget = Ability.Target.valueOf(target);
+                    } catch (IllegalArgumentException e) {
+                        throw new AbilityException(String.format(
+                                "Unknown ability target: '%s'.",
+                                target
+                        ));
+                    }
+                }
 
                 // Handle null trigger
                 if (trigger == null) {
@@ -359,13 +367,13 @@ public class ActiveEntity {
 
                 switch (trigger) {
                     case "on_attack":
-                        this.onAttack.add(new GenericAbilityHandler(ability, target, radius));
+                        this.onAttack.add(new GenericAbilityHandler(ability, abilityTarget, radius));
                         break;
                     case "on_damage":
-                        this.onDamage.add(new GenericAbilityHandler(ability, target, radius));
+                        this.onDamage.add(new GenericAbilityHandler(ability, abilityTarget, radius));
                         break;
                     case "on_timer":
-                        this.onTimer.add(new TimedAbilityHandler(ability, target, radius, ticks));
+                        this.onTimer.add(new TimedAbilityHandler(ability, abilityTarget, radius, ticks));
                         break;
                     default:
                         this.abilities.add(ability);

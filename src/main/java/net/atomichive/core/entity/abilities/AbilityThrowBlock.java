@@ -1,8 +1,8 @@
 package net.atomichive.core.entity.abilities;
 
 import net.atomichive.core.Main;
+import net.atomichive.core.exception.AbilityException;
 import net.atomichive.core.util.SmartMap;
-import net.atomichive.core.util.Util;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -13,7 +13,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
 /**
- * Throw Block Ability
  * Throws a block at the target player.
  */
 public class AbilityThrowBlock implements Ability {
@@ -34,14 +33,23 @@ public class AbilityThrowBlock implements Ability {
      * @param target Entity being targeted by the ability.
      */
     @Override
-    public void execute (Entity source, Entity target) {
+    public void execute (Entity source, Entity target) throws AbilityException {
 
-        // Get material
-        Material material = Util.getEnumValue(Material.class, this.material);
+        Material material;
         Location location = target.getLocation();
 
+        // Attempt to get material
+        try {
+            material = Material.valueOf(this.material);
+        } catch (IllegalArgumentException e) {
+            throw new AbilityException(String.format(
+                    "Unknown material: '%s'.",
+                    this.material
+            ));
+        }
+
         // Get block beneath player's feet
-        if (material == null || !material.isBlock() || material == Material.AIR) {
+        if (!material.isBlock() || material == Material.AIR) {
 
             Block block;
             Location temp = location.clone();

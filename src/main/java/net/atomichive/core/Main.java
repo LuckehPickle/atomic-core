@@ -118,6 +118,9 @@ public class Main extends JavaPlugin {
     @Override
     public void onDisable () {
 
+        logBreak();
+        log(Level.INFO, "Updating player information in batch...");
+
         playerManager.removeAll();
 
         // Empty player manager
@@ -125,7 +128,11 @@ public class Main extends JavaPlugin {
         entityManager = null;
         warpManager = null;
 
+        log(Level.INFO, "Closing database connection...");
         databaseManager.closeConnection();
+
+        log(Level.INFO, "Goodbye!");
+        logBreak();
 
     }
 
@@ -184,6 +191,7 @@ public class Main extends JavaPlugin {
         new CommandFly();
         new CommandGameMode();
         new CommandGod();
+        new CommandHat();
         new CommandHeal();
         new CommandItem();
         new CommandJump();

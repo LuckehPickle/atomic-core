@@ -30,7 +30,7 @@ public class CommandWarp extends BaseCommand {
                 "/warp [list|create|remove|warp-name]",
                 "atomic-core.warp",
                 false,
-                0
+                1
         );
     }
 
@@ -47,37 +47,33 @@ public class CommandWarp extends BaseCommand {
     public void run (CommandSender sender, String label, String[] args)
             throws CommandException {
 
-        // If no arguments are entered
-        if (args.length == 0) {
-            throw new CommandException(Reason.INVALID_USAGE, getUsage());
-        } else {
 
-            String arg = args[0].toLowerCase();
+        String arg = args[0].toLowerCase();
 
-            switch (arg) {
-                case "help":
-                case "?":
-                    sender.sendMessage(getUsage());
-                    break;
-                case "list":
-                case "l":
-                    listWarps(sender, args);
-                    break;
-                case "add":
-                case "a":
-                case "create":
-                case "set":
-                    createWarp(sender, args);
-                    break;
-                case "remove":
-                case "rm":
-                case "delete":
-                    removeWarp(sender, args);
-                    break;
-                default:
-                    warp(sender, args);
-            }
+        switch (arg) {
+            case "help":
+            case "?":
+                sender.sendMessage(getUsage());
+                break;
+            case "list":
+            case "l":
+                listWarps(sender, args);
+                break;
+            case "add":
+            case "a":
+            case "create":
+            case "set":
+                createWarp(sender, args);
+                break;
+            case "remove":
+            case "rm":
+            case "delete":
+                removeWarp(sender, args);
+                break;
+            default:
+                warp(sender, args);
         }
+
 
     }
 

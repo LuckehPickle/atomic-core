@@ -12,9 +12,7 @@ import org.bukkit.entity.Player;
 
 /**
  * A generic class that all commands extend. This class
- * also handles command registration. Any subclasses
- * will automatically be registered when they are
- * initialised.
+ * also handles command registration.
  */
 @SuppressWarnings("WeakerAccess")
 public abstract class BaseCommand implements CommandExecutor {

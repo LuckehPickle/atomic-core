@@ -1,7 +1,7 @@
 package net.atomichive.core.entity.atomic;
 
+import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.util.SmartMap;
-import net.atomichive.core.util.Util;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -9,8 +9,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Wolf;
 
 /**
- * Atomic Wolf
+ * A custom wolf.
  */
+@SuppressWarnings("unused")
 public class AtomicWolf extends AtomicAgeable {
 
 
@@ -21,7 +22,6 @@ public class AtomicWolf extends AtomicAgeable {
 
 
     /**
-     * Init
      * Set config values.
      *
      * @param attributes Entity Config from entities.json.
@@ -39,39 +39,42 @@ public class AtomicWolf extends AtomicAgeable {
 
 
     /**
-     * Spawn
      * Generates a new entity, and places it in the world.
      *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
     @Override
-    public Entity spawn (Location location) {
+    public Entity spawn (Location location) throws CustomObjectException {
         return spawn(location, EntityType.WOLF);
     }
 
 
     /**
-     * Apply attributes
      * Applies everything defined in config to the entity.
      *
      * @param entity Entity to edit.
      * @return Modified entity.
      */
     @Override
-    public Entity applyAttributes (Entity entity) {
+    public Entity applyAttributes (Entity entity) throws CustomObjectException {
 
-        // Cast
         Wolf wolf = (Wolf) entity;
 
-        // Apply
         wolf.setTamed(this.isTamed);
         wolf.setSitting(this.isSitting);
 
         if (this.collarColor != null) {
-            DyeColor color = Util.getEnumValue(DyeColor.class, this.collarColor);
-            if (color != null)
+            // Attempt to apply collar color
+            try {
+                DyeColor color = DyeColor.valueOf(this.collarColor);
                 wolf.setCollarColor(color);
+            } catch (IllegalArgumentException e) {
+                throw new CustomObjectException(String.format(
+                        "Unknown wolf collar color: '%s'.",
+                        this.collarColor
+                ));
+            }
         }
 
         wolf.setAngry(this.isAngry);

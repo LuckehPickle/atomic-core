@@ -1,6 +1,7 @@
 package net.atomichive.core.entity.atomic;
 
 import net.atomichive.core.Main;
+import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.util.SmartMap;
 import org.bukkit.Location;
 import org.bukkit.entity.AbstractHorse;
@@ -9,7 +10,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.metadata.FixedMetadataValue;
 
 /**
- * Abstract Horse
+ * A custom horse entity.
  */
 public class AtomicAbstractHorse extends AtomicAgeable {
 
@@ -20,7 +21,6 @@ public class AtomicAbstractHorse extends AtomicAgeable {
 
 
     /**
-     * Init
      * Set config values.
      *
      * @param attributes Entity Config from entities.json.
@@ -37,27 +37,25 @@ public class AtomicAbstractHorse extends AtomicAgeable {
 
 
     /**
-     * Spawn
      * Generates a new entity, and places it in the world.
      *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
     @Override
-    public Entity spawn (Location location) {
+    public Entity spawn (Location location) throws CustomObjectException {
         return super.spawn(location, EntityType.HORSE);
     }
 
 
     /**
-     * Apply attributes
      * Applies everything defined in config to the entity.
      *
      * @param entity Entity to edit.
      * @return Modified entity.
      */
     @Override
-    public Entity applyAttributes (Entity entity) {
+    public Entity applyAttributes (Entity entity) throws CustomObjectException {
 
         AbstractHorse horse = (AbstractHorse) entity;
 

@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.StringJoiner;
+import java.util.TreeMap;
 
 /**
  * Util
@@ -27,6 +28,18 @@ public class Util {
 
 
     private static final int MAX_TRACE_DISTANCE = 200;
+
+    private static final TreeMap<Integer, String> ROMAN_NUMERALS = new TreeMap<>();
+
+    static {
+        ROMAN_NUMERALS.put(50, "L");
+        ROMAN_NUMERALS.put(40, "XL");
+        ROMAN_NUMERALS.put(10, "X");
+        ROMAN_NUMERALS.put(9,  "IX");
+        ROMAN_NUMERALS.put(5,  "V");
+        ROMAN_NUMERALS.put(4,  "IV");
+        ROMAN_NUMERALS.put(1,  "I");
+    }
 
 
     /**
@@ -217,30 +230,6 @@ public class Util {
 
 
     /**
-     * Get enum value
-     *
-     * @param e     Enum class.
-     * @param value Enum constant as a string.
-     * @param <T>   An enum/enum constant.
-     * @return Enum constant from string.
-     */
-    public static <T> T getEnumValue (Class<T> e, String value) {
-
-        // Get enum constants
-        T[] constants = e.getEnumConstants();
-
-        // Iterate over constants
-        for (T constant : constants) {
-            if (constant.toString().equalsIgnoreCase(value))
-                return constant;
-        }
-
-        return null;
-
-    }
-
-
-    /**
      * Trace
      * Perform a ray trace.
      *
@@ -301,7 +290,7 @@ public class Util {
 
 
     /**
-     * Is integer
+     * Determines whether a string can be parsed as an integer
      * https://stackoverflow.com/a/237204
      *
      * @param str String to analyse.
@@ -336,7 +325,7 @@ public class Util {
 
 
     /**
-     * Get closest
+     * Returns the closest entity in to a particular location.
      *
      * @param entities Collection of entities.
      * @return Closest entity.
@@ -367,7 +356,7 @@ public class Util {
 
 
     /**
-     * Get delta v
+     * Returns the difference of two location vectors.
      *
      * @param source Source entity.
      * @param target Target entity.
@@ -378,4 +367,31 @@ public class Util {
                 .toVector()
                 .subtract(source.getLocation().toVector());
     }
+
+
+    /**
+     * Returns the roman numeral equivalent of an int.
+     * Warning: This is only designed to work up to
+     * a maximum of 50.
+     *
+     * @param arabic Int to convert to roman numerals.
+     * @return Roman equivalent.
+     */
+    public static String toRomanNumeral (int arabic) {
+
+        // Ensure number is not too high
+        if (arabic > 50) {
+            return String.valueOf(arabic);
+        }
+
+        int i = ROMAN_NUMERALS.floorKey(arabic);
+
+        if (arabic == 1) {
+            return ROMAN_NUMERALS.get(1);
+        }
+
+        return ROMAN_NUMERALS.get(i) + toRomanNumeral(arabic - 1);
+
+    }
+
 }

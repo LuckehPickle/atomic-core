@@ -7,7 +7,7 @@ public class AbilityException extends Throwable {
 
     public AbilityException (String message) {
         super(String.format(
-                Reason.GENERIC_ERROR.getFormat(),
+                "An exception occurred whilst executing an ability: %s",
                 message
         ));
     }

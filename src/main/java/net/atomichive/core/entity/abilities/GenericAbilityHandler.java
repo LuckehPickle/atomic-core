@@ -1,13 +1,14 @@
 package net.atomichive.core.entity.abilities;
 
+import net.atomichive.core.Main;
+import net.atomichive.core.exception.AbilityException;
 import org.bukkit.entity.Entity;
 
 import java.util.List;
+import java.util.logging.Level;
 
 /**
- * Generic Ability Handler
- * Wraps around an ability to add target
- * support.
+ * Wraps around an ability to add target support.
  */
 public class GenericAbilityHandler {
 
@@ -42,7 +43,6 @@ public class GenericAbilityHandler {
 
 
     /**
-     * Run
      * Finds applicable targets and executes related
      * ability.
      *
@@ -54,14 +54,18 @@ public class GenericAbilityHandler {
         List<Entity> targets = Ability.Target.getTargets(source, target, radius);
 
         // Iterate over targets, execute ability
-        for (Entity target : targets)
-            ability.execute(source, target);
+        for (Entity target : targets) {
+            try {
+                ability.execute(source, target);
+            } catch (AbilityException e) {
+                Main.getInstance().log(Level.SEVERE, e.getMessage());
+            }
+        }
 
     }
 
 
     /**
-     * Run
      * Executes related ability with specified
      * target.
      *
@@ -71,13 +75,17 @@ public class GenericAbilityHandler {
      */
     public void run (Entity source, Entity target) {
 
-        // Check if target has been specified
-        if (this.target == null) {
-            ability.execute(source, target);
-            return;
-        } else if (this.target == Ability.Target.SELF) {
-            ability.execute(target, source);
-            return;
+        try {
+            // Check if target has been specified
+            if (this.target == null) {
+                ability.execute(source, target);
+                return;
+            } else if (this.target == Ability.Target.SELF) {
+                ability.execute(target, source);
+                return;
+            }
+        } catch (AbilityException e) {
+            Main.getInstance().log(Level.SEVERE, e.getMessage());
         }
 
         run(source);

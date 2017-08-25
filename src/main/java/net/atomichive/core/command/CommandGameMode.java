@@ -77,7 +77,7 @@ public class CommandGameMode extends BaseCommand {
         // Alert sender
         sender.sendMessage(String.format(
                 "You're game mode is now %s.",
-                ChatColor.GREEN + Util.toTitleCase(mode.name()) + ChatColor.RESET
+                ChatColor.GREEN + mode.name().toLowerCase() + ChatColor.RESET
         ));
 
     }

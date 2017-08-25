@@ -1,5 +1,6 @@
 package net.atomichive.core.entity.atomic;
 
+import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.util.SmartMap;
 import org.bukkit.Location;
 import org.bukkit.entity.ArmorStand;
@@ -7,15 +8,16 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
 /**
- * Atomic Armor Stand
+ * A custom armour stand.
  */
+@SuppressWarnings("unused")
 public class AtomicArmorStand extends AtomicEntity {
+
 
     private boolean isSmall;
 
 
     /**
-     * Init
      * Set config values.
      *
      * @param attributes Entity Config from entities.json.
@@ -31,26 +33,24 @@ public class AtomicArmorStand extends AtomicEntity {
 
 
     /**
-     * Spawn
      * Generates a new entity, and places it in the world.
      *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
-    public Entity spawn (Location location) {
+    public Entity spawn (Location location) throws CustomObjectException {
         return spawn(location, EntityType.ARMOR_STAND);
     }
 
 
     /**
-     * Apply attributes
      * Applies everything defined in config to the entity.
      *
      * @param entity Entity to edit.
      * @return Modified entity.
      */
     @Override
-    public Entity applyAttributes (Entity entity) {
+    public Entity applyAttributes (Entity entity) throws CustomObjectException {
 
         // Cast to armor stand
         ArmorStand armorStand = (ArmorStand) entity;
@@ -59,7 +59,7 @@ public class AtomicArmorStand extends AtomicEntity {
         if (this.isSmall)
             armorStand.setSmall(true);
 
-        return armorStand;
+        return super.applyAttributes(armorStand);
 
     }
 

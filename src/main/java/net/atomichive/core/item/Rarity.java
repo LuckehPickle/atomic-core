@@ -1,5 +1,6 @@
 package net.atomichive.core.item;
 
+import net.atomichive.core.util.Util;
 import org.bukkit.ChatColor;
 
 /**
@@ -8,19 +9,18 @@ import org.bukkit.ChatColor;
  */
 public enum Rarity {
 
-    JUNK      ("Junk item",      ChatColor.RED),
-    COMMON    ("Common item",    ChatColor.BLUE),
-    UNCOMMON  ("Uncommon item",  ChatColor.GRAY),
-    RARE      ("Rare item",      ChatColor.YELLOW),
-    EPIC      ("Epic item",      ChatColor.LIGHT_PURPLE),
-    LEGENDARY ("Legendary item", ChatColor.GOLD);
+    JUNK      (ChatColor.RED),
+    QUEST     (ChatColor.GOLD),
+    COMMON    (ChatColor.GRAY),
+    UNCOMMON  (ChatColor.BLUE),
+    RARE      (ChatColor.GREEN),
+    EPIC      (ChatColor.GOLD),
+    LEGENDARY (ChatColor.DARK_PURPLE);
 
 
-    private String lore;
     private ChatColor color;
 
-    Rarity (String lore, ChatColor color) {
-        this.lore  = lore;
+    Rarity (ChatColor color) {
         this.color = color;
     }
 
@@ -29,9 +29,6 @@ public enum Rarity {
         Getters and setters.
      */
 
-    public String getLore () {
-        return lore;
-    }
 
     public ChatColor getColor () {
         return color;
@@ -39,7 +36,7 @@ public enum Rarity {
 
     @Override
     public String toString () {
-        return this.getLore();
+        return Util.toTitleCase(this.name());
     }
 
 }

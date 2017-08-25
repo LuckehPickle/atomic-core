@@ -1,7 +1,7 @@
 package net.atomichive.core.entity.atomic;
 
+import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.util.SmartMap;
-import net.atomichive.core.util.Util;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -9,8 +9,9 @@ import org.bukkit.entity.Villager;
 import org.bukkit.entity.ZombieVillager;
 
 /**
- * Atomic Zombie Villager
+ * A custom zombie villager.
  */
+@SuppressWarnings("unused")
 public class AtomicZombieVillager extends AtomicZombie {
 
 
@@ -18,7 +19,6 @@ public class AtomicZombieVillager extends AtomicZombie {
 
 
     /**
-     * Init
      * Set config values.
      *
      * @param attributes Entity Config from entities.json.
@@ -34,36 +34,40 @@ public class AtomicZombieVillager extends AtomicZombie {
 
 
     /**
-     * Spawn
      * Generates a new entity, and places it in the world.
      *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
     @Override
-    public Entity spawn (Location location) {
+    public Entity spawn (Location location) throws CustomObjectException {
         return spawn(location, EntityType.ZOMBIE_VILLAGER);
     }
 
 
     /**
-     * Apply attributes
      * Applies everything defined in config to the entity.
      *
      * @param entity Entity to edit.
      * @return Modified entity.
      */
     @Override
-    public Entity applyAttributes (Entity entity) {
+    public Entity applyAttributes (Entity entity) throws CustomObjectException {
 
         // Cast
         ZombieVillager villager = (ZombieVillager) entity;
 
-        // Apply
         if (this.profession != null) {
-            Villager.Profession profession = Util.getEnumValue(Villager.Profession.class, this.profession);
-            if (profession != null)
+            // Attempt to apply profession
+            try {
+                Villager.Profession profession = Villager.Profession.valueOf(this.profession);
                 villager.setVillagerProfession(profession);
+            } catch (IllegalArgumentException e) {
+                throw new CustomObjectException(String.format(
+                        "Unknown zombie villager profession: '%s'.",
+                        this.profession
+                ));
+            }
         }
 
         return super.applyAttributes(villager);

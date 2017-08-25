@@ -1,15 +1,16 @@
 package net.atomichive.core.entity.atomic;
 
+import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.util.SmartMap;
-import net.atomichive.core.util.Util;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Rabbit;
 
 /**
- * Atomic Rabbit.
+ * A custom rabbit.
  */
+@SuppressWarnings("unused")
 public class AtomicRabbit extends AtomicAgeable {
 
 
@@ -17,7 +18,6 @@ public class AtomicRabbit extends AtomicAgeable {
 
 
     /**
-     * Init
      * Set config values.
      *
      * @param attributes Entity Config from entities.json.
@@ -28,40 +28,47 @@ public class AtomicRabbit extends AtomicAgeable {
         type = attributes.get(String.class, "type", null);
 
         super.init(attributes);
+
     }
 
 
     /**
-     * Spawn
      * Generates a new entity, and places it in the world.
      *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
     @Override
-    public Entity spawn (Location location) {
+    public Entity spawn (Location location) throws CustomObjectException {
         return spawn(location, EntityType.RABBIT);
     }
 
 
     /**
-     * Apply attributes
      * Applies everything defined in config to the entity.
      *
      * @param entity Entity to edit.
      * @return Modified entity.
      */
     @Override
-    public Entity applyAttributes (Entity entity) {
+    public Entity applyAttributes (Entity entity) throws CustomObjectException {
 
         // Cast
         Rabbit rabbit = (Rabbit) entity;
 
         // Apply
         if (this.type != null) {
-            Rabbit.Type rabbitType = Util.getEnumValue(Rabbit.Type.class, this.type);
-            if (rabbitType != null)
+
+            // Attempt to apply rabbit type
+            try {
+                Rabbit.Type rabbitType = Rabbit.Type.valueOf(this.type);
                 rabbit.setRabbitType(rabbitType);
+            } catch (IllegalArgumentException e) {
+                throw new CustomObjectException(String.format(
+                        "Unknown rabbit type: '%s'.",
+                        this.type
+                ));
+            }
         }
 
         return super.applyAttributes(rabbit);

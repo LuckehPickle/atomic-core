@@ -1,5 +1,6 @@
 package net.atomichive.core.entity.abilities;
 
+import net.atomichive.core.exception.AbilityException;
 import net.atomichive.core.util.Util;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -86,6 +87,6 @@ public interface Ability {
      * @param source Entity who executed the ability.
      * @param target Entity being targeted by the ability.
      */
-    void execute (Entity source, Entity target);
+    void execute (Entity source, Entity target) throws AbilityException;
 
 }

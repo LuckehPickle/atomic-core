@@ -230,10 +230,11 @@ public class CommandItem extends BaseCommand {
 
         if (item == null) {
 
-            Material mat = Util.getEnumValue(Material.class, material);
+            Material mat;
 
-            // Ensure material exists
-            if (material == null) {
+            try {
+                mat = Material.valueOf(material);
+            } catch (IllegalArgumentException e) {
                 throw new CommandException("Unknown item/material '" + material + "'.");
             }
 

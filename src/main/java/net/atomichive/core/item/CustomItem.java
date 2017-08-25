@@ -11,13 +11,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
- * Custom Item
  * Contains all the information needed to construct
  * a custom item stack.
+ * This should be loaded through JSON.
  */
+@SuppressWarnings({"unused", "MismatchedReadAndWriteOfArray"})
 public class CustomItem {
 
 
@@ -25,42 +27,45 @@ public class CustomItem {
     private String lore;
     private String material;
     private Rarity rarity = Rarity.COMMON;
+    private int level = -1;
+    private String[] enchantments = new String[]{};
 
     @SerializedName("display_name")
     private String displayName;
 
-    private int level = 1;
-
 
     /**
-     * Get item stack
+     * Constructs an item stack from this custom item.
      *
      * @param amount Number of items in stack.
      * @return An item stack of this custom item.
      */
     public ItemStack getItemStack (int amount) throws CustomObjectException {
 
-        // Attempt to get material
-        Material material = Util.getEnumValue(Material.class, this.material);
+        Material material;
 
-        // Ensure material exists
-        if (material == null) {
+        // Attempt to get material
+        try {
+            material = Material.valueOf(this.material);
+        } catch (IllegalArgumentException e) {
             throw new CustomObjectException(String.format(
-                    "Unknown material %s in custom item %s.",
+                    "Unknown material '%s' in custom item '%s'.",
                     this.material,
                     this.name
             ));
         }
 
+        // Create item stack and apply meta data
         ItemStack stack = new ItemStack(material, amount);
         setStackMeta(stack);
+        addEnchantments(stack);
+
         return stack;
 
     }
 
 
     /**
-     * Set stack meta
      * Applies appropriate item meta to this stack.
      *
      * @param stack ItemStack to apply meta data to.
@@ -79,31 +84,136 @@ public class CustomItem {
 
         meta.setDisplayName(ChatColor.GRAY + displayName);
 
-
-        // Lore
         List<String> lore = new ArrayList<>();
 
         // Description
         String[] lines = WordUtils.wrap(this.lore, 30).split("\n");
-
         for (String line : lines) {
             lore.add(ChatColor.DARK_GRAY + line);
         }
 
         // Rarity
-        lore.add(rarity.getColor() + rarity.getLore());
+        lore.add(String.format(
+                "%s[%s]",
+                rarity.getColor(),
+                rarity.toString()
+        ));
 
         // Minimum level
-        if (!rarity.equals(Rarity.JUNK))
+        if (level != -1) {
             lore.add(ChatColor.RED + "Level " + level);
+        }
 
-        // Set Lore
         meta.setLore(lore);
-
+        meta.setUnbreakable(true);
 
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        meta.addItemFlags(ItemFlag.HIDE_DESTROYS);
+        meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
+        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
         stack.setItemMeta(meta);
+
+    }
+
+
+    /**
+     * Adds any custom enchantments to the item stack.
+     *
+     * @param stack Item stack to add enchantments to.
+     */
+    private void addEnchantments (ItemStack stack) throws CustomObjectException {
+
+        // Ensure there is at least one enchantment defined.
+        if (this.enchantments.length == 0) return;
+
+        HashMap<Enchantment, Integer> enchantments = new HashMap<>();
+
+        // Iterate over enchants
+        for (String string : this.enchantments) {
+
+            // Split at first space
+            String[] components = string.split(" ", 2);
+            Enchantment enchantment;
+            int level = 1;
+
+            // Retrieve desired enchantment
+            try {
+                enchantment = Enchantment.valueOf(components[0].toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new CustomObjectException(String.format(
+                        "Unknown enchantment '%s' for custom item '%s'.",
+                        components[0],
+                        this.name
+                ));
+            }
+
+            // Ensure enchantment hasn't already been added
+            if (enchantments.containsKey(enchantment)) {
+                throw new CustomObjectException(String.format(
+                        "Custom item '%s' already has the enchantment '%s'.",
+                        this.name,
+                        enchantment.name()
+                ));
+            }
+
+            // Check for level
+            if (components.length == 2) {
+
+                // Ensure level is an int
+                if (!Util.isInteger(components[1])) {
+                    throw new CustomObjectException(String.format(
+                            "Invalid level '%s' (not a number) for custom enchantment '%s' on custom item '%s'.",
+                            components[1],
+                            enchantment.name(),
+                            this.name
+                    ));
+                }
+
+                // Parse as int
+                level = Integer.parseInt(components[1]);
+
+            }
+
+            // Ensure level is valid
+            if (!enchantment.isLevelValid(level)) {
+                throw new CustomObjectException(String.format(
+                        "Invalid level '%s' for custom enchantment '%s' on custom item '%s'.",
+                        components[1],
+                        enchantment.name(),
+                        this.name
+                ));
+            }
+
+            enchantments.put(enchantment, level);
+
+        }
+
+
+        if (!enchantments.isEmpty()) {
+
+            // Add glowing effect
+            stack.addEnchantment(org.bukkit.enchantments.Enchantment.ARROW_INFINITE, 1);
+
+            // Add to lore
+            ItemMeta meta = stack.getItemMeta();
+            List<String> lore = meta.getLore();
+
+            // Iterate over enchantments to add
+            for (Enchantment enchantment : enchantments.keySet()) {
+                lore.add(String.format(
+                        "%s - %s %s",
+                        ChatColor.GRAY,
+                        enchantment.getDisplay(),
+                        Util.toRomanNumeral(enchantments.get(enchantment))
+                ));
+            }
+
+            meta.setLore(lore);
+            stack.setItemMeta(meta);
+
+        }
 
     }
 

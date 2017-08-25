@@ -1,5 +1,6 @@
 package net.atomichive.core.entity.atomic;
 
+import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.util.SmartMap;
 import net.atomichive.core.util.Util;
 import org.bukkit.DyeColor;
@@ -9,8 +10,9 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Sheep;
 
 /**
- * Atomic Sheep
+ * A custom sheep.
  */
+@SuppressWarnings("unused")
 public class AtomicSheep extends AtomicAgeable {
 
 
@@ -20,7 +22,6 @@ public class AtomicSheep extends AtomicAgeable {
 
 
     /**
-     * Init
      * Set config values.
      *
      * @param attributes Entity Config from entities.json.
@@ -38,27 +39,25 @@ public class AtomicSheep extends AtomicAgeable {
 
 
     /**
-     * Spawn
      * Generates a new entity, and places it in the world.
      *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
     @Override
-    public Entity spawn (Location location) {
+    public Entity spawn (Location location) throws CustomObjectException {
         return spawn(location, EntityType.SHEEP);
     }
 
 
     /**
-     * Apply attributes
      * Applies everything defined in config to the entity.
      *
      * @param entity Entity to edit.
      * @return Modified entity.
      */
     @Override
-    public Entity applyAttributes (Entity entity) {
+    public Entity applyAttributes (Entity entity) throws CustomObjectException {
 
         // Cast
         Sheep sheep = (Sheep) entity;
@@ -70,13 +69,19 @@ public class AtomicSheep extends AtomicAgeable {
         if (this.color == null && randomColor)
             color = Util.getRandomDyeColor();
 
-        if (this.color != null)
-            color = Util.getEnumValue(DyeColor.class, this.color);
+        if (this.color != null) {
+            try {
+                color = DyeColor.valueOf(this.color);
+            } catch (IllegalArgumentException e) {
+                throw new CustomObjectException(String.format(
+                        "Unknown sheep color: '%s'.",
+                        this.color
+                ));
+            }
+        }
 
         if (color != null)
             sheep.setColor(color);
-
-        // ((EntityInsentient) NMSUtil.getNMSEntity(entity)).getAttributeMap().b(GenericAttributes.ATTACK_DAMAGE).setValue(3.0d);
 
         return super.applyAttributes(sheep);
 

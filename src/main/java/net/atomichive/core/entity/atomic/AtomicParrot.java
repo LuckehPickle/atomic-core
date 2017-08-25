@@ -1,15 +1,16 @@
 package net.atomichive.core.entity.atomic;
 
+import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.util.SmartMap;
-import net.atomichive.core.util.Util;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Parrot;
 
 /**
- * Atomic Parrot
+ * A custom parrot.
  */
+@SuppressWarnings("unused")
 public class AtomicParrot extends AtomicAgeable {
 
 
@@ -17,7 +18,6 @@ public class AtomicParrot extends AtomicAgeable {
 
 
     /**
-     * Init
      * Set config values.
      *
      * @param attributes Entity Config from entities.json.
@@ -33,40 +33,45 @@ public class AtomicParrot extends AtomicAgeable {
 
 
     /**
-     * Spawn
      * Generates a new entity, and places it in the world.
      *
      * @param location to spawn entity.
      * @return Spawned entity.
      */
     @Override
-    public Entity spawn (Location location) {
+    public Entity spawn (Location location) throws CustomObjectException {
         return super.spawn(location, EntityType.PARROT);
     }
 
 
     /**
-     * Apply attributes
      * Applies everything defined in config to the entity.
      *
      * @param entity Entity to edit.
      * @return Modified entity.
      */
     @Override
-    public Entity applyAttributes (Entity entity) {
+    public Entity applyAttributes (Entity entity) throws CustomObjectException {
 
-        // Cast
         Parrot parrot = (Parrot) entity;
 
-        // Apply
         if (this.variant != null) {
-            Parrot.Variant parrotVariant = Util.getEnumValue(Parrot.Variant.class, this.variant);
 
-            if (parrotVariant != null)
+            // Attempt to apply parrot variant
+            try {
+                Parrot.Variant parrotVariant = Parrot.Variant.valueOf(this.variant);
                 parrot.setVariant(parrotVariant);
+            } catch (IllegalArgumentException e) {
+                throw new CustomObjectException(String.format(
+                        "Unknown parrot variant: '%s'.",
+                        this.variant
+                ));
+            }
+
         }
 
         return super.applyAttributes(entity);
+
     }
 
 }
