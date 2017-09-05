@@ -52,8 +52,8 @@ public class CommandExperience extends BaseCommand {
         atomicPlayer.giveExperience(xp);
 
         player.sendMessage(String.format(
-                "Received %s xp.",
-                ChatColor.GREEN + String.valueOf(xp) + ChatColor.RESET
+                "Received %s.",
+                ChatColor.GREEN + String.valueOf(xp) + "xp" + ChatColor.RESET
         ));
 
     }

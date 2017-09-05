@@ -1,11 +1,13 @@
 package net.atomichive.core.entity.atomic;
 
+import net.atomichive.core.Main;
 import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.util.SmartMap;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
+import org.bukkit.metadata.FixedMetadataValue;
 
 /**
  * A custom villager.
@@ -15,6 +17,7 @@ public class AtomicVillager extends AtomicAgeable {
 
 
     private String profession;
+    private boolean preventTrade;
 
 
     /**
@@ -25,7 +28,8 @@ public class AtomicVillager extends AtomicAgeable {
     @Override
     public void init (SmartMap attributes) {
 
-        profession = attributes.get(String.class, "profession", null);
+        profession   = attributes.get(String.class,  "profession",    null);
+        preventTrade = attributes.get(Boolean.class, "prevent_trade", true);
 
         super.init(attributes);
 
@@ -56,12 +60,11 @@ public class AtomicVillager extends AtomicAgeable {
         // Cast
         Villager villager = (Villager) entity;
 
-        // Apply
         if (this.profession != null) {
 
             // Attempt to apply villager profession
             try {
-                Villager.Profession profession = Villager.Profession.valueOf(this.profession);
+                Villager.Profession profession = Villager.Profession.valueOf(this.profession.toUpperCase());
                 villager.setProfession(profession);
             } catch (IllegalArgumentException e) {
                 throw new CustomObjectException(String.format(
@@ -70,6 +73,11 @@ public class AtomicVillager extends AtomicAgeable {
                 ));
             }
         }
+
+        villager.setMetadata(
+                "prevent_trade",
+                new FixedMetadataValue(Main.getInstance(), preventTrade)
+        );
 
         return villager;
     }

@@ -233,7 +233,7 @@ public class CommandItem extends BaseCommand {
             Material mat;
 
             try {
-                mat = Material.valueOf(material);
+                mat = Material.valueOf(material.toUpperCase());
             } catch (IllegalArgumentException e) {
                 throw new CommandException("Unknown item/material '" + material + "'.");
             }

@@ -1,7 +1,7 @@
 name: atomic-core
 description: A core plugin designed for the Atomic Hive Minecraft server.
 main: net.atomichive.core.Main
-version: 0.1.5
+version: 0.1.6
 authors: [Sean Bailey]
 website: http://atomichive.net
 depends: [ProtocolLib]
@@ -14,7 +14,7 @@ commands:
   entity:
     description: Used to manage Atomic Entities.
     usage: /entity [reload|list|spawn]
-    aliases: [ae]
+    aliases: [entities]
   experience:
     description: Gives experience.
     usage: /xp <experience>

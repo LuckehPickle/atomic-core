@@ -10,20 +10,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
- * Quit Listener
  * Handles player quit events.
  */
 public final class QuitListener extends BaseListener implements Listener {
 
 
     /**
-     * On quit event
      * An event which occurs whenever a player logs out.
      *
      * @param event Player quit event object.
      */
     @EventHandler
-    public void onQuit (PlayerQuitEvent event) {
+    void onQuit (PlayerQuitEvent event) {
 
         PlayerManager manager = Main.getInstance().getPlayerManager();
 

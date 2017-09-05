@@ -17,27 +17,28 @@ import java.sql.Timestamp;
 import java.util.UUID;
 
 /**
- * Atomic Player
- * Tracks various additional things about players.
+ * Tacks some additional information to each player.
  */
 public class AtomicPlayer {
 
-    // Attributes
-    private UUID identifier;
-    private String username;
-    private String displayName = null;
-    private int level = 0;
-    private int experience = 0;
-    private Timestamp lastSeen;
-    private int loginCount = 0;
-    private short verbosity = 0;
+    private UUID identifier;           // Bukkit UUID
+    private String username;           // Player's most recent username
+    private String displayName = null; // Nickname, set with /nick
+    private int level = 0;             // Custom experience level
+    private int experience = 0;        // Custom experience
+    private Timestamp lastSeen;        // Date/time of last appearance.
+    private int loginCount = 0;        // Total number of times this player has joined.
+    private short verbosity = 0;       // How verbose should command listening be
 
+    // Keeps track of the last player a message was received from
     private transient Player lastMessageFrom = null;
+
+    // Keeps track of the last /tpa request (expires).
     private transient ExpiringValue<Player> lastTeleportRequest;
 
 
     /**
-     * Atomic Player constructor
+     * Constructor
      */
     public AtomicPlayer () {
         this(null, null);
@@ -45,7 +46,7 @@ public class AtomicPlayer {
 
 
     /**
-     * Atomic Player constructor
+     * Constructor
      *
      * @param identifier UUID of player.
      * @param username   Player's current username;
@@ -56,6 +57,7 @@ public class AtomicPlayer {
         this.username = username;
         this.lastSeen = Util.getCurrentTimestamp();
 
+        // Init expiring values.
         int expiry = Main.getInstance().getBukkitConfig().getInt("teleport_request_expiry", 30);
         this.lastTeleportRequest = new ExpiringValue<>(expiry);
 
@@ -63,8 +65,11 @@ public class AtomicPlayer {
 
 
     /**
+     * Determines whether this atomic player represents
+     * the given Bukkit player.
+     *
      * @param player Bukkit player.
-     * @return Whether the atomic player is the same as the bukkit player.
+     * @return Whether the two players are equal.
      */
     public boolean is (Player player) {
         return identifier.equals(player.getUniqueId());

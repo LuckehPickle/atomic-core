@@ -17,7 +17,7 @@ public class CommandListener extends BaseListener implements Listener {
 
 
     @EventHandler
-    public void onCommand (PlayerCommandPreprocessEvent event) {
+    void onCommand (PlayerCommandPreprocessEvent event) {
 
         // Get player and command
         Player sender = event.getPlayer();

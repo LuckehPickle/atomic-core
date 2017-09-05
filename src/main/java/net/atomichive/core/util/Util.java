@@ -1,11 +1,13 @@
 package net.atomichive.core.util;
 
 import net.atomichive.core.Main;
+import net.atomichive.core.exception.MetadataException;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 
@@ -22,7 +24,6 @@ import java.util.StringJoiner;
 import java.util.TreeMap;
 
 /**
- * Util
  * A collection of utility functions.
  */
 public class Util {
@@ -430,6 +431,34 @@ public class Util {
         field.setAccessible(true);
 
         return field;
+
+    }
+
+
+    /**
+     * Retrieves metadata from an entity.
+     *
+     * @param entity Entity to retrieve metadata from.
+     * @param key Metadata key.
+     * @return Retrieved boolean.
+     * @throws MetadataException if there is no matching
+     * key owned by this plugin.
+     */
+    public static boolean getMetadata (Entity entity, String key) throws MetadataException {
+
+        // Ensure entity has metadata
+        if (!entity.hasMetadata(key)) {
+            throw new MetadataException("There is no metadata key called: " + key);
+        }
+
+        List<MetadataValue> values = entity.getMetadata(key);
+
+        for (MetadataValue value : values) {
+            if (value.getOwningPlugin().equals(Main.getInstance()))
+                return value.asBoolean();
+        }
+
+        throw new MetadataException("No metadata keys match owning plugin.");
 
     }
 

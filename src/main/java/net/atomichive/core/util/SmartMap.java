@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.logging.Level;
 
 /**
- * Smart Map
  * A wrapper for Java maps which lets you safely check
  * for a particular type.
  */
@@ -16,7 +15,7 @@ public class SmartMap {
 
 
     /**
-     * Smart Map
+     * Constructor
      *
      * @param map Java map to wrap.
      */
@@ -26,7 +25,6 @@ public class SmartMap {
 
 
     /**
-     * Get integer
      * Use this method to retrieve Integers.
      * This is needed because JSON automatically
      * treats all numbers as doubles/floats.
@@ -86,9 +84,9 @@ public class SmartMap {
 
 
     /**
-     * Log
      * Logs all attributes. For debug purposes.
      */
+    @Deprecated
     public void log () {
         Main.getInstance().log(Level.INFO, map.toString());
     }

@@ -10,14 +10,13 @@ import org.bukkit.metadata.MetadataValue;
 import java.util.List;
 
 /**
- * Entity Teleport Listener
  * Fired whenever a non-player entity (such as an enderman)
  * attempts to teleport.
  */
-public class EntityTeleportListener extends BaseListener implements Listener {
+public class TeleportListener extends BaseListener implements Listener {
 
     @EventHandler
-    public void onEntityTeleport (EntityTeleportEvent event) {
+    void onEntityTeleport (EntityTeleportEvent event) {
 
         // Get entity which fired event
         Entity entity = event.getEntity();

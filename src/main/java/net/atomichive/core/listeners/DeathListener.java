@@ -9,10 +9,10 @@ import org.bukkit.event.entity.EntityDeathEvent;
  * Entity death listener
  * Listens for entity deaths
  */
-public class EntityDeathListener extends BaseListener implements Listener {
+public class DeathListener extends BaseListener implements Listener {
 
     @EventHandler
-    public void onDeath (EntityDeathEvent event) {
+    void onDeath (EntityDeathEvent event) {
         Main.getInstance().getEntityManager()
                 .remove(event.getEntity());
     }

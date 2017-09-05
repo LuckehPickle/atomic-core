@@ -8,13 +8,13 @@ import org.bukkit.event.Listener;
  * A super class to all listeners. Essentially just simplifies
  * the registration process.
  */
-abstract class BaseListener implements Listener {
+public abstract class BaseListener implements Listener {
 
 
     /**
      * Base listener constructor
      */
-    BaseListener () {
+    public BaseListener () {
 
         // Register event
         Main.getInstance()

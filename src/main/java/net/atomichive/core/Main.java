@@ -29,39 +29,34 @@ import java.util.logging.Logger;
 
 
 /**
- * Main
- * Main class for the atomic-core plugin.
+ * Atomic Core is the core plugin for the Atomic Hive
+ * Minecraft server.
  */
 public class Main extends JavaPlugin {
 
     private static Main instance;
-
     private Configuration config;
     private Logger logger;
-
-    // Management classes
     private PlayerManager playerManager;
     private EntityManager entityManager;
     private ItemManager itemManager;
     private DatabaseManager databaseManager;
     private WarpManager warpManager;
     private ProtocolManager protocolManager;
-
     private Scoreboard scoreboard;
 
 
     /**
-     * On enable
      * Run whenever the server enables this plugin.
      */
     @Override
     public void onEnable () {
 
-        // Init
         instance = this;
         logger = getLogger();
 
-        // Load configuration file
+        logBreak();
+        log(Level.INFO, "Loading config.yml");
         saveDefaultConfig();
         config = this.getConfig();
 
@@ -90,6 +85,7 @@ public class Main extends JavaPlugin {
             log(Level.SEVERE, "Malformed JSON");
         }
 
+        log(Level.INFO, "Setting up scoreboards...");
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         scoreboard = manager.getNewScoreboard();
         Objective objective = scoreboard.registerNewObjective("level", "level");
@@ -97,6 +93,7 @@ public class Main extends JavaPlugin {
         objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
 
         // Add currently logged in players to player manager
+        log(Level.INFO, "Loading players into memory...");
         for (Player player : Bukkit.getOnlinePlayers()) {
             AtomicPlayer atomicPlayer = playerManager.addPlayer(player);
             player.setScoreboard(scoreboard);
@@ -106,13 +103,15 @@ public class Main extends JavaPlugin {
         log(Level.INFO, "Loading warps from database...");
         warpManager.load();
 
+        log(Level.INFO, "Creating custom menus...");
+
+        log(Level.INFO, "Starting entity ability clock...");
         new EntityClock().runTaskTimer(this, 0L, 5L);
 
     }
 
 
     /**
-     * On disable
      * Run whenever the server disables this plugin.
      */
     @Override
@@ -138,9 +137,8 @@ public class Main extends JavaPlugin {
 
 
     /**
-     * Create database
-     * Creates a new database with values from the config
-     * file.
+     * Opens a connection with the database defined in
+     * config.yml.
      */
     private void initDatabase () {
 
@@ -158,6 +156,7 @@ public class Main extends JavaPlugin {
         );
 
 
+        // Attempt to initialise data access objects
         try {
             AtomicPlayerDAO.init(databaseManager);
             WarpDAO.init(databaseManager);
@@ -165,12 +164,12 @@ public class Main extends JavaPlugin {
             e.printStackTrace();
         }
 
-
         databaseManager.setLogger(logger);
         databaseManager.setMigrationsPath("migrations");
 
-        if (config.getBoolean("auto_migrate", true))
+        if (config.getBoolean("auto_migrate", true)) {
             databaseManager.migrate();
+        }
 
         logBreak();
 
@@ -178,7 +177,6 @@ public class Main extends JavaPlugin {
 
 
     /**
-     * Register commands
      * This function registers all commands with Bukkit.
      */
     private void registerCommands () {
@@ -220,7 +218,6 @@ public class Main extends JavaPlugin {
 
 
     /**
-     * Register events
      * This functions registers all events with Bukkit.
      */
     private void registerEvents () {
@@ -228,16 +225,19 @@ public class Main extends JavaPlugin {
         log(Level.INFO, "Registering events...");
 
         // Put all event handlers here
+        new BowListener();
         new CommandListener();
+        new DeathListener();
+        new DropListener();
         new EntityChangeBlockListener();
         new EntityDamageListener();
-        new EntityDeathListener();
-        new EntityTeleportListener();
-        new InteractEntityListener();
+        new InteractListener();
+        new InventoryListener();
         new LoginListener();
         new PacketListener();
         new QuitListener();
         new SlimeSplitListener();
+        new TeleportListener();
 
     }
 

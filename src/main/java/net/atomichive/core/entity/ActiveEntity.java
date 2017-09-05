@@ -21,6 +21,7 @@ import java.util.logging.Level;
 public class ActiveEntity {
 
     private Entity entity;                // The corresponding Bukkit entity
+    private int level = 1;                // Entity experience level
     private VolatileGoalSelector goals;   // Pathfinding goals
     private VolatileGoalSelector targets; // Pathfinding targets
     private Entity owner;                 // Owning entity, if one exists
@@ -100,14 +101,19 @@ public class ActiveEntity {
 
             // Split at first string
             String[] components = ((String) selector).split(" ", 2);
-
-            if (components.length == 0) continue;
-
-            String goal  = components[0].toLowerCase();
+            String goal;
             int priority = 0;
 
-            if (components.length == 2)
-                priority = parsePriority(components[1]);
+            switch (components.length) {
+                case 0:
+                    continue;
+                case 1:
+                    goal = components[0].toLowerCase();
+                    break;
+                default:
+                    priority = parsePriority(components[0]);
+                    goal = components[1].toLowerCase();
+            }
 
             switch (type) {
                 case GOAL:
@@ -258,7 +264,6 @@ public class ActiveEntity {
         SmartMap attributes = new SmartMap(map);
         Ability ability = getBaseAbility(attributes);
 
-
         // Determine trigger and target
         String trigger = attributes.get(String.class, "trigger");
         String target  = attributes.get(String.class, "target");
@@ -277,7 +282,7 @@ public class ActiveEntity {
         // Attempt to get target
         if (target != null) {
             try {
-                abilityTarget = Ability.Target.valueOf(target);
+                abilityTarget = Ability.Target.valueOf(target.toUpperCase());
             } catch (IllegalArgumentException e) {
                 throw new CustomObjectException(String.format(
                         "Unknown ability target: '%s'.",
@@ -399,12 +404,35 @@ public class ActiveEntity {
     }
 
 
+    /**
+     * @return This active entity represented by a string.
+     */
+    @Override
+    public String toString () {
+        return String.format(
+                "--\nName: %s\nEntity UUID: %s [%s]\nLiving: %s",
+                this.entity.getCustomName(),
+                this.entity.getUniqueId().toString().substring(0, 8),
+                this.entity.getEntityId(),
+                !this.entity.isDead()
+        );
+    }
+
+
     /*
         Getters and setters.
      */
 
     public Entity getEntity () {
         return entity;
+    }
+
+    public int getLevel () {
+        return level;
+    }
+
+    public void setLevel (int level) {
+        this.level = level;
     }
 
     public Entity getOwner () {

@@ -64,7 +64,7 @@ public class AtomicEnderman extends AtomicEntity {
 
             // Attempt to apply carrying material
             try {
-                Material material = Material.valueOf(carrying);
+                Material material = Material.valueOf(carrying.toUpperCase());
                 enderman.setCarriedMaterial(new MaterialData(material));
             } catch (IllegalArgumentException e) {
                 throw new CustomObjectException(String.format(

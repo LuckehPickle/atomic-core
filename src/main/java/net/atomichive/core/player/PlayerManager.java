@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Player manager.
  * Keeps track of all currently online players.
  */
 public class PlayerManager {
@@ -17,7 +16,7 @@ public class PlayerManager {
 
 
     /**
-     * Add player
+     * Adds a player to the list of online players.
      *
      * @param player Bukkit player to add.
      * @return Bukkit player converted to Atomic player.
@@ -59,7 +58,6 @@ public class PlayerManager {
 
 
     /**
-     * Remove all
      * Remove all players from the player manager.
      */
     public void removeAll () {
@@ -69,7 +67,6 @@ public class PlayerManager {
 
 
     /**
-     * Get
      * Returns a corresponding atomic player object, or
      * creates a new one if none exists.
      *

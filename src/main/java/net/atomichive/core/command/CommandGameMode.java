@@ -2,9 +2,7 @@ package net.atomichive.core.command;
 
 import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.Reason;
-import net.atomichive.core.exception.UnknownPlayerException;
-import net.atomichive.core.util.Util;
-import org.bukkit.Bukkit;
+import net.atomichive.core.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.CommandSender;
@@ -102,15 +100,11 @@ public class CommandGameMode extends BaseCommand {
         }
 
         // Get target player
-        Player player = Bukkit.getPlayer(target);
+        Player player = CommandUtil.parseTarget(target);
         String name = "Console";
 
-        if (sender instanceof Player)
+        if (sender instanceof Player) {
             name = ((Player) sender).getDisplayName();
-
-        // Ensure player exists
-        if (player == null) {
-            throw new UnknownPlayerException(target);
         }
 
         player.setGameMode(mode);

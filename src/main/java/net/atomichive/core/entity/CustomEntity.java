@@ -6,6 +6,7 @@ import net.atomichive.core.entity.atomic.AtomicEntity;
 import net.atomichive.core.exception.CustomObjectException;
 import net.atomichive.core.util.SmartMap;
 import net.atomichive.core.util.Util;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -23,11 +24,12 @@ public class CustomEntity {
 
     private static final transient String ATOMIC_STUB = "net.atomichive.core.entity.atomic.Atomic";
 
-    private String name;                // Unique name of this entity
-    private boolean despawn = true;     // Whether the entity despawns
-    private int level = 1;              // Entities level
-    private Map pathfinding = null;     // Pathfinding configuration
-    private Map[] abilities = null;     // Entity abilities
+    private String name;             // Unique name of this entity
+    private boolean despawn  = true; // Whether the entity despawns
+    private int level = 1;           // Entities level
+    private Map pathfinding = null;  // Pathfinding configuration
+    private Map[] abilities = null;  // Entity abilities
+    private Map merchant    = null;  // Merchant related info
 
     @SerializedName("class")            // Atomic entity class
     private String entityClass;
@@ -107,6 +109,7 @@ public class CustomEntity {
 
         ActiveEntity activeEntity = new ActiveEntity(entity.spawn(location));
         activeEntity.setOwner(owner);
+        activeEntity.setLevel(level);
 
         return this.applyAttributes(activeEntity);
 
@@ -123,7 +126,22 @@ public class CustomEntity {
 
         // Get entity
         Entity entity = activeEntity.getEntity();
+
         String customName;
+        String prefix = "";
+
+        SmartMap merchantMap;
+
+        if (this.merchant != null) {
+            merchantMap = new SmartMap(this.merchant);
+            prefix = merchantMap.get(String.class, "prefix", "");
+            if (!prefix.isEmpty()) {
+                prefix = String.format(
+                        "%s[%s]%s ",
+                        ChatColor.YELLOW, prefix, ChatColor.RESET
+                );
+            }
+        }
 
         // Set entity name
         if (this.displayName == null) {
@@ -133,7 +151,8 @@ public class CustomEntity {
         }
 
         entity.setCustomName(String.format(
-                "<COLOR>%s [%d]",
+                "%s<COLOR>%s [%d]",
+                prefix,
                 customName,
                 this.level
         ));

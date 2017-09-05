@@ -1,10 +1,9 @@
-package net.atomichive.core.util;
+package net.atomichive.core.util.tasks;
 
 import net.atomichive.core.Main;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
- * Broadcast Task
  * A task which broadcasts a message to the server.
  * This task can be scheduled, and run later.
  */

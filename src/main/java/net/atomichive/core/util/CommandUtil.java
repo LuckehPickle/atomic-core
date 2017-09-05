@@ -1,30 +1,31 @@
 package net.atomichive.core.util;
 
-import net.atomichive.core.exception.CommandException;
+import net.atomichive.core.exception.UnknownPlayerException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
- * Command Util
  * Various utilities for use within commands.
  */
 public class CommandUtil {
 
 
     /**
-     * Parse target
+     * Searches for a target player.
      *
      * @param arg Target player's name.
      * @return Bukkit player.
+     * @throws UnknownPlayerException if the target is not found.
      */
-    public static Player parseTarget (String arg) throws CommandException {
+    public static Player parseTarget (String arg) throws UnknownPlayerException {
 
         // Get player
         Player target = Bukkit.getPlayer(arg);
 
         // Ensure player exists
-        if (target == null)
-            throw new CommandException("The player " + arg + " could not be found.");
+        if (target == null) {
+            throw new UnknownPlayerException(arg);
+        }
 
         return target;
 
@@ -32,7 +33,6 @@ public class CommandUtil {
 
 
     /**
-     * Handle color codes
      * Replaces color codes such as &c with their
      * internal counterpart.
      *

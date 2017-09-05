@@ -8,18 +8,14 @@ import io.seanbailey.database.builders.UpdateBuilder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 /**
- * Atomic Player DAO
+ * A data access object for atomic players.
  */
 public class AtomicPlayerDAO {
-
-
-    private static DatabaseManager manager;
 
     // For performance improvements, create prepared statements once
     private static PreparedStatement insertStatement;
@@ -28,12 +24,10 @@ public class AtomicPlayerDAO {
 
 
     /**
-     * Init
-     * Defines tables and columns, and creates prepared statements.
+     * Defines tables and columns, and creates prepared
+     * statements.
      */
     public static void init (DatabaseManager manager) throws SQLException {
-
-        AtomicPlayerDAO.manager = manager;
 
         // Create prepared statements
         insertStatement = new InsertBuilder("players").addColumns(
@@ -66,40 +60,8 @@ public class AtomicPlayerDAO {
 
 
     /**
-     * Find all
-     * Returns a list of all players stored in the db.
-     *
-     * @return All players stored in the db.
-     */
-    public static List<AtomicPlayer> findAll () {
-
-        try {
-            // Create a new statement
-            Statement statement = manager.getConnection().createStatement();
-
-            // Execute query
-            ResultSet set = statement.executeQuery(
-                    new SelectBuilder("players")
-                            .addColumn("*")
-                            .toString()
-            );
-
-            // Map results to player
-            return mapResultsToPlayers(set);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-
-    }
-
-
-    /**
-     * Find by identifier (READ)
-     * Returns a list of all players which match
-     * the provided identifier.
+     * Returns a list of all players which match the provided
+     * identifier.
      *
      * @param identifier UUID of player.
      * @return List of all matching players. Should theoretically
@@ -125,10 +87,9 @@ public class AtomicPlayerDAO {
 
 
     /**
-     * Insert
      * Adds a new atomic player to the database.
      *
-     * @param player Atomic Player to add.
+     * @param player Atomic player to add.
      */
     public static void insert (AtomicPlayer player) {
 
@@ -158,7 +119,6 @@ public class AtomicPlayerDAO {
 
 
     /**
-     * Update
      * Updates an existing atomic player in the database.
      *
      * @param player Player to update
@@ -179,6 +139,11 @@ public class AtomicPlayerDAO {
     }
 
 
+    /**
+     * Updates a list of players in a batch.
+     *
+     * @param players List of players to update.
+     */
     public static void update (List<AtomicPlayer> players) {
 
         try {
@@ -198,11 +163,10 @@ public class AtomicPlayerDAO {
 
 
     /**
-     * Map player to results
+     * Maps SQL results to atomic player objects.
      *
      * @param statement Prepared statement to map player to.
      * @param player    Player to map to statement.
-     * @throws SQLException if an SQL exception is encountered (duh?)
      */
     private static void mapPlayerToStatement (PreparedStatement statement, AtomicPlayer player)
             throws SQLException {
@@ -223,13 +187,11 @@ public class AtomicPlayerDAO {
 
 
     /**
-     * Map Results to Players
      * Takes an SQL result set, and maps the returned columns
      * to Atomic Player objects.
      *
      * @param rs Result set from SQL query.
      * @return List of players from the result set.
-     * @throws SQLException If an exception is encountered whilst handling SQL.
      */
     private static List<AtomicPlayer> mapResultsToPlayers (ResultSet rs) throws SQLException {
 

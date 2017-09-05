@@ -2,6 +2,7 @@ package net.atomichive.core.command;
 
 import com.google.gson.stream.MalformedJsonException;
 import net.atomichive.core.Main;
+import net.atomichive.core.entity.ActiveEntity;
 import net.atomichive.core.entity.CustomEntity;
 import net.atomichive.core.exception.CommandException;
 import net.atomichive.core.exception.CustomObjectException;
@@ -59,6 +60,10 @@ public class CommandEntity extends BaseCommand {
             case "spawn":
             case "s":
                 spawnEntity(sender, args);
+                break;
+            case "debug":
+            case "d":
+                listActiveEntities(sender);
                 break;
             default:
                 throw new CommandException("Unknown option '" + args[0] + "'.");
@@ -197,8 +202,9 @@ public class CommandEntity extends BaseCommand {
         location = Util.trace(player);
 
         // Ensure a location was found
-        if (location == null)
+        if (location == null) {
             throw new CommandException("No block in sight.");
+        }
 
 
         // Attempt to spawn entity
@@ -206,11 +212,33 @@ public class CommandEntity extends BaseCommand {
             Main.getInstance().getEntityManager()
                     .spawnEntity(location, entity, count, player);
         } catch (CustomObjectException e) {
-            player.sendMessage(e.getMessage());
-            return;
+            throw new CommandException(
+                    Reason.GENERIC_ERROR,
+                    e.getMessage()
+            );
         }
 
         player.sendMessage("Spawned " + ChatColor.GREEN + count + ChatColor.RESET + " entities.");
+
+    }
+
+
+    /**
+     * Lists all current tracked active entities.
+     *
+     * @param sender Command sender.
+     */
+    private void listActiveEntities (CommandSender sender) {
+
+        List<ActiveEntity> entities = Main.getInstance().getEntityManager().getActiveEntities();
+
+        if (entities.isEmpty()) {
+            sender.sendMessage("There are currently no active entities!");
+        }
+
+        for (ActiveEntity entity : entities) {
+            sender.sendMessage(entity.toString());
+        }
 
     }
 

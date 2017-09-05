@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
 /**
- * Ability Swap Places
  * Swaps the source and targets locations.
  */
 public class AbilitySwapPlaces implements Ability {
